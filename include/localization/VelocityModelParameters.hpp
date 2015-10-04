@@ -1,0 +1,6 @@
+#ifndef VELOCITY_MODEL_PARAMETERS_H
+#define VELOCITY_MODEL_PARAMETERS_H
+
+#define ALPHA_1 0.05
+
+#endif

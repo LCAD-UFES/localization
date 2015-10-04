@@ -1,0 +1,7 @@
+.kateproject
+.kateproject.d/
+*.kate-swp
+*.pdf
+test.cpp
+src/t
+t
