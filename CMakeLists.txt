@@ -113,14 +113,13 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
-include_directories(
-  ${catkin_INCLUDE_DIRS}
-)
+include_directories(include/localization)
+include_directories(${catkin_INCLUDE_DIRS})
 
 ## Declare a C++ library
-# add_library(localization
-#   src/${PROJECT_NAME}/localization.cpp
-# )
+add_library(localization
+  src/localization/Sample2D.cpp
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -132,12 +131,13 @@ add_executable(localization_node src/localization_node.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(localization_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+## add_dependencies(localization_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(localization_node
 #   ${catkin_LIBRARIES}
 # )
+target_link_libraries(localization ${catkin_LIBRARIES})
 
 #############
 ## Install ##
@@ -186,3 +186,4 @@ add_executable(localization_node src/localization_node.cpp)
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
