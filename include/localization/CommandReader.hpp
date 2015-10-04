@@ -21,7 +21,7 @@ class CommandReader {
         // basic constructor
         CommandReader(std::string topic_name, unsigned int);
         // abstract method
-//         virtual void read()=0;
+        virtual void read()=0;
 };
 
 #endif

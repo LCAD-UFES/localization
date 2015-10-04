@@ -1,16 +1,20 @@
 #ifndef COMMAND_ODOMETRY_H
 #define COMMAND_ODOMETRY_H
 
+#include "CommandReader.hpp"
 #include "pose.hpp"
 
-class CommandOdom {
+class CommandOdom : public CommandReader {
     /* TODO */
     // this object must to subscribe the odometry/tf/cmd_vel topics
-    // a hint: creates a ros node handler and some subscribers objects as internal attributes
     // and then you can use the read() method to obtain all the apropriate infos from the topics
     // and assign the old and new pose to the public attributes below
     
     public:
+        //constructor
+        // it need to receive at least the topic name and the queue q_size
+        // because the CommandReader base class 
+        CommandOdom(std::string topic_name, unsigned int q_size);
         // read or build the odometry model command from the ROS topics
         void read();
 

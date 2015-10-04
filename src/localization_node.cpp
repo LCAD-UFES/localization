@@ -1,6 +1,6 @@
-#include "Sample2D.hpp"
+#include "CommandVelocity.hpp"
 
 int main() {
-    Sample2D a;
+    CommandVel cmd("cmd_vel", 100);
     return 0;
 }
