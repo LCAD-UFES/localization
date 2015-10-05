@@ -2,7 +2,6 @@
 #define MONTE_CARLO_LOCALIZATION_H
 
 #include <string>
-#include
 
 class MCL {
     private:

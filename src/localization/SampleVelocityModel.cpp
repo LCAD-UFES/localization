@@ -1,14 +1,20 @@
 #include "SampleVelocityModel.hpp"
 
+// Default constructor
+SampleVelocityModel::SampleVelocityModel() : SampleMotionModel(), cmd("cmd_vel", 1000) {
+    a1 = a2 = a3 = a4 = a5 = a6 = ALPHA_1;
+    deltaT = 0.1;
+}
+
 // constructor
-SampleVelocityModel::SampleVelocityModel() : SampleMotionModel(), cmd() {
+SampleVelocityModel::SampleVelocityModel(std::string topic_name, unsigned int q_size) : SampleMotionModel(), cmd(topic_name, q_size) {
     a1 = a2 = a3 = a4 = a5 = a6 = ALPHA_1;
     deltaT = 0.1;
 }
 
 // sample a new pose from a given command and previous pose
 // see Table 5.3 - Probabilistic Robotics
-void SampleVelocityModel::samplePose2D(CommandVel *cmd, Pose2D *pose) {
+void SampleVelocityModel::samplePose2D(Pose2D *pose) {
 
     // auxiliar variables
     double v, w, y, vw;

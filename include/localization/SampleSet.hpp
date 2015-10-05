@@ -1,8 +1,10 @@
 #ifndef SAMPLE_SET_H
 #define SAMPLE_SET_H
 
-#include "sample2D.hpp"
-#include "gaussianpdf.hpp"
+#include "Sample2D.hpp"
+#include "GaussianPDF.hpp"
+#include "SampleMotionModel.hpp"
+#include "MeasurementModel.hpp"
 
 class SampleSet {
     private:
@@ -14,16 +16,18 @@ class SampleSet {
         SampleMotionModel *motion;
 
         // the Measurement Model
-        MeasurementModel *measure;
+        MeasurementModel *measurement;
 
         // the set of the pose samples
         Sample2D *samples;
 
     public:
         // SampletSet constructor
-        // it receives the size or amout of samples and
+        // it receives the size or amount of samples and
         // two strings that defines the motion and measurement model types
-        SampleSet(unsigned int, string motionModel, string measurementModel);
+        SampleSet(unsigned int, std::string, std::string);
+        // Constructor that receives the motion and measurement models from outside
+        SampleSet(unsigned int, SampleMotionModel*, MeasurementModel*);
         ~SampleSet();
 
         // sample the entire set

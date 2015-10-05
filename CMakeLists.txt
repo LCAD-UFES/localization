@@ -100,9 +100,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES localization
-#  CATKIN_DEPENDS geometry_msgs roscpp std_msgs
+    INCLUDE_DIRS include
+    LIBRARIES localization
+    CATKIN_DEPENDS geometry_msgs roscpp std_msgs
 #  DEPENDS system_lib
 )
 
@@ -116,15 +116,20 @@ catkin_package(
 include_directories(include/localization)
 include_directories(${catkin_INCLUDE_DIRS})
 
-## Declare a C++ library
-add_library(localization
-  src/localization/Sample2D.cpp
+set(LOCALIZATION_LIB_SOURCES 
+    src/localization/Sample2D.cpp
+    src/localization/CommandReader.cpp
+    src/localization/CommandVelocity.cpp
+    src/localization/SampleSet.cpp
 )
 
+## Declare a C++ library
+add_library(localization_libs ${LOCALIZATION_LIB_SOURCES})
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
 # add_dependencies(localization ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(localization_libs ${catkin_LIBRARIES})
 
 ## Declare a C++ executable
 add_executable(localization_node src/localization_node.cpp)
@@ -137,7 +142,8 @@ add_executable(localization_node src/localization_node.cpp)
 # target_link_libraries(localization_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(localization ${catkin_LIBRARIES})
+target_link_libraries(localization_node ${catkin_LIBRARIES})
+target_link_libraries(localization_node localization_libs)
 
 #############
 ## Install ##

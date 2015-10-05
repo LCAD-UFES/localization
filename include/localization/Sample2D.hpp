@@ -5,6 +5,7 @@
 #include "GaussianPDF.hpp"
 
 class Sample2D {
+
     public:
         // base constructor
         Sample2D();

@@ -2,7 +2,7 @@
 #define COMMAND_READER_H
 
 #include <string>
-#include <ros/ros.h>
+#include "ros/ros.h"
 
 class CommandReader {
     protected:
@@ -16,12 +16,10 @@ class CommandReader {
         // so I make it a pointer here, you should instantiate a subscriber to the correct topics
         // based on the type of command used in your models
         // Example: the Velocity Motion Model uses a command u(v,w)
-        ros::Subscriber *sub;
+        ros::Subscriber sub;
     public:
         // basic constructor
         CommandReader(std::string topic_name, unsigned int);
-        // abstract method
-        virtual void read()=0;
 };
 
 #endif

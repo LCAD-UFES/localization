@@ -5,7 +5,8 @@ class MeasurementModel {
     // it needs to assign to the correct topics
     //
     public:
-        
+        // abstract method
+        virtual void sample(CommandReader *)
 };
 
 #endif

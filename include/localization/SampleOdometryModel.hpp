@@ -8,10 +8,6 @@ class SampleOdometryModel : public SampleMotionModel {
     // parameters
     double a1, a2, a3, a4;
 
-    // the PDF object
-    // a normal distribution
-    GaussianPDF sampler;
-
     // the command reader
     CommandOdom cmd;
 

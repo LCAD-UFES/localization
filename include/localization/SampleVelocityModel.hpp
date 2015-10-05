@@ -1,10 +1,9 @@
 #ifndef SAMPLE_MOTION_MODEL_VELOCITY_H
 #define SAMPLE_MOTION_MODEL_VELOCITY_H
 
-#include "pose.hpp"
-#include "sampleMotionModel.hpp"
-#include "commandVelocity.hpp"
-#include "VelocityModelParameters.hpp"
+#include "Pose.hpp"
+#include "SampleMotionModel.hpp"
+#include "CommandVelocity.hpp"
 
 class SampleVelocityModel : public SampleMotionModel {
 
@@ -17,8 +16,10 @@ class SampleVelocityModel : public SampleMotionModel {
 
 
     public:
-        // constructor
+        // default constructor
         SampleVelocityModel();
+        // constructor
+        SampleVelocityModel(std::string, unsigned int);
 
         // updates the pose to a new one based on the CommandVel
         virtual void samplePose2D(Pose2D *pose);
