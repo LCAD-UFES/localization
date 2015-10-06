@@ -1,9 +1,10 @@
 #ifndef SAMPLE_MOTION_MODEL_VELOCITY_H
 #define SAMPLE_MOTION_MODEL_VELOCITY_H
 
-#include "Pose.hpp"
+#include "Pose2D.hpp"
 #include "SampleMotionModel.hpp"
 #include "CommandVelocity.hpp"
+#include "VelocityModelParameters.hpp"
 
 class SampleVelocityModel : public SampleMotionModel {
 
@@ -13,7 +14,6 @@ class SampleVelocityModel : public SampleMotionModel {
     // parameters
     double a1, a2, a3, a4, a5, a6;
     double deltaT;
-
 
     public:
         // default constructor

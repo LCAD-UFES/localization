@@ -8,4 +8,5 @@ struct MapCell {
     double occ_dist;
 };
 
+
 #endif

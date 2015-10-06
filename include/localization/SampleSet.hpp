@@ -3,8 +3,10 @@
 
 #include "Sample2D.hpp"
 #include "GaussianPDF.hpp"
-#include "SampleMotionModel.hpp"
-#include "MeasurementModel.hpp"
+#include "SampleVelocityModel.hpp"
+#include "SampleOdometryModel.hpp"
+#include "BeamRangeFinderModel.hpp"
+#include "LikelyhoodFieldModel.hpp"
 
 class SampleSet {
     private:
@@ -31,10 +33,13 @@ class SampleSet {
         ~SampleSet();
 
         // sample the entire set
-        void sample();
+        void sample(CommandReader*);
 
         // resample the entire set
         void resample();
+
+        // clear the entire set
+        void clearSamples();
 };
 
 #endif

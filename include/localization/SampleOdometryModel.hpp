@@ -14,7 +14,6 @@ class SampleOdometryModel : public SampleMotionModel {
     public:
         // constructor
         SampleOdometryModel();
-        ~SampleOdometryModel();
 
         // updates the pose to a new one based on the CommandVel
         void samplePose2D(Pose2D *pose);

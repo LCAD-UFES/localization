@@ -1,9 +1,15 @@
 #include "CommandOdometry.hpp"
 
-CommandOdom::CommandOdom() : old_pose(), new_pose() {
-    read();
+//constructor
+// it need to receive at least the topic name and the queue q_size
+// because the CommandReader base class 
+CommandOdom::CommandOdom(std::string topic_name, unsigned int q_size) : CommandReader(topic_name, q_size) {
+    
 }
 
-void CommandOdom::read() {
-    /* TODO */
+// the callback function
+// what kind of message you must read to build the odometry command?
+// just the /odom or another topics?
+void CommandOdom::listenCMD() {
+    
 }

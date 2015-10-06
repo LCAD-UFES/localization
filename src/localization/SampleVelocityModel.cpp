@@ -19,13 +19,14 @@ void SampleVelocityModel::samplePose2D(Pose2D *pose) {
     // auxiliar variables
     double v, w, y, vw;
 
-    v = cmd->v + sampler.sample(a1*cmd->v*cmd->v + a2*cmd->w*cmd->w);
-    w = cmd->w + sampler.sample(a3*cmd->v*cmd->v + a4*cmd->w*cmd->w);
-    y = sample.sample(a5*cmd->v*cmd->v + a6*cmd->w*cmd->w);
+    v = cmd.linear + sampler.sample(a1*cmd.linear*cmd.linear + a2*cmd.angular*cmd.angular);
+    w = cmd.angular + sampler.sample(a3*cmd.linear*cmd.linear + a4*cmd.angular*cmd.angular);
+    y = sampler.sample(a5*cmd.linear*cmd.linear + a6*cmd.angular*cmd.angular);
 
     vw = v/w;
 
     pose->v[0] = pose->v[0] - vw*sin(pose->v[2]) + vw*sin(pose->v[2] + w*deltaT);
     pose->v[1] = pose->v[1] + vw*cos(pose->v[2]) - vw*cos(pose->v[2] + w*deltaT);
     pose->v[2] = pose->v[2] + w*deltaT + y*deltaT;
+
 }

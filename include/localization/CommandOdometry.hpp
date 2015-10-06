@@ -2,7 +2,7 @@
 #define COMMAND_ODOMETRY_H
 
 #include "CommandReader.hpp"
-#include "Pose.hpp"
+#include "Pose2D.hpp"
 
 class CommandOdom : public CommandReader {
     private:
@@ -26,7 +26,7 @@ class CommandOdom : public CommandReader {
         // the callback function
         // what kind of message you must read to build the odometry command?
         // just the /odom or another topics?
-        void listenCMD(/* TODO *);
+        void listenCMD();
 
 };
 #endif

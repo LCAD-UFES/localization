@@ -117,10 +117,18 @@ include_directories(include/localization)
 include_directories(${catkin_INCLUDE_DIRS})
 
 set(LOCALIZATION_LIB_SOURCES 
+    src/localization/PDF.cpp
+    src/localization/GaussianPDF.cpp
     src/localization/Sample2D.cpp
     src/localization/CommandReader.cpp
     src/localization/CommandVelocity.cpp
+    src/localization/CommandOdometry.cpp
+    src/localization/SampleVelocityModel.cpp
+    src/localization/SampleOdometryModel.cpp
+    src/localization/BeamRangeFinderModel.cpp
+    src/localization/LikelyhoodFieldModel.cpp
     src/localization/SampleSet.cpp
+    src/localization/MonteCarloLocalization.cpp
 )
 
 ## Declare a C++ library

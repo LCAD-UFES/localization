@@ -34,7 +34,7 @@ class VectorT {
         // copy
         void copy(const VectorT &inputVector) {
             if (size != inputVector.size) {
-                std::cout << std::endl << "Error! You can not copy a matrix with diferent sizes!" << std::endl;
+                std::cout << std::endl << "Error! You can not copy a vector with diferent sizes!" << std::endl;
                 clear();
             } else {
                 for (int i = 0; i < size; i++) {

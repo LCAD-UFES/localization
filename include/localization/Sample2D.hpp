@@ -1,7 +1,7 @@
 #ifndef SAMPLE_2D_H
 #define SAMPLE_2D_H
 
-#include "Pose.hpp"
+#include "Pose2D.hpp"
 #include "GaussianPDF.hpp"
 
 class Sample2D {

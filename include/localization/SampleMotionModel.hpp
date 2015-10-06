@@ -1,8 +1,10 @@
 #ifndef SAMPLE_MOTION_MODEL_H
 #define SAMPLE_MOTION_MODEL_H
 
-#include "PDF.hpp"
+#include "GaussianPDF.hpp"
+#include "Pose2D.hpp"
 #include "CommandReader.hpp"
+
 
 class SampleMotionModel {
     protected:

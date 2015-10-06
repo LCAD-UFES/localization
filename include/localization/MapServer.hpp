@@ -4,8 +4,6 @@
 #include "Map.hpp"
 
 class MapServer {
-    private:
-        Map map;
     public:
         /* TODO */
 };

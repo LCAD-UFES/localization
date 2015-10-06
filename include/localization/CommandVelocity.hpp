@@ -6,8 +6,6 @@
 
 class CommandVel : public CommandReader {
     private:
-        // translational and rotational speeds
-        double linear, angular;
 
         // the Twist message
         geometry_msgs::Twist last_msg;
@@ -19,6 +17,8 @@ class CommandVel : public CommandReader {
         CommandVel(std::string, unsigned int);
         // read the apropriate velocity from the correct ROS topic
         void listenCMD(const geometry_msgs::Twist);
+        // translational and rotational speeds
+        double linear, angular;
 };
 
 #endif
