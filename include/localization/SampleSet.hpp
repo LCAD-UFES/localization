@@ -8,6 +8,8 @@
 #include "BeamRangeFinderModel.hpp"
 #include "LikelyhoodFieldModel.hpp"
 
+#include "ros/ros.h"
+
 class SampleSet {
     private:
 
@@ -23,23 +25,23 @@ class SampleSet {
         // the set of the pose samples
         Sample2D *samples;
 
+        // private function just to allocate the samples
+        void newSamples();
+
     public:
-        // SampletSet constructor
-        // it receives the size or amount of samples and
-        // two strings that defines the motion and measurement model types
-        SampleSet(unsigned int, std::string, std::string);
-        // Constructor that receives the motion and measurement models from outside
-        SampleSet(unsigned int, SampleMotionModel*, MeasurementModel*);
+        // SampletSet basic constructor
+        SampleSet(const ros::NodeHandle&);
         ~SampleSet();
 
         // sample the entire set
-        void sample(CommandReader*);
+        void sample();
 
         // resample the entire set
         void resample();
 
         // clear the entire set
-        void clearSamples();
+        void resetSamples();
+
 };
 
 #endif

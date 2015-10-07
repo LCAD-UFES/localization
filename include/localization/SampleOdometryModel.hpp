@@ -2,18 +2,20 @@
 #define SAMPLE_ODOMETRY_MODEL_H
 
 #include "SampleMotionModel.hpp"
-#include "CommandOdometry.hpp"
+
+#include "ros/ros.h"
 
 class SampleOdometryModel : public SampleMotionModel {
+
     // parameters
     double a1, a2, a3, a4;
 
-    // the command reader
-    CommandOdom cmd;
+    // the command
+    /* TODO */
 
     public:
         // constructor
-        SampleOdometryModel();
+        SampleOdometryModel(const ros::NodeHandle&);
 
         // updates the pose to a new one based on the CommandVel
         void samplePose2D(Pose2D *pose);

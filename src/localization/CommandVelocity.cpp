@@ -1,6 +1,6 @@
 #include "CommandVelocity.hpp"
 
-CommandVel::CommandVel(std::string topic_name, unsigned int q_size) : CommandReader(topic_name, q_size) {
+CommandVel::CommandVel(const ros::NodeHandle &private_nh) : CommandReader() {
     // subscribe to the correct topic
     // the subscribe function below accepts the public method address and and a pointer
     // "this"
