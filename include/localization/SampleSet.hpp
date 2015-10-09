@@ -1,7 +1,7 @@
 #ifndef SAMPLE_SET_H
 #define SAMPLE_SET_H
 
-#include "ros/ros.h"
+#include <ros/ros.h>
 
 #include "Sample2D.hpp"
 
@@ -15,15 +15,15 @@ class SampleSet {
     private:
 
         // actual number of samples/particles
-        unsigned int size;
+        int size;
 
         // the set of the pose samples
         Sample2D *samples;
 
         // the min parameter
-        unsigned int min;
+        int min;
         // the max samples parameter
-        unsigned int max;
+        int max;
 
         // private function just to allocate the samples
         void newSamples();

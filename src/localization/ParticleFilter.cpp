@@ -1,7 +1,7 @@
 #include "ParticleFilter.hpp"
 
 // Constructor
-ParticleFilter::ParticleFilter() : nh(), private_nh("~"), cmds(), laser(), map() {
+ParticleFilter::ParticleFilter() : nh(), private_nh("~"), cmds(), cmd_seq(0), laser(), map() {
 
     // Motion model
     std::string motionModel;
@@ -73,10 +73,10 @@ ParticleFilter::ParticleFilter() : nh(), private_nh("~"), cmds(), laser(), map()
 // Destructor
 ParticleFilter::~ParticleFilter() {
 
-    // delete the commands
+    // delete all the commands inside the cmds vector
     while(!cmds.empty()) {
         delete cmds.back();
-        bar.pop_back();
+        cmds.pop_back();
     }
 
     // delete the motion model
@@ -93,14 +93,13 @@ ParticleFilter::~ParticleFilter() {
     if (nullptr != mcl) {
         delete mcl;
     }
-
 }
 
 // base constructor
 
 // callbacks
 // laser received callback
-void ParticleFilter::laserReceived(const nav_msgs::LaserScan msg) {
+void ParticleFilter::laserReceived(const sensor_msgs::LaserScan msg) {
     // the laser object manages the apropriate mutex
     laser.setScan(msg);
     // starts the MCL
@@ -109,15 +108,10 @@ void ParticleFilter::laserReceived(const nav_msgs::LaserScan msg) {
 
 // the velocity motion command 
 void ParticleFilter::commandVelReceived(const geometry_msgs::Twist msg) {
-    // creates a new message TwistStamped
-    geometry_msgs::TwistStamped stamped;
-    // updates the Twist
-    stamped.twist = msg;
-    // creates a new CommandReader pointer to a CommandVel
-    CommandReader *new_cmd = new CommandVel(stamped);
+
     // push the new command to the command vector
     cmds_mutex.lock();
-    cmds.push_back(new_cmd);
+    cmds.push_back(new CommandVel(msg, cmd_seq++));
     cmds_mutex.unlock();
 }
 
@@ -136,7 +130,7 @@ void ParticleFilter::readMap(const nav_msgs::OccupancyGrid msg) {
 void ParticleFilter::start() {
 
     // the asynchronous spinner
-    ros::AyncSpinner spinner(1);
+    ros::AsyncSpinner spinner(1);
 
     // start spinning
     spinner.start();

@@ -120,7 +120,8 @@ set(LOCALIZATION_LIB_SOURCES
     src/localization/Sample2D.cpp
     src/localization/Map.cpp
     src/localization/Laser.cpp
-    src/localization/Commandreade.cpp
+    src/localization/CommandVelocity.cpp
+    src/localization/CommandOdometry.cpp
     src/localization/SampleMotionModel.cpp
     src/localization/SampleVelocityModel.cpp
     src/localization/SampleOdometryModel.cpp

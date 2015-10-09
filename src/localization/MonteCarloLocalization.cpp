@@ -36,7 +36,6 @@ void MonteCarloLocalization::start() {
 //
 void MonteCarloLocalization::run() {
 
-    std::cout << std::endl << "Unlocking!";
     // unlock the mutex
     mcl_mutex.unlock();
 }

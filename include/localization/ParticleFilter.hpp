@@ -3,11 +3,11 @@
 
 #include <mutex>
 
-#include "ros/ros.h"
-#include "nav_msgs/LaserScan.h"
-#include "nav_msgs/Odometry.h"
-#include "geometry_msgs/Twist.h"
-#include "geometry_msgs/TwistStamped.h"
+#include <ros/ros.h>
+#include <sensor_msgs/LaserScan.h>
+#include <nav_msgs/Odometry.h>
+#include <geometry_msgs/Twist.h>
+#include <geometry_msgs/TwistStamped.h>
 
 #include "CommandVelocity.hpp"
 #include "CommandOdometry.hpp"
@@ -33,6 +33,9 @@ class ParticleFilter {
         // The Command Reader
         std::vector<CommandReader *> cmds;
 
+        // just to mark the TwistStamped seq
+        unsigned int cmd_seq;
+
         // the commands mutex
         std::mutex cmds_mutex;
 
@@ -55,7 +58,7 @@ class ParticleFilter {
 
         // callbacks
         // laser received callback
-        void laserReceived(const nav_msgs::LaserScan);
+        void laserReceived(const sensor_msgs::LaserScan);
 
         // the motion command to be used by the Velocity Motion Model
         void commandVelReceived(const geometry_msgs::Twist);

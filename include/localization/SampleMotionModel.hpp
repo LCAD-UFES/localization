@@ -12,7 +12,7 @@ class SampleMotionModel {
         SampleMotionModel();
         // sample a new pose from a given command and previous pose
         // abstract method, so it's an abstract class
-        virtual void samplePose2D(CommandReader *, Pose2D *) =0;
+        virtual void samplePose2D(Pose2D *) =0;
         // returns a double from a normal distribution PDF
         // the mean is zero centered and the it receives the variance as input
         // inside the method we get the standard deviation

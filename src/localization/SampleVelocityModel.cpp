@@ -8,18 +8,18 @@ SampleVelocityModel::SampleVelocityModel(
 
     // get the sample velocity model parameters parameters
     // the alphas
-    private_nh.param<float>("sample_velocity_model_alpha_1", a1, 0.1);
-    private_nh.param<float>("sample_velocity_model_alpha_2", a2, 0.1);
-    private_nh.param<float>("sample_velocity_model_alpha_3", a3, 0.1);
-    private_nh.param<float>("sample_velocity_model_alpha_4", a4, 0.1);
-    private_nh.param<float>("sample_velocity_model_alpha_5", a5, 0.1);
-    private_nh.param<float>("sample_velocity_model_alpha_6", a6, 0.1);
+    private_nh.param("sample_velocity_model_alpha_1", a1, 0.1);
+    private_nh.param("sample_velocity_model_alpha_2", a2, 0.1);
+    private_nh.param("sample_velocity_model_alpha_3", a3, 0.1);
+    private_nh.param("sample_velocity_model_alpha_4", a4, 0.1);
+    private_nh.param("sample_velocity_model_alpha_5", a5, 0.1);
+    private_nh.param("sample_velocity_model_alpha_6", a6, 0.1);
 
 }
 
 // destructor
 // avoiding to delete the cmds pointer
-// it should be managed by the ParticleFilter object
+
 SampleVelocityModel::~SampleVelocityModel() {
     cmds = nullptr;
 }

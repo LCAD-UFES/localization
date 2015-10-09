@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "Map.hpp"
 
 // basic constructor
@@ -13,6 +15,7 @@ void Map::setGrid(nav_msgs::OccupancyGrid g) {
         // lock the mutex
         map_mutex.unlock();
 
+        map_received = true;
     }
 }
 

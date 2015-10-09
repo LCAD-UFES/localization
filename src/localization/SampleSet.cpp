@@ -4,11 +4,11 @@
 SampleSet::SampleSet(const ros::NodeHandle &private_nh) {
     // get the size parameter
     // if not found, it'll be 800'
-    private_nh.param<unsigned int>("sample_set_size", size, 800);
+    private_nh.param( (std::string) "sample_set_size", size, 800);
 
     // get the min and max samples
-    private_nh.param<unsigned int>("min_sample_set_size", min, 100;
-    private_nh.param<unsigned int>("max_sample_set_size", max, 10000);
+    private_nh.param("min_sample_set_size", min, 100);
+    private_nh.param( (std::string) "max_sample_set_size", max, 10000);
 
     // allocate the array of 2D samples
     newSamples();
