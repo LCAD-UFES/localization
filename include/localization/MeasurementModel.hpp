@@ -3,18 +3,21 @@
 
 #include "Pose2D.hpp"
 #include "Laser.hpp"
+#include "Map.hpp"
 
 class MeasurementModel {
-    private:
-        // The Laser object maintains a PointCloud
-        Laser laser*;
+    protected:
+        // The Laser object maintains a the LaserScan message
+        Laser *laser;
+        // the Map object contains the OccupancyGrid
+        Map *map;
     public:
-        // the laser must be deleted by the MCL object
-        ~MeasurementModel() { laser = nullptr; }
+        MeasurementModel(Laser *, Map *);
+        // the laser must be deleted by the ParticleFilter object
+        // not here
+        ~MeasurementModel();
         // abstract getWeight method
-        virtual double getWeight(Pose2D *) =0;
-        // set the Laser, it's also an abstract method
-        virtual void setLaser(Laser *) =0;
+        virtual double getWeight(Pose2D *, Laser *) =0;
 };
 
 #endif

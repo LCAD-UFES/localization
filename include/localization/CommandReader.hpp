@@ -1,23 +1,15 @@
 #ifndef COMMAND_READER_H
 #define COMMAND_READER_H
 
-#include <string>
-#include "ros/ros.h"
+
+#include "geometry_msgs/TwistStamped.h"
 
 class CommandReader {
-    protected:
-        // the ros topic name
-        std::string topic;
-        // the queue size
-        unsigned int queue_size;
-        // it needs to subscribe to the correct ROS topic
-        // so I make it a pointer here, you should instantiate a subscriber to the correct topics
-        // based on the type of command used in your models
-        // Example: the Velocity Motion Model uses a command u(v,w)
-        ros::Subscriber sub;
+
     public:
-        // basic constructor
-        CommandReader(const ros::NodeHandle&);
+        // the command
+        virtual geometry_msgs::TwistStamped getCMD() =0;
+        virtual void setCMD(geometry_msgs::TwistStamped) =0;
 };
 
 #endif

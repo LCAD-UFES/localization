@@ -1,37 +1,46 @@
+#include <iostream>
+
 #include "MonteCarloLocalization.hpp"
+// Constructor
+MonteCarloLocalization::MonteCarloLocalization(
+            ros::NodeHandle &private_nh,
+            SampleMotionModel *motionModel,
+            MeasurementModel *measurementModel
+        ) : Xt(private_nh), motion(motionModel), measurement(measurementModel), mcl_thread() {
 
-MCL::MCL() : nh(), private_nh("~"), laser(), Xt(private_nh) {
-
-    // set the Laser pointer inside the Measurement Model
-    Xt.measurement->setLaser(&laser);
-
-    // get the laser topic parameter
-    std::string laser_topic;
-    nh.param<std::string>("laser_scan_topic", laser_topic, "/p3dx/laser/scan");
-
-    // subscribe to the laser topic (eg. /p3dx/laser/scan)
-    ls_sub = nh.subscribe(laser_topic, 10, &MCL::run, this);
-
+    // 
+    if (mcl_thread.joinable())
+        mcl_thread.join();
 }
 
-void MCL::run(const sensor_msgs::LaserScan::ConstPtr& scan_in) {
-    // process the Laser scan
-    // the Laser object is also available to the Measurement Model
-    laser.toCloud(scan_in);
+// Destructor
+MonteCarloLocalization::~MonteCarloLocalization() {
+    motion = nullptr;
+    measurement = nullptr;
+}
 
-    // sample the entire set! Get new pose from previous pose and command
-    // and also updates the poses weights from the measurement model
-    // see the SampleSet class
-    Xt.sample();
+//
+void MonteCarloLocalization::run() {
 
-    // the resample algorithm
-    Xt.resample();
+    std::cout << std::endl << "Unlocking!";
+    // unlock the mutex
+    mcl_mutex.unlock();
+}
 
-    // now the Xt is a set of a new bel(xt)
-    // the MCL algorithm usually returns the updated set:
-    // return Xt;
-    // But this is a callback function
-    // so we can just publish Xt to a topic...
-    // e.g pub.publish();
-    /* TODO */
+
+// start a thread
+// it starts a thread that executes the run() method and exits smoothly
+void MonteCarloLocalization::start() {
+
+    // look at the mutex
+    // it is unlocked when the run() method is finished
+    mcl_mutex.lock();
+
+    // spawns a new thread
+    t = std::thread(&MonteCarloLocalization::run, this);
+
+    // detach from the current thread
+    // we can proceed and leave this thread on it's own
+    // avoiding the blocking thread::join()
+    mcl_thread.detach();
 }

@@ -18,15 +18,5 @@ class CommandOdom : public CommandReader {
         // and read the informations from there
         Pose2D old_pose, new_pose;
     public:
-        //constructor
-        // it need to receive at least the topic name and the queue q_size
-        // because the CommandReader base class 
-        CommandOdom(std::string topic_name, unsigned int q_size);
-        
-        // the callback function
-        // what kind of message you must read to build the odometry command?
-        // just the /odom or another topics?
-        void listenCMD();
-
 };
 #endif

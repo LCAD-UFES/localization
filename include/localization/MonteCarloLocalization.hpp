@@ -1,34 +1,42 @@
 #ifndef MONTE_CARLO_LOCALIZATION_H
 #define MONTE_CARLO_LOCALIZATION_H
 
+#include <thread>
+#include <mutex>
 #include <string>
 
 #include "ros/ros.h"
 
-#include "Laser.hpp"
 #include "SampleSet.hpp"
-#include "MonteCarloParameters.hpp"
 
-class MCL {
+class MonteCarloLocalization {
     private:
-        // the Node 
-        // the ros NodeHandle
-        ros::NodeHandle nh;
-        // the private NodeHandle
-        ros::NodeHandle private_nh;
-        // The LaserScan object
-        // should Implements all laser methods
-        Laser laser;
         // The set of samples
         SampleSet Xt;
-        // The laser/Scan subscriber
-        ros::Subscriber ls_sub;
+        // the motion model
+        SampleMotionModel *motion;
+        // the measurement model
+        MeasurementModel *measurement;
+
+        // a thread
+        std::thread mcl_thread;
+        // a mutex to avoid multiple starts
+        std::mutex mcl_mutex;
 
     public:
-        MCL();
+        // basic constructor, it receives private_nh, motion, measurement
+        MonteCarloLocalization(ros::NodeHandle &, SampleMotionModel*, MeasurementModel*);
+
+        // the destructor
+        ~MonteCarloLocalization();
 
         // the run method
-        void run(const sensor_msgs::LaserScan::ConstPtr& scan_in);
+        void run();
+
+        // start a thread
+        // it starts a thread that executes the run() method and exits smoothly
+        void start();
+
 };
 
 #endif

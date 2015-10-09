@@ -2,24 +2,19 @@
 #define COMMAND_VELOCITY_H
 
 #include "CommandReader.hpp"
-#include <geometry_msgs/Twist.h>
 
 #include "ros/ros.h"
 
 class CommandVel : public CommandReader {
     private:
         // the Twist message
-        geometry_msgs::Twist last_msg;
+        std::vector<geometry_msgs::Twist> cmds;
 
     public:
-        // base constructor
-        CommandVel(const ros::NodeHandle&);
-        // constructor
-        CommandVel(std::string, unsigned int);
-        // read the apropriate velocity from the correct ROS topic
-        void listenCMD(const geometry_msgs::Twist);
-        // translational and rotational speeds
-        double linear, angular;
+
+        // get the command
+        virtual geometry_msgs::TwistStamped getCMD();
+        virtual void setCMD(geometry_msgs::TwistStamped);
 };
 
 #endif

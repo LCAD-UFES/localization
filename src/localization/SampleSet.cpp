@@ -1,69 +1,17 @@
 #include "SampleSet.hpp"
 
 // basic constructor
-SampleSet::SampleSet(const ros::NodeHandle &nh, const ros::NodeHandle &private_nh) {
-
+SampleSet::SampleSet(const ros::NodeHandle &private_nh) {
     // get the size parameter
     // if not found, it'll be 800'
     private_nh.param<unsigned int>("max_sample_set_size", size, 800);
 
     // allocate the array of 2D samples
     newSamples();
-
-    // Motion model
-    std::string motionModel;
-    private_nh.param<std::string>("sample_motion_model", motionModel, "vel");
-    if (0 == motionModel.compare("vel")) {
-        // the default constructor
-        motion = new SampleVelocityModel(nh, private_nh);
-
-    } else if ( 0 == motionModel.compare("odom")) {
-        // the default constructor
-        motion = new SampleOdometryModel(nh, private_nh);
-
-    } else {
-        // Let's make the ODOMETRY_MODEL the default one
-        // it's just to the case where we have another Motion Models available
-        motion = new SampleOdometryModel(nh, private_nh);
-
-    }
-
-    // badd allocation?
-    if (nullptr == motion) {
-        throw std::bad_alloc();
-    }
-
-    // Measurement Model
-    std::string measurementModel;
-    private_nh.param<std::string>("measurement_model", measurementModel, "likelyhood");
-    if (0 == measurementModel.compare("beam")) {
-        // default constructor
-        measurement = new BeamRangeFinderModel(nh, private_nh);
-    } else if (0 == measurementModel.compare("likelyhood")) {
-        // default constructor
-        measurement = new LikelyhoodFieldModel(nh, private_nh);
-    } else {
-        // let's make the BeamRangeFinderModel the default one
-        measurement = new BeamRangeFinderModel(nh, private_nh);
-    }
-
-    // badd allocation?
-    if (nullptr == measurement) {
-        throw std::bad_alloc();
-    }
 }
 
 // destructor
 SampleSet::~SampleSet() {
-
-    if (nullptr != motion) {
-        delete motion;
-    }
-
-    if (nullptr != measurement) {
-        delete measurement;
-    }
-
     delete samples;
 }
 
@@ -92,7 +40,7 @@ void SampleSet::resetSamples() {
     }
 }
 
-void SampleSet::sample() {
+void SampleSet::sample(SampleMotionModel* motion, MeasurementModel *measurement) {
     // sample the entire set of particles
     for (int i = 0; i < size; i++) {
         // sample a new pose

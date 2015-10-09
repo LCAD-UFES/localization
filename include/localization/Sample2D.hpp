@@ -21,10 +21,7 @@ class Sample2D {
         Pose2D pose;
         // the particle weight
         double weight;
-        /* Atributes */
 
-        // assignement operator overload
-        void operator=(const Sample2D&);
 };
 
 #endif

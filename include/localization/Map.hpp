@@ -1,21 +1,24 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "MatrixT.hpp"
-#include "MapCell.hpp"
-#include "nav_msgs/OccupancyGrid.h"
-#include <string>
+#include <mutex>
 
-class GridMap {
+#include "nav_msgs/OccupancyGrid.h"
+
+class Map {
     private:
-        //
-        
+        // the occupancy grid
+        nav_msgs::OccupancyGrid grid;
+        // mutex to lock map
+        std::mutex map_mutex;
+
     public:
-        // basic constructor receives the image filename
-        GridMap(std::string filename);
-        // destructor needs to 
-        ~GridMap();
-        
+        // updates the grid
+        void setGrid(nav_msgs::OccupancyGrid);
+        // returns the grid
+        nav_msgs::OccupancyGrid getGrid();
+        // 
+
 };
 
 #endif

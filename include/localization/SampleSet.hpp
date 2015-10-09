@@ -1,26 +1,21 @@
 #ifndef SAMPLE_SET_H
 #define SAMPLE_SET_H
 
+#include "ros/ros.h"
+
 #include "Sample2D.hpp"
-#include "GaussianPDF.hpp"
+
 #include "SampleVelocityModel.hpp"
 #include "SampleOdometryModel.hpp"
 #include "BeamRangeFinderModel.hpp"
 #include "LikelyhoodFieldModel.hpp"
 
-#include "ros/ros.h"
 
 class SampleSet {
     private:
 
-        // number of samples
+        // number of samples or particles
         unsigned int size;
-
-        // the Sample Motion Model
-        SampleMotionModel *motion;
-
-        // the Measurement Model
-        MeasurementModel *measurement;
 
         // the set of the pose samples
         Sample2D *samples;
@@ -34,7 +29,7 @@ class SampleSet {
         ~SampleSet();
 
         // sample the entire set
-        void sample();
+        void sample(SampleMotionModel *, MeasurementModel *);
 
         // resample the entire set
         void resample();
