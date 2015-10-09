@@ -5,9 +5,12 @@
 
 #include "ros/ros.h"
 #include "nav_msgs/LaserScan.h"
+#include "nav_msgs/Odometry.h"
+#include "geometry_msgs/Twist.h"
 #include "geometry_msgs/TwistStamped.h"
 
 #include "CommandVelocity.hpp"
+#include "CommandOdometry.hpp"
 #include "Laser.hpp"
 #include "Map.hpp"
 #include "SampleVelocityModel.hpp"
@@ -29,6 +32,7 @@ class ParticleFilter {
 
         // The Command Reader
         std::vector<CommandReader *> cmds;
+
         // the commands mutex
         std::mutex cmds_mutex;
 
@@ -53,8 +57,12 @@ class ParticleFilter {
         // laser received callback
         void laserReceived(const nav_msgs::LaserScan);
 
-        // the motion command 
-        void commandReceived(const geometry_msgs::TwistStamped cmd);
+        // the motion command to be used by the Velocity Motion Model
+        void commandVelReceived(const geometry_msgs::Twist);
+        // the motion command to be used by the Odometry Motion Model
+        // we  need to format the correct message and subscribe this callback
+        /* TODO */
+        void commandOdomReceived(const nav_msgs::Odometry);
 
         // the map topic
         void readMap(const nav_msgs::OccupancyGrid);

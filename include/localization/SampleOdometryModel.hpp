@@ -4,7 +4,6 @@
 #include "CommandOdometry.hpp"
 #include "SampleMotionModel.hpp"
 
-#include "ros/ros.h"
 
 class SampleOdometryModel : public SampleMotionModel {
 

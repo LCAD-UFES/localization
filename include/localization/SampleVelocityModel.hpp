@@ -3,8 +3,6 @@
 
 #include <vector>
 
-#include "ros/ros.h"
-
 #include "CommandVelocity.hpp"
 #include "SampleMotionModel.hpp"
 
@@ -19,7 +17,7 @@ class SampleVelocityModel : public SampleMotionModel {
 
     public:
         // default constructor
-        SampleVelocityModel(ros::NodeHandle&, std::vector<CommandReader *>);
+        SampleVelocityModel(ros::NodeHandle&, std::vector<CommandReader *> *);
         // destructor
         ~SampleVelocityModel();
         // updates the pose to a new one based on the command

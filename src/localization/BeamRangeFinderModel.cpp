@@ -1,9 +1,7 @@
 #include "BeamRangeFinderModel.hpp"
 
-double BeamRangeFinderModel::getWeight(Pose2D *pose) {
-    return 0.0;
-}
+// basic constructor
+BeamRangeFinderModel(Laser *ls, Map *m) : MeasurementModel(ls, m) {}
 
-void BeamRangeFinderModel::setLaser(Laser *l) {
-    laser = l;
-}
+
+void BeamRangeFinderModel::getWeight(Pose2D *pose) {}

@@ -11,13 +11,14 @@ class MeasurementModel {
         Laser *laser;
         // the Map object contains the OccupancyGrid
         Map *map;
+
     public:
         MeasurementModel(Laser *, Map *);
         // the laser must be deleted by the ParticleFilter object
         // not here
         ~MeasurementModel();
         // abstract getWeight method
-        virtual double getWeight(Pose2D *, Laser *) =0;
+        virtual void getWeight(Pose2D *) =0;
 };
 
 #endif

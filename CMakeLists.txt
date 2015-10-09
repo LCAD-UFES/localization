@@ -118,13 +118,18 @@ include_directories(${catkin_INCLUDE_DIRS})
 
 set(LOCALIZATION_LIB_SOURCES 
     src/localization/Sample2D.cpp
+    src/localization/Map.cpp
+    src/localization/Laser.cpp
+    src/localization/Commandreade.cpp
     src/localization/SampleMotionModel.cpp
     src/localization/SampleVelocityModel.cpp
     src/localization/SampleOdometryModel.cpp
+    src/localization/MeasurementModel.cpp
     src/localization/BeamRangeFinderModel.cpp
     src/localization/LikelyhoodFieldModel.cpp
     src/localization/SampleSet.cpp
     src/localization/MonteCarloLocalization.cpp
+    src/localization/ParticleFilter.cpp
 )
 
 ## Declare a C++ library

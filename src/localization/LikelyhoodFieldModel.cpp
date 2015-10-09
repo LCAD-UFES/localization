@@ -1,8 +1,6 @@
 #include "LikelyhoodFieldModel.hpp"
 
-double LikelyhoodFieldModel::getWeight(Pose2D *pose) {
-    return 0.0;
-}
-void LikelyhoodFieldModel::setLaser(Laser *l) {
-    laser = l;
-}
+// Basic constructor
+LikelyhoodFieldModel::LikelyhoodFieldModel(Laser *ls, Map *m) : MeasurementModel(ls, m) {}
+
+void LikelyhoodFieldModel::getWeight(Pose2D *pose) {}

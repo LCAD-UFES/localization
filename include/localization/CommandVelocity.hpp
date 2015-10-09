@@ -1,20 +1,18 @@
 #ifndef COMMAND_VELOCITY_H
 #define COMMAND_VELOCITY_H
 
+#include "ros/ros.h"
+#include "geometry_msgs/TwistStamped.h"
+
 #include "CommandReader.hpp"
 
-#include "ros/ros.h"
-
 class CommandVel : public CommandReader {
-    private:
-        // the Twist message
-        std::vector<geometry_msgs::Twist> cmds;
-
     public:
+        // basic constructor
+        CommandVel(const geometry_msgs::TwistStamped&);
 
-        // get the command
-        virtual geometry_msgs::TwistStamped getCMD();
-        virtual void setCMD(geometry_msgs::TwistStamped);
+        // the Twist message
+        geometry_msgs::TwistStamped cmd;
 };
 
 #endif

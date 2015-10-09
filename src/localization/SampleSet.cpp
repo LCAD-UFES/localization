@@ -4,7 +4,11 @@
 SampleSet::SampleSet(const ros::NodeHandle &private_nh) {
     // get the size parameter
     // if not found, it'll be 800'
-    private_nh.param<unsigned int>("max_sample_set_size", size, 800);
+    private_nh.param<unsigned int>("sample_set_size", size, 800);
+
+    // get the min and max samples
+    private_nh.param<unsigned int>("min_sample_set_size", min, 100;
+    private_nh.param<unsigned int>("max_sample_set_size", max, 10000);
 
     // allocate the array of 2D samples
     newSamples();
@@ -17,7 +21,8 @@ SampleSet::~SampleSet() {
 
 // allocate the samples in memmory
 void SampleSet::newSamples() {
-    if (0 < size) {
+    // the sample set size limits
+    if (min <= size && size <= max) {
         samples = new Sample2D[size]();
         if (nullptr == samples) {
             throw std::bad_alloc();
@@ -40,7 +45,7 @@ void SampleSet::resetSamples() {
     }
 }
 
-void SampleSet::sample(SampleMotionModel* motion, MeasurementModel *measurement) {
+void SampleSet::sample(SampleMotionModel *motion, MeasurementModel *measurement) {
     // sample the entire set of particles
     for (int i = 0; i < size; i++) {
         // sample a new pose

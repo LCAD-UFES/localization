@@ -6,19 +6,15 @@ ParticleFilter::ParticleFilter() : nh(), private_nh("~"), cmds(), laser(), map()
     // Motion model
     std::string motionModel;
     private_nh.param<std::string>("sample_motion_model", motionModel, "vel");
-    if (0 == motionModel.compare("vel")) {
-        // the default constructor
-        motion = new SampleVelocityModel(private_nh, &cmds);
+    if (0 == motionModel.compare("odom")) {
 
-    } else if ( 0 == motionModel.compare("odom")) {
         // the default constructor
         motion = new SampleOdometryModel(private_nh, &cmds);
 
     } else {
-        // Let's make the ODOMETRY_MODEL the default one
-        // it's just to the case where we have another Motion Models available
-        motion = new SampleOdometryModel(private_nh, &cmds);
-
+        // Let's make the Velocity Model the default one
+        // the default constructor
+        motion = new SampleVelocityModel(private_nh, &cmds);
     }
 
     // badd allocation?
@@ -31,13 +27,10 @@ ParticleFilter::ParticleFilter() : nh(), private_nh("~"), cmds(), laser(), map()
     private_nh.param<std::string>("measurement_model", measurementModel, "likelyhood");
     if (0 == measurementModel.compare("beam")) {
         // default constructor
-        measurement = new BeamRangeFinderModel(private_nh, &laser, &map);
-    } else if (0 == measurementModel.compare("likelyhood")) {
-        // default constructor
-        measurement = new LikelyhoodFieldModel(private_nh, &laser, &map);
+        measurement = new BeamRangeFinderModel(&laser, &map);
     } else {
-        // let's make the BeamRangeFinderModel the default one
-        measurement = new BeamRangeFinderModel(private_nh, &laser, &map);
+        // default constructor
+        measurement = new LikelyhoodFieldModel(&laser, &map);
     }
 
     // badd allocation?
@@ -47,15 +40,33 @@ ParticleFilter::ParticleFilter() : nh(), private_nh("~"), cmds(), laser(), map()
 
     // The MCL object
     mcl = new MonteCarloLocalization(private_nh, motion, measurement);
+    if (nullptr == mcl) {
+        throw std::bad_alloc();
+    }
 
+    // now, with all objects initialized we can start to the subscribe the topics
+    // get the laser topic name
+    std::string laser_topic;
+    private_nh.param<std::string>("laser_scan_topic", laser_topic, "p3dx/laser/scan");
     // subscribe to the laser scan topic
-    laser_sub = nh.subscribe("p3dx/laser/scan", 1, &ParticleFilter::laserReceived, this);
+    laser_sub = nh.subscribe(laser_topic, 10, &ParticleFilter::laserReceived, this);
+
+    // get the command topic name
+    std::string cmd_topic;
+    private_nh.param<std::string>("motion_model_command_topic", cmd_topic, "cmd_vel");
 
     // subscribe to the command topic
-    cmd_sub = nh.subscribe("cmd_vel", 10, &ParticleFilter::commandReceived, this);
+    if (0 == cmd_topic.compare("odom")) {
+        cmd_sub = nh.subscribe(cmd_topic, 10, &ParticleFilter::commandOdomReceived, this);
+    } else {
+        cmd_sub = nh.subscribe(cmd_topic, 10, &ParticleFilter::commandVelReceived, this);
+    }
 
+    // get the map topic name
+    std::string map_topic;
+    private_nh.param<std::string>("map_server_topic", map_topic, "map");
     // subscribe to the map topic
-    map_sub = nh.subscribe("map", 1, &ParticleFilter::readMap, this);
+    map_sub = nh.subscribe(map_topic, 1, &ParticleFilter::readMap, this);
 
 }
 
@@ -92,16 +103,27 @@ ParticleFilter::~ParticleFilter() {
 void ParticleFilter::laserReceived(const nav_msgs::LaserScan msg) {
     // the laser object manages the apropriate mutex
     laser.setScan(msg);
-    // now we should signal the MCL object to run
+    // starts the MCL
     mcl->start();
 }
 
-// the motion command 
-void ParticleFilter::commandReceived(const geometry_msgs::TwistStamped msg) {
-
-    // push the new message to the command vector
-    cmds.push_back(msg);
+// the velocity motion command 
+void ParticleFilter::commandVelReceived(const geometry_msgs::Twist msg) {
+    // creates a new message TwistStamped
+    geometry_msgs::TwistStamped stamped;
+    // updates the Twist
+    stamped.twist = msg;
+    // creates a new CommandReader pointer to a CommandVel
+    CommandReader *new_cmd = new CommandVel(stamped);
+    // push the new command to the command vector
+    cmds_mutex.lock();
+    cmds.push_back(new_cmd);
+    cmds_mutex.unlock();
 }
+
+// the odometry motion command
+/* TODO */
+void ParticleFilter::commandOdomReceived(const nav_msgs::Odometry msg) {}
 
 // the occupancy grid
 void ParticleFilter::readMap(const nav_msgs::OccupancyGrid msg) {

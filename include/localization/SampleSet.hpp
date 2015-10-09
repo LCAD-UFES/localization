@@ -14,11 +14,16 @@
 class SampleSet {
     private:
 
-        // number of samples or particles
+        // actual number of samples/particles
         unsigned int size;
 
         // the set of the pose samples
         Sample2D *samples;
+
+        // the min parameter
+        unsigned int min;
+        // the max samples parameter
+        unsigned int max;
 
         // private function just to allocate the samples
         void newSamples();

@@ -4,14 +4,12 @@
 #include "MeasurementModel.hpp"
 
 class LikelyhoodFieldModel : public MeasurementModel {
-    public:
-        // base class abstract method implementation
-        virtual double getWeight(Pose2D *);
-        // set the Laser
-        virtual void setLaser(Laser *);
 
-        // the callback method to the map server
-        /* TODO */
+    public:
+        // basic constructor
+        LikelyhoodFieldModel(Laser *, Map *);
+        // base class abstract method implementation
+        virtual void getWeight(Pose2D *);
 
 };
 

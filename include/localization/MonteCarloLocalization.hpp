@@ -18,8 +18,6 @@ class MonteCarloLocalization {
         // the measurement model
         MeasurementModel *measurement;
 
-        // a thread
-        std::thread mcl_thread;
         // a mutex to avoid multiple starts
         std::mutex mcl_mutex;
 
