@@ -17,7 +17,7 @@ class Map {
     public:
         Map();
         // updates the grid
-        void setGrid(nav_msgs::OccupancyGrid);
+        void setGrid(const nav_msgs::OccupancyGrid&);
         // returns the grid
         nav_msgs::OccupancyGrid getGrid();
         // 

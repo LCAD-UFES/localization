@@ -5,7 +5,7 @@
 // basic constructor
 Map::Map() : map_received(false) {}
 
-void Map::setGrid(nav_msgs::OccupancyGrid g) {
+void Map::setGrid(const nav_msgs::OccupancyGrid &g) {
 
     if (!map_received) {
 

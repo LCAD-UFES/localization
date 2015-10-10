@@ -30,14 +30,13 @@ class ParticleFilter {
         ros::Subscriber cmd_sub;
         ros::Subscriber map_sub;
 
-        // The Command Reader
-        std::vector<CommandReader *> cmds;
-
+        // The CommandVel Reader
+        CommandVel cmd_vel;
         // just to mark the TwistStamped seq
-        unsigned int cmd_seq;
+        unsigned int msg_seq;
 
-        // the commands mutex
-        std::mutex cmds_mutex;
+        // The CommandVel Reader
+        CommandOdom cmd_odom;
 
         // The laser Reader
         Laser laser;
@@ -58,17 +57,17 @@ class ParticleFilter {
 
         // callbacks
         // laser received callback
-        void laserReceived(const sensor_msgs::LaserScan);
+        void laserReceived(const sensor_msgs::LaserScan&);
 
         // the motion command to be used by the Velocity Motion Model
-        void commandVelReceived(const geometry_msgs::Twist);
+        void commandVelReceived(const geometry_msgs::Twist&);
         // the motion command to be used by the Odometry Motion Model
         // we  need to format the correct message and subscribe this callback
         /* TODO */
-        void commandOdomReceived(const nav_msgs::Odometry);
+        void commandOdomReceived(const nav_msgs::Odometry&);
 
         // the map topic
-        void readMap(const nav_msgs::OccupancyGrid);
+        void readMap(const nav_msgs::OccupancyGrid&);
 
         // run
         void start();

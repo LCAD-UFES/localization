@@ -1,20 +1,24 @@
 #include "ParticleFilter.hpp"
 
 // Constructor
-ParticleFilter::ParticleFilter() : nh(), private_nh("~"), cmds(), cmd_seq(0), laser(), map() {
+ParticleFilter::ParticleFilter() : 
+                                    nh(), 
+                                    private_nh("~"), 
+                                    cmd_vel(),
+                                    msg_seq(0), 
+                                    cmd_odom(),
+                                    laser(),
+                                    map() {
 
     // Motion model
     std::string motionModel;
     private_nh.param<std::string>("sample_motion_model", motionModel, "vel");
     if (0 == motionModel.compare("odom")) {
-
         // the default constructor
-        motion = new SampleOdometryModel(private_nh, &cmds);
-
+        motion = new SampleOdometryModel(private_nh, &cmd_odom);
     } else {
-        // Let's make the Velocity Model the default one
         // the default constructor
-        motion = new SampleVelocityModel(private_nh, &cmds);
+        motion = new SampleVelocityModel(private_nh, &cmd_vel);
     }
 
     // badd allocation?
@@ -73,12 +77,6 @@ ParticleFilter::ParticleFilter() : nh(), private_nh("~"), cmds(), cmd_seq(0), la
 // Destructor
 ParticleFilter::~ParticleFilter() {
 
-    // delete all the commands inside the cmds vector
-    while(!cmds.empty()) {
-        delete cmds.back();
-        cmds.pop_back();
-    }
-
     // delete the motion model
     if (nullptr != motion) {
         delete motion;
@@ -99,28 +97,27 @@ ParticleFilter::~ParticleFilter() {
 
 // callbacks
 // laser received callback
-void ParticleFilter::laserReceived(const sensor_msgs::LaserScan msg) {
+void ParticleFilter::laserReceived(const sensor_msgs::LaserScan &msg) {
     // the laser object manages the apropriate mutex
     laser.setScan(msg);
+    // updates the CommandVel limit time
+    cmd_vel.setLimitTime(msg.header.stamp);
     // starts the MCL
     mcl->start();
 }
 
 // the velocity motion command 
-void ParticleFilter::commandVelReceived(const geometry_msgs::Twist msg) {
-
+void ParticleFilter::commandVelReceived(const geometry_msgs::Twist &msg) {
     // push the new command to the command vector
-    cmds_mutex.lock();
-    cmds.push_back(new CommandVel(msg, cmd_seq++));
-    cmds_mutex.unlock();
+    cmd_vel.push_back(msg, msg_seq++);
 }
 
 // the odometry motion command
 /* TODO */
-void ParticleFilter::commandOdomReceived(const nav_msgs::Odometry msg) {}
+void ParticleFilter::commandOdomReceived(const nav_msgs::Odometry &msg) {}
 
 // the occupancy grid
-void ParticleFilter::readMap(const nav_msgs::OccupancyGrid msg) {
+void ParticleFilter::readMap(const nav_msgs::OccupancyGrid &msg) {
 
     // copy the OccupancyGrid to the Map
     map.setGrid(msg);

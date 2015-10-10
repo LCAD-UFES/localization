@@ -16,7 +16,7 @@ class Laser {
         // returns the laser scan
         sensor_msgs::LaserScan getScan();
         // updates the laser scan
-        void setScan(sensor_msgs::LaserScan);
+        void setScan(const sensor_msgs::LaserScan&);
 };
 
 #endif

@@ -16,7 +16,7 @@ sensor_msgs::LaserScan Laser::getScan() {
 }
 
 // updates the laser scan
-void Laser::setScan(sensor_msgs::LaserScan ls) {
+void Laser::setScan(const sensor_msgs::LaserScan &ls) {
 
     // lock the mutex
     ls_mutex.lock();

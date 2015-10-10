@@ -13,11 +13,11 @@ class SampleVelocityModel : public SampleMotionModel {
     double deltaT;
 
     // the command
-    std::vector<CommandReader *> *cmds;
+    CommandVel *cmds;
 
     public:
         // default constructor
-        SampleVelocityModel(ros::NodeHandle&, std::vector<CommandReader *> *);
+        SampleVelocityModel(ros::NodeHandle&, CommandVel *);
         // destructor
         ~SampleVelocityModel();
         // updates the pose to a new one based on the command

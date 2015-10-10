@@ -36,6 +36,18 @@ void MonteCarloLocalization::start() {
 //
 void MonteCarloLocalization::run() {
 
+    // get the last laser
+    // Sample the Xt
+    Xt.sample(motion, measurement);
+
+    // resample??
+    // Xt.resample();
+
+    // usually the MCL returns the Xt sample set
+    // what should we do here?
+    /* TODO */
+
+    
     // unlock the mutex
     mcl_mutex.unlock();
 }

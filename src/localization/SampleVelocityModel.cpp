@@ -3,7 +3,7 @@
 // Default constructor
 SampleVelocityModel::SampleVelocityModel(
                                             ros::NodeHandle &private_nh,
-                                            std::vector<CommandReader *> *cmd_input
+                                            CommandVel *cmd_input
                                         ) : SampleMotionModel(),  cmds(cmd_input) {
 
     // get the sample velocity model parameters parameters
@@ -27,4 +27,6 @@ SampleVelocityModel::~SampleVelocityModel() {
 // see Table 5.3 - Probabilistic Robotics
 void SampleVelocityModel::samplePose2D(Pose2D *pose) {
 
+    // the cmds is a vector with, maybe, more than 1 command
+    
 }

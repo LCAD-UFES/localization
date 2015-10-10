@@ -1,8 +1,9 @@
 #include "SampleOdometryModel.hpp"
 
+// basic constructor
 SampleOdometryModel::SampleOdometryModel(
                                             const ros::NodeHandle &private_nh,
-                                            std::vector<CommandReader *> *cmd_input
+                                            CommandOdom *cmd_input
                                         ) : SampleMotionModel(), cmds(cmd_input) {
 
     // get the sample velocity model parameters parameters
@@ -11,6 +12,12 @@ SampleOdometryModel::SampleOdometryModel(
     private_nh.param("sample_odometry_model_alpha_2", a2, 0.1);
     private_nh.param("sample_odometry_model_alpha_3", a3, 0.1);
     private_nh.param("sample_odometry_model_alpha_4", a4, 0.1);
+}
+
+// basic destructor 
+SampleOdometryModel::~SampleOdometryModel() {
+    // the CommandOdom pointer shoudl be managed inside the ParticleFilter class
+    cmds = nullptr;
 }
 
 void SampleOdometryModel::samplePose2D(Pose2D *pose) {
