@@ -72,9 +72,9 @@ void SampleVelocityModel::samplePose2D(SampleSet *Xt) {
                 // here we can use the given algorithm directly
                 vw = commands[j].linear/commands[j].angular;
                 // get the x distance
-                pose[0] = pose[0] - vw*sin(pose[2]) + vw*sin(pose[2] + w*deltaT);
+                pose[0] += - vw*sin(pose[2]) + vw*sin(pose[2] + w*dt);
                 // get the y distance
-                pose[1] = pose[1] + vw*sin(pose[2]) - vw*sin(pose[2] + w*deltaT);
+                pose[1] += + vw*sin(pose[2]) - vw*sin(pose[2] + w*dt);
                 // get the new angle
                 pose[2] += commands[j].angular*dt + y*dt;
 

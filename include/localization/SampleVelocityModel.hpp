@@ -12,7 +12,6 @@ class SampleVelocityModel : public SampleMotionModel {
 
     // Sample Velocity Model parameters 
     double a1, a2, a3, a4, a5, a6;
-    double deltaT;
 
     // the command
     CommandVel *cmds;
