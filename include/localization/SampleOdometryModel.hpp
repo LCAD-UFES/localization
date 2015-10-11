@@ -19,7 +19,8 @@ class SampleOdometryModel : public SampleMotionModel {
         ~SampleOdometryModel();
 
         // updates the pose to a new one based on the CommandVel
-        void samplePose2D(Pose2D *pose);
+        virtual void samplePose2D(SampleSet *);
+
 };
 
 #endif

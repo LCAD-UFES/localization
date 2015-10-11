@@ -1,7 +1,7 @@
 #include "CommandVelocity.hpp"
 
 // basic constructor
-CommandVel::CommandVel() : cmds({}), last_cmd({}), start(), end(), cmds_mutex() {
+CommandVel::CommandVel() : cmds(), last_cmd({}), start(), end(), cmds_mutex() {
     // set the last current time
     last_cmd.stamp = ros::Time::now();
 }
@@ -44,7 +44,7 @@ std::vector<Velocity> CommandVel::getAll() {
     commands.push_back(last_cmd);
 
     // copy the entire vector and clear the cmds
-    while(!cmds.empty() && cmds.front().header.stamp < end) {
+    while(!cmds.empty() && cmds.front().stamp < end) {
         commands.push_back(cmds.front());
         cmds.pop();
     }
@@ -52,7 +52,7 @@ std::vector<Velocity> CommandVel::getAll() {
     // set the last_cmd
     last_cmd = commands.back();
     // updates the timestamp to the new LaserScan timestamp
-    last_cmd.header.stamp = end;
+    last_cmd.stamp = end;
 
     // unlock the mutex
     cmds_mutex.unlock();

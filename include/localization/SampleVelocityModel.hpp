@@ -6,6 +6,8 @@
 #include "CommandVelocity.hpp"
 #include "SampleMotionModel.hpp"
 
+#include "SampleSet.hpp"
+
 class SampleVelocityModel : public SampleMotionModel {
 
     // Sample Velocity Model parameters 

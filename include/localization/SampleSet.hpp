@@ -5,12 +5,6 @@
 
 #include "Sample2D.hpp"
 
-#include "SampleVelocityModel.hpp"
-#include "SampleOdometryModel.hpp"
-#include "BeamRangeFinderModel.hpp"
-#include "LikelyhoodFieldModel.hpp"
-
-
 class SampleSet {
     private:
 

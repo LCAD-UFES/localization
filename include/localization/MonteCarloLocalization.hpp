@@ -9,6 +9,12 @@
 
 #include "SampleSet.hpp"
 
+#include "SampleVelocityModel.hpp"
+#include "SampleOdometryModel.hpp"
+#include "LikelyhoodFieldModel.hpp"
+#include "BeamRangeFinderModel.hpp"
+
+
 class MonteCarloLocalization {
     private:
         // The set of samples

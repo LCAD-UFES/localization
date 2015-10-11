@@ -2,6 +2,7 @@
 #define LIKELYHOOD_FIELD_MODEL_H
 
 #include "MeasurementModel.hpp"
+#include "SampleSet.hpp"
 
 class LikelyhoodFieldModel : public MeasurementModel {
 

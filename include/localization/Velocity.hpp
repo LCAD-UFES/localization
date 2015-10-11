@@ -10,6 +10,6 @@ struct Velocity {
 
     double linear;
     double angular;
-}
+};
 
 #endif

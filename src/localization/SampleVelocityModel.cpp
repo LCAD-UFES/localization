@@ -28,7 +28,7 @@ SampleVelocityModel::~SampleVelocityModel() {
 void SampleVelocityModel::samplePose2D(SampleSet *Xt) {
 
     // auxiliar variables
-    double v, w, y, v2, w2, dt;
+    double v, w, y, v2, w2, dt, vw, *pose;
     Sample2D *samples;
 
     // the cmds is a vector with, maybe, more than 1 Velocity command
@@ -41,6 +41,11 @@ void SampleVelocityModel::samplePose2D(SampleSet *Xt) {
 
     // iterate over all particles/SampleSet
     for(int i = 0; Xt->size; i++) {
+
+        // get the current pose
+        pose = samples->pose.v;
+
+        // iterate over the Velocity Commands
         for (int j = 0; j < commands.size() - 1; j++) {
 
             // just to be easy to write and reduce repetitive multiplication
@@ -51,13 +56,13 @@ void SampleVelocityModel::samplePose2D(SampleSet *Xt) {
             // the last command in this command vector is a hack
             // just to obtain the time from the laser and set the last command as
             // the first one in the next MCL call (next LaserScan)
-            dt = commands[j+1].stamp - command[j].stamp;
+            dt = (commands[j+1].stamp - commands[j].stamp).toSec();
 
-            // get the linear
+            // get the linear velocity
             v = commands[j].linear + gaussianPDF(a1*v2 + a2*w2);
-            // get the angular
+            // get the angular velocity
             w = commands[j].angular + gaussianPDF(a3*v2 + a4*w2);
-            // get the angle extra noise
+            // get the final angle extra noise
             y = gaussianPDF(a5*v2 + a6*w2);
 
             // updates the pose based on this current command
@@ -67,19 +72,19 @@ void SampleVelocityModel::samplePose2D(SampleSet *Xt) {
                 // here we can use the given algorithm directly
                 vw = commands[j].linear/commands[j].angular;
                 // get the x distance
-                samples[i].pose[0] = samples[i].pose[0] - vw*sin(samples[i].pose[2]) + vw*sin(samples[i].pose[2] + w*deltaT);
+                pose[0] = pose[0] - vw*sin(pose[2]) + vw*sin(pose[2] + w*deltaT);
                 // get the y distance
-                samples[i].pose[1] = samples[i].pose[1] + vw*sin(samples[i].pose[2]) - vw*sin(samples[i].pose[2] + w*deltaT);
+                pose[1] = pose[1] + vw*sin(pose[2]) - vw*sin(pose[2] + w*deltaT);
                 // get the new angle
-                samples[i].pose[2] += commands[j].angular*dt + y*dt;
+                pose[2] += commands[j].angular*dt + y*dt;
 
             } else {
                 // get the x distance
-                samples[i].pose[0] += commands[j].linear*dt*cos(samples[i].pose[2]);
+                pose[0] += commands[j].linear*dt*cos(pose[2]);
                 // get the y distance
-                samples[i].pose[1] += commands[j].linear*dt*sin(samples[i].pose[2]);
+                pose[1] += commands[j].linear*dt*sin(pose[2]);
                 // get the new angle, just adding some noise
-                samples[i].pose[2] += y*dt;
+                pose[2] += y*dt;
             }
         }
     }
