@@ -14,6 +14,21 @@
 class SampleSet {
     private:
 
+        // private function just to allocate the samples
+        void newSamples();
+
+    public:
+        // SampletSet basic constructor
+        SampleSet(const ros::NodeHandle&);
+        ~SampleSet();
+
+        // resample the entire set
+        void resample();
+
+        // clear the entire set
+        void resetSamples();
+
+        // the attributes
         // actual number of samples/particles
         int size;
 
@@ -24,23 +39,6 @@ class SampleSet {
         int min;
         // the max samples parameter
         int max;
-
-        // private function just to allocate the samples
-        void newSamples();
-
-    public:
-        // SampletSet basic constructor
-        SampleSet(const ros::NodeHandle&);
-        ~SampleSet();
-
-        // sample the entire set
-        void sample(SampleMotionModel *, MeasurementModel *);
-
-        // resample the entire set
-        void resample();
-
-        // clear the entire set
-        void resetSamples();
 
 };
 

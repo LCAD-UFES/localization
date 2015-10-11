@@ -5,9 +5,10 @@
 
 class BeamRangeFinderModel : public MeasurementModel {
     public:
+        // the beam model
         BeamRangeFinderModel(Laser*, Map*);
         // base class abstract method implementation
-        virtual void getWeight(Pose2D *);
+        virtual void getWeights(SampleSet *);
 };
 
 #endif

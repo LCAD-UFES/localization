@@ -10,6 +10,6 @@ class CommandOdom {
     Pose2D old_pose, new_pose;
 
     public:
-        
+
 };
 #endif

@@ -101,7 +101,7 @@ void ParticleFilter::laserReceived(const sensor_msgs::LaserScan &msg) {
     // the laser object manages the apropriate mutex
     laser.setScan(msg);
     // updates the CommandVel limit time
-    cmd_vel.setLimitTime(msg.header.stamp);
+    cmd_vel.setTimeLimits(msg.header.stamp);
     // starts the MCL
     mcl->start();
 }

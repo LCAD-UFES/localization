@@ -3,4 +3,4 @@
 // Basic constructor
 LikelyhoodFieldModel::LikelyhoodFieldModel(Laser *ls, Map *m) : MeasurementModel(ls, m) {}
 
-void LikelyhoodFieldModel::getWeight(Pose2D *pose) {}
+void LikelyhoodFieldModel::getWeights(SampleSet *Xt) {}

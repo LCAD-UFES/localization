@@ -1,7 +1,7 @@
 #ifndef SAMPLE_MEASUREMENT_MODEL_H
 #define SAMPLE_MEASUREMENT_MODEL_H
 
-#include "Pose2D.hpp"
+#include "SampleSet.hpp"
 #include "Laser.hpp"
 #include "Map.hpp"
 
@@ -18,7 +18,7 @@ class MeasurementModel {
         // not here
         ~MeasurementModel();
         // abstract getWeight method
-        virtual void getWeight(Pose2D *) =0;
+        virtual void getWeights(SampleSet *) =0;
 };
 
 #endif

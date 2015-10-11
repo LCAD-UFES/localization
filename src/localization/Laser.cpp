@@ -20,8 +20,13 @@ void Laser::setScan(const sensor_msgs::LaserScan &ls) {
 
     // lock the mutex
     ls_mutex.lock();
+
+    // save the last LaserScan timestamp
+    time = ls_scan.header.stamp;
+
     // acces the ls_scan
     ls_scan = ls;
+
     // unlock the mutex
     ls_mutex.unlock();
 

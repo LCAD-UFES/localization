@@ -45,17 +45,6 @@ void SampleSet::resetSamples() {
     }
 }
 
-void SampleSet::sample(SampleMotionModel *motion, MeasurementModel *measurement) {
-    // sample the entire set of particles
-    for (int i = 0; i < size; i++) {
-        // sample a new pose
-        // Pose2D samplePose2D(Pose2D *pose);
-        motion->samplePose2D(&samples[i].pose);
-        // get a weight
-        measurement->getWeight(&samples[i].pose);
-    }
-}
-
 void SampleSet::resample() {
     /* TODO */
 }

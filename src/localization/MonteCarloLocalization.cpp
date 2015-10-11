@@ -36,13 +36,10 @@ void MonteCarloLocalization::start() {
 //
 void MonteCarloLocalization::run() {
 
-    // get the last laser
-    // Sample the Xt
-    Xt.sample(motion, measurement);
+    // motion model
+    motion->samplePose2D(&Xt);
 
-    // resample??
-    // Xt.resample();
-
+    measurement->getWeights(&Xt);
     // usually the MCL returns the Xt sample set
     // what should we do here?
     /* TODO */

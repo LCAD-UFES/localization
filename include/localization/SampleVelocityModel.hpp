@@ -21,7 +21,7 @@ class SampleVelocityModel : public SampleMotionModel {
         // destructor
         ~SampleVelocityModel();
         // updates the pose to a new one based on the command
-        virtual void samplePose2D(Pose2D *pose);
+        virtual void samplePose2D(SampleSet*);
 };
 
 #endif

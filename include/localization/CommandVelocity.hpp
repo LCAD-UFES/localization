@@ -7,22 +7,36 @@
 #include <ros/ros.h>
 #include <geometry_msgs/TwistStamped.h>
 
+#include "Velocity.hpp"
+
 class CommandVel {
+
     private:
+
         // the Twist message queue
-        std::queue<geometry_msgs::TwistStamped> cmds;
-        // the current limit time
-        ros::Time limit;
+        std::queue<Velocity> cmds;
+
+        // the last processed cmd
+        Velocity last_cmd;
+
+        // the current time limit
+        ros::Time start;
+        ros::Time end;
 
         // the mutex
         std::mutex cmds_mutex;
+
     public:
+        // basic constructor
+        CommandVel();
         // push a new message
         void push_back(const geometry_msgs::Twist&, unsigned int);
+
         // get the entire vector and clear
-        std::vector<geometry_msgs::TwistStamped> getAll();
-        // update the current limit time
-        void setLimitTime(const ros::Time&);
+        std::vector<Velocity> getAll();
+
+        // update the current time limits
+        void setTimeLimits(const ros::Time&);
 
 };
 

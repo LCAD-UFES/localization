@@ -7,8 +7,10 @@
 
 class Laser {
     private:
-        // the processed scan data
+        // the laser scan data
         sensor_msgs::LaserScan ls_scan;
+        // the last laser time, just to sync with the commands
+        ros::Time time;
         // locks the ls_scan
         std::mutex ls_mutex;
 

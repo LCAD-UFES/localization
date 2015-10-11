@@ -9,7 +9,7 @@ class LikelyhoodFieldModel : public MeasurementModel {
         // basic constructor
         LikelyhoodFieldModel(Laser *, Map *);
         // base class abstract method implementation
-        virtual void getWeight(Pose2D *);
+        virtual void getWeights(SampleSet *);
 
 };
 
