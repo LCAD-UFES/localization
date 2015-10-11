@@ -27,6 +27,7 @@ SampleVelocityModel::~SampleVelocityModel() {
 // see Table 5.3 - Probabilistic Robotics
 void SampleVelocityModel::samplePose2D(SampleSet *Xt) {
 
+
     // auxiliar variables
     double v, w, y, v2, w2, dt, vw, *pose;
     Sample2D *samples;
@@ -40,10 +41,10 @@ void SampleVelocityModel::samplePose2D(SampleSet *Xt) {
     samples = Xt->samples;
 
     // iterate over all particles/SampleSet
-    for(int i = 0; Xt->size; i++) {
+    for(int i = 0; i < Xt->size; i++) {
 
         // get the current pose
-        pose = samples->pose.v;
+        pose = samples[i].pose.v;
 
         // iterate over the Velocity Commands
         for (int j = 0; j < commands.size() - 1; j++) {
@@ -67,22 +68,22 @@ void SampleVelocityModel::samplePose2D(SampleSet *Xt) {
 
             // updates the pose based on this current command
             // verify if the angular is zero
-            if (0.0 != commands[j].angular) {
+            if (0.00001 < w) {
 
                 // here we can use the given algorithm directly
-                vw = commands[j].linear/commands[j].angular;
+                vw = v/w;
                 // get the x distance
                 pose[0] += - vw*sin(pose[2]) + vw*sin(pose[2] + w*dt);
                 // get the y distance
-                pose[1] += + vw*sin(pose[2]) - vw*sin(pose[2] + w*dt);
+                pose[1] += + vw*cos(pose[2]) - vw*cos(pose[2] + w*dt);
                 // get the new angle
                 pose[2] += commands[j].angular*dt + y*dt;
 
             } else {
                 // get the x distance
-                pose[0] += commands[j].linear*dt*cos(pose[2]);
+                pose[0] += v*dt*cos(pose[2]);
                 // get the y distance
-                pose[1] += commands[j].linear*dt*sin(pose[2]);
+                pose[1] += v*dt*sin(pose[2]);
                 // get the new angle, just adding some noise
                 pose[2] += y*dt;
             }

@@ -38,13 +38,13 @@ void MonteCarloLocalization::run() {
 
     // motion model
     motion->samplePose2D(&Xt);
+    std::cout << "Motion Model" << std::endl;
 
-    measurement->getWeights(&Xt);
+//     measurement->getWeights(&Xt);
     // usually the MCL returns the Xt sample set
     // what should we do here?
     /* TODO */
 
-    
     // unlock the mutex
     mcl_mutex.unlock();
 }

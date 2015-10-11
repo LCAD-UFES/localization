@@ -53,7 +53,7 @@ ParticleFilter::ParticleFilter() :
     std::string laser_topic;
     private_nh.param<std::string>("laser_scan_topic", laser_topic, "p3dx/laser/scan");
     // subscribe to the laser scan topic
-    laser_sub = nh.subscribe(laser_topic, 10, &ParticleFilter::laserReceived, this);
+    laser_sub = nh.subscribe(laser_topic, 1, &ParticleFilter::laserReceived, this);
 
     // get the command topic name
     std::string cmd_topic;
