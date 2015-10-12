@@ -27,13 +27,13 @@ ParticleFilter::ParticleFilter() :
 
     // Measurement Model
     std::string measurementModel;
-    private_nh.param<std::string>("measurement_model", measurementModel, "likelyhood");
+    private_nh.param<std::string>("measurement_model", measurementModel, "likelihood");
     if (0 == measurementModel.compare("beam")) {
         // default constructor
         measurement = new BeamRangeFinderModel(&laser, &map);
     } else {
         // default constructor
-        measurement = new LikelyhoodFieldModel(&laser, &map);
+        measurement = new LikelihoodFieldModel(&laser, &map);
     }
 
     // badd allocation?
@@ -100,7 +100,6 @@ void ParticleFilter::laserReceived(const sensor_msgs::LaserScan &msg) {
 
     // the laser object manages the apropriate mutex
     laser.setScan(msg);
-
     // starts the MCL
     mcl->start();
 

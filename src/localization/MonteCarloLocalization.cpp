@@ -48,10 +48,13 @@ void MonteCarloLocalization::run() {
     // SIMPLE SAMPLING
     // iterate over the samples and updates everything
     for (int i = 0; i < Xt.size; i++) {
+
         // the motion model - passing sample pose by reference
         motion->samplePose2D(&samples[i].pose);
+
         // the measurement model - passing sample weight by reference
         measurement->getWeight(&samples[i].weight);
+
     }
     // RESAMPLING
     /* TODO */

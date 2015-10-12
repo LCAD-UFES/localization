@@ -24,7 +24,6 @@ void CommandVel::push_back(const geometry_msgs::Twist &msg) {
 
     // push to the qeue
     cmds.push(v);
-    std::cout << "new cmd" << std::endl;
 
     // unlock the mutex
     cmds_mutex.unlock();

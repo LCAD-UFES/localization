@@ -1,13 +1,13 @@
-#ifndef LIKELYHOOD_FIELD_MODEL_H
-#define LIKELYHOOD_FIELD_MODEL_H
+#ifndef Likelihood_FIELD_MODEL_H
+#define Likelihood_FIELD_MODEL_H
 
 #include "MeasurementModel.hpp"
 
-class LikelyhoodFieldModel : public MeasurementModel {
+class LikelihoodFieldModel : public MeasurementModel {
 
     public:
         // basic constructor
-        LikelyhoodFieldModel(Laser*, Map *);
+        LikelihoodFieldModel(Laser*, Map *);
 
         // base class abstract method implementation
         virtual void getWeight(double*);

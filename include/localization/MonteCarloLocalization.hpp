@@ -11,16 +11,19 @@
 
 #include "SampleVelocityModel.hpp"
 #include "SampleOdometryModel.hpp"
-#include "LikelyhoodFieldModel.hpp"
+#include "LikelihoodFieldModel.hpp"
 #include "BeamRangeFinderModel.hpp"
 
 
 class MonteCarloLocalization {
     private:
+
         // The set of samples
         SampleSet Xt;
+
         // the motion model
         SampleMotionModel *motion;
+
         // the measurement model
         MeasurementModel *measurement;
 

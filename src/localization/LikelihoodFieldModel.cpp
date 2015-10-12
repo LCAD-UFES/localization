@@ -1,10 +1,10 @@
-#include "LikelyhoodFieldModel.hpp"
+#include "LikelihoodFieldModel.hpp"
 
 // Basic constructor
-LikelyhoodFieldModel::LikelyhoodFieldModel(Laser *ls, Map *m) : MeasurementModel(ls, m) {}
+LikelihoodFieldModel::LikelihoodFieldModel(Laser *ls, Map *m) : MeasurementModel(ls, m) {}
 
 // assigns a weight to to all particles/samples
-void LikelyhoodFieldModel::getWeight(double *w) {
+void LikelihoodFieldModel::getWeight(double *w) {
 
     // auxiliar variables
     double q = 1.0;
@@ -20,12 +20,12 @@ void LikelyhoodFieldModel::getWeight(double *w) {
 }
 
 // get the map pointer
-Map* LikelyhoodFieldModel::getMap() {
+Map* LikelihoodFieldModel::getMap() {
     return map;
 }
 
 // update the LaserScan
-ros::Time LikelyhoodFieldModel::updateLaser() {
+ros::Time LikelihoodFieldModel::updateLaser() {
     // update the protected LS_60 - see MeasurementModel base class
     // the Laser object manages the mutex
     laser->getScan(&ls_scan);

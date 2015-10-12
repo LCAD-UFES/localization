@@ -14,7 +14,7 @@
 #include "Laser.hpp"
 #include "Map.hpp"
 #include "SampleVelocityModel.hpp"
-#include "LikelyhoodFieldModel.hpp"
+#include "LikelihoodFieldModel.hpp"
 
 #include "MonteCarloLocalization.hpp"
 
