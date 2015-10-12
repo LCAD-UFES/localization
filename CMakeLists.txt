@@ -127,7 +127,7 @@ set(LOCALIZATION_LIB_SOURCES
     src/localization/SampleOdometryModel.cpp
     src/localization/MeasurementModel.cpp
     src/localization/BeamRangeFinderModel.cpp
-    src/localization/LikelyhoodFieldModel.cpp
+    src/localization/LikelihoodFieldModel.cpp
     src/localization/SampleSet.cpp
     src/localization/MonteCarloLocalization.cpp
     src/localization/ParticleFilter.cpp
