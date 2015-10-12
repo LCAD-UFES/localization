@@ -54,17 +54,13 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
         v = commands[j].linear + gaussianPDF(a1*v2 + a2*w2);
         // get the angular velocity
         w = commands[j].angular + gaussianPDF(a3*v2 + a4*w2);
-        // get the final angle extra noise
+        // get the final angle extra noisy angular velocity
         y = gaussianPDF(a5*v2 + a6*w2);
 
         // updates the pose based on this current command
         // verify if the angular is zero or very close to zero
-        std::cout << "Old pose: " << pose[0] << " " << pose[1] << " " << pose[2] << std::endl;
-        std::cout << "Noise free Command: " << commands[j].linear << " " << commands[j].angular << std::endl;
-        std::cout << "Noisy: " << v << " " << w << " and y: " << y << std::endl;
-        std::cout << "Time: " << dt << std::endl;
 
-        if (0.000001 < w) {
+        if (0.0 != w) {
 
             // here we can use the given algorithm directly
             vw = v/w;
@@ -73,32 +69,25 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
             // get the y distance
             pose[1] += + vw*cos(pose[2]) - vw*cos(pose[2] + w*dt);
             // get the new angle
-            pose[2] = pose[2] + commands[j].angular*dt + y*dt;
+            pose[2] = pose[2] + w*dt + y*dt;
 
         } else {
             // get the x distance
-            pose[0] += v*dt*cos(pose[2]);
+            pose[0] += v*cos(pose[2])*dt;
             // get the y distance
-            pose[1] += v*dt*sin(pose[2]);
+            pose[1] += v*sin(pose[2])*dt;
             // get the new angle, just adding some noise
             pose[2] += y*dt;
         }
-        // maintain 
-        if (PI2 < pose[2]) {
-            pose[2] -= PI2;
-        } else if (PI2 > pose[2]) {
-            pose[2] += PI2;
-        }
-        std::cout << "New pose: " << pose[0] << " " << pose[1] << " " << pose[2] << std::endl;
     }
 }
 
 // update the commands
-void SampleVelocityModel::updateCommands() {
+void SampleVelocityModel::updateCommands(const ros::Time &end) {
 
     if (!commands.empty()) {
         commands.clear();
     }
     //get the correct commands
-    commands = cmds->getAll();
+    commands = cmds->getAll(end);
 }

@@ -12,3 +12,9 @@ void BeamRangeFinderModel::getWeight(double *w) {
 Map* BeamRangeFinderModel::getMap() {
     return map;
 }
+
+// update the LaserScan
+ros::Time BeamRangeFinderModel::updateLaser() {
+    /* TODO */
+    return ros::Time::now();
+}

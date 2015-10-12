@@ -11,6 +11,8 @@ class BeamRangeFinderModel : public MeasurementModel {
         virtual void getWeight(double*);
         // get the map pointer
         virtual Map* getMap();
+        // update the LaserScan
+        virtual ros::Time updateLaser();
 };
 
 #endif

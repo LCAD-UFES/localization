@@ -97,16 +97,18 @@ ParticleFilter::~ParticleFilter() {
 // callbacks
 // laser received callback
 void ParticleFilter::laserReceived(const sensor_msgs::LaserScan &msg) {
+
     // the laser object manages the apropriate mutex
     laser.setScan(msg);
-    // updates the CommandVel limit time
-    cmd_vel.setTimeLimits(msg.header.stamp);
+
     // starts the MCL
     mcl->start();
+
 }
 
 // the velocity motion command 
 void ParticleFilter::commandVelReceived(const geometry_msgs::Twist &msg) {
+
     // push the new command to the command vector
     cmd_vel.push_back(msg);
 }
@@ -133,4 +135,6 @@ void ParticleFilter::start() {
 
     // wait for Control + C
     ros::waitForShutdown();
+
+
 }

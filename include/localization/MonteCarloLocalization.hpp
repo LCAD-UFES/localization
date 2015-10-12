@@ -24,8 +24,15 @@ class MonteCarloLocalization {
         // the measurement model
         MeasurementModel *measurement;
 
+        // the time to sync Commands and LaserScan
+        ros::Time sync;
+
         // a mutex to avoid multiple starts
         std::mutex mcl_mutex;
+
+        // the run method is private
+        // it can be called only inside the MonteCarloLocalization::start() method
+        void run();
 
     public:
         // basic constructor, it receives private_nh, motion, measurement
@@ -33,9 +40,6 @@ class MonteCarloLocalization {
 
         // the destructor
         ~MonteCarloLocalization();
-
-        // the run method
-        void run();
 
         // start a thread
         // it starts a thread that executes the run() method and exits smoothly

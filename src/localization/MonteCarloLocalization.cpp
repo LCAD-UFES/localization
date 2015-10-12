@@ -33,15 +33,17 @@ void MonteCarloLocalization::start() {
     }
 }
 
-
 //
 void MonteCarloLocalization::run() {
 
     // auxiliar variables
     Sample2D *samples = Xt.samples;
 
+    // get the current LaserScan
+    sync = measurement->updateLaser();
+
     // get the available commands
-    motion->updateCommands();
+    motion->updateCommands(sync);
 
     // SIMPLE SAMPLING
     // iterate over the samples and updates everything

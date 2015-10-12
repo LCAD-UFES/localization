@@ -1,18 +1,25 @@
 #ifndef SAMPLE_MEASUREMENT_MODEL_H
 #define SAMPLE_MEASUREMENT_MODEL_H
 
-#include "Laser.hpp"
+#include <mutex>
+
 #include "Map.hpp"
+#include "Laser.hpp"
 
 class MeasurementModel {
     protected:
-        // The Laser object maintains a the LaserScan message
+
+        // a pointer to the global Laser
         Laser *laser;
+
+        // our internal LaserScan representation
+        LS_60 ls_scan;
+
         // the Map object contains the OccupancyGrid
         Map *map;
 
     public:
-        MeasurementModel(Laser *, Map *);
+        MeasurementModel(Laser*, Map *);
         // the laser must be deleted by the ParticleFilter object
         // not here
         ~MeasurementModel();
@@ -20,6 +27,8 @@ class MeasurementModel {
         virtual void getWeight(double*) =0;
         // get the map pointer
         virtual Map* getMap() = 0;
+        // update the LaserScan
+        virtual ros::Time updateLaser() =0;
 };
 
 #endif

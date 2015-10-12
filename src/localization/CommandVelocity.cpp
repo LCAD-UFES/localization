@@ -1,9 +1,9 @@
 #include "CommandVelocity.hpp"
 
 // basic constructor
-CommandVel::CommandVel() : cmds(), msg_seq(0), last_cmd({}), start(), end(), cmds_mutex() {
+CommandVel::CommandVel() : cmds(), msg_seq(0), last_cmd({}), cmds_mutex() {
     // set the last current time
-    start = end = last_cmd.stamp = ros::Time::now();
+    last_cmd.stamp = ros::Time::now();
 }
 // push a new message
 void CommandVel::push_back(const geometry_msgs::Twist &msg) {
@@ -24,6 +24,7 @@ void CommandVel::push_back(const geometry_msgs::Twist &msg) {
 
     // push to the qeue
     cmds.push(v);
+    std::cout << "new cmd" << std::endl;
 
     // unlock the mutex
     cmds_mutex.unlock();
@@ -31,7 +32,7 @@ void CommandVel::push_back(const geometry_msgs::Twist &msg) {
 
 // get the entire queue
 // it stops at the last command before the current laser
-std::vector<Velocity> CommandVel::getAll() {
+std::vector<Velocity> CommandVel::getAll(const ros::Time &end) {
 
     // creates a new std::vector
     std::vector<Velocity> commands;
@@ -68,20 +69,5 @@ std::vector<Velocity> CommandVel::getAll() {
     cmds_mutex.unlock();
 
     return commands;
-
-}
-
-// updates the current limit time
-void CommandVel::setTimeLimits(const ros::Time &time) {
-
-    // lock the mutex
-    cmds_mutex.lock();
-
-    // updates the limit time
-    start = end;
-    end = time;
-
-    // unlock the mutex
-    cmds_mutex.unlock();
 
 }
