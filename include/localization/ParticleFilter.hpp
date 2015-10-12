@@ -32,8 +32,6 @@ class ParticleFilter {
 
         // The CommandVel Reader
         CommandVel cmd_vel;
-        // just to mark the TwistStamped seq
-        unsigned int msg_seq;
 
         // The CommandVel Reader
         CommandOdom cmd_odom;
@@ -49,6 +47,7 @@ class ParticleFilter {
 
         // The MCL object
         MonteCarloLocalization *mcl;
+
 
     public:
         // base constructor
@@ -71,6 +70,7 @@ class ParticleFilter {
 
         // run
         void start();
+
 };
 
 #endif

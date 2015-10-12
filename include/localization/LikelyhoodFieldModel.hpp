@@ -2,7 +2,6 @@
 #define LIKELYHOOD_FIELD_MODEL_H
 
 #include "MeasurementModel.hpp"
-#include "SampleSet.hpp"
 
 class LikelyhoodFieldModel : public MeasurementModel {
 
@@ -10,7 +9,9 @@ class LikelyhoodFieldModel : public MeasurementModel {
         // basic constructor
         LikelyhoodFieldModel(Laser *, Map *);
         // base class abstract method implementation
-        virtual void getWeights(SampleSet *);
+        virtual void getWeight(double*);
+        // get the map pointer
+        virtual Map* getMap();
 
 };
 

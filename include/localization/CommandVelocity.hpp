@@ -16,6 +16,9 @@ class CommandVel {
         // the Twist message queue
         std::queue<Velocity> cmds;
 
+        // just to mark the TwistStamped seq
+        unsigned int msg_seq;
+
         // the last processed cmd
         Velocity last_cmd;
 
@@ -29,8 +32,9 @@ class CommandVel {
     public:
         // basic constructor
         CommandVel();
+
         // push a new message
-        void push_back(const geometry_msgs::Twist&, unsigned int);
+        void push_back(const geometry_msgs::Twist&);
 
         // get the entire vector and clear
         std::vector<Velocity> getAll();

@@ -5,24 +5,38 @@
 
 #include "CommandVelocity.hpp"
 #include "SampleMotionModel.hpp"
+#include "Velocity.hpp"
 
-#include "SampleSet.hpp"
+#include "Pose2D.hpp"
 
 class SampleVelocityModel : public SampleMotionModel {
 
     // Sample Velocity Model parameters 
     double a1, a2, a3, a4, a5, a6;
 
-    // the command
+    // the CommandVel reader
     CommandVel *cmds;
+
+    // the command
+    std::vector<Velocity> commands;
+
+    // a pi value
+    const double PI;
+    double PI2;
 
     public:
         // default constructor
         SampleVelocityModel(ros::NodeHandle&, CommandVel *);
+
         // destructor
         ~SampleVelocityModel();
+
         // updates the pose to a new one based on the command
-        virtual void samplePose2D(SampleSet*);
+        virtual void samplePose2D(Pose2D*);
+
+        // update the commands
+        void updateCommands();
+
 };
 
 #endif

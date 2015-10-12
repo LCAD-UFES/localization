@@ -1,12 +1,12 @@
 #include "CommandVelocity.hpp"
 
 // basic constructor
-CommandVel::CommandVel() : cmds(), last_cmd({}), start(), end(), cmds_mutex() {
+CommandVel::CommandVel() : cmds(), msg_seq(0), last_cmd({}), start(), end(), cmds_mutex() {
     // set the last current time
     start = end = last_cmd.stamp = ros::Time::now();
 }
 // push a new message
-void CommandVel::push_back(const geometry_msgs::Twist &msg, unsigned int msg_seq) {
+void CommandVel::push_back(const geometry_msgs::Twist &msg) {
 
     // lock the mutex
     cmds_mutex.lock();
@@ -19,7 +19,7 @@ void CommandVel::push_back(const geometry_msgs::Twist &msg, unsigned int msg_seq
     v.angular = msg.angular.z;
 
     // updates the header
-    v.seq = msg_seq;
+    v.seq = msg_seq++;
     v.stamp = ros::Time::now(); // not so good... :-(
 
     // push to the qeue
@@ -39,7 +39,6 @@ std::vector<Velocity> CommandVel::getAll() {
     // lock the mutex
     cmds_mutex.lock();
 
-
     // get the last command
     // let the last_cmd be the command that starts at the last LaserScan timestamp
     commands.push_back(last_cmd);
@@ -49,14 +48,18 @@ std::vector<Velocity> CommandVel::getAll() {
         Velocity v = cmds.front();
         if (v.stamp > end) {
             break;
+        } else {
+            commands.push_back(v);
+            cmds.pop();
         }
-        commands.push_back(v);
-        cmds.pop();
     }
+
     // set the last_cmd
     last_cmd = commands.back();
+
     // updates the timestamp to the new LaserScan timestamp
     last_cmd.stamp = end;
+
     // copy this last command to the vector with the updated timestamp
     // hack
     commands.push_back(last_cmd);

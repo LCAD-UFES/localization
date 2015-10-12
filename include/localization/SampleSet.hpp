@@ -4,6 +4,7 @@
 #include <ros/ros.h>
 
 #include "Sample2D.hpp"
+#include "Map.hpp"
 
 class SampleSet {
     private:
@@ -16,11 +17,11 @@ class SampleSet {
         SampleSet(const ros::NodeHandle&);
         ~SampleSet();
 
-        // resample the entire set
-        void resample();
-
         // clear the entire set
         void resetSamples();
+
+        // uniform random distribution
+        void uniformSpread(Map &);
 
         // the attributes
         // actual number of samples/particles
@@ -31,6 +32,7 @@ class SampleSet {
 
         // the min parameter
         int min;
+
         // the max samples parameter
         int max;
 

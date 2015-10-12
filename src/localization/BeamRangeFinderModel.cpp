@@ -4,4 +4,11 @@
 BeamRangeFinderModel::BeamRangeFinderModel(Laser *ls, Map *m) : MeasurementModel(ls, m) {}
 
 //
-void BeamRangeFinderModel::getWeights(SampleSet *Xt) {}
+void BeamRangeFinderModel::getWeight(double *w) {
+    /* TODO */
+}
+
+// get the map pointer
+Map* BeamRangeFinderModel::getMap() {
+    return map;
+}

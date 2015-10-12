@@ -5,7 +5,6 @@ ParticleFilter::ParticleFilter() :
                                     nh(), 
                                     private_nh("~"), 
                                     cmd_vel(),
-                                    msg_seq(0), 
                                     cmd_odom(),
                                     laser(),
                                     map() {
@@ -51,7 +50,7 @@ ParticleFilter::ParticleFilter() :
     // now, with all objects initialized we can start to the subscribe the topics
     // get the laser topic name
     std::string laser_topic;
-    private_nh.param<std::string>("laser_scan_topic", laser_topic, "p3dx/laser/scan");
+    private_nh.param<std::string>("laser_scan_topic", laser_topic, "scan");
     // subscribe to the laser scan topic
     laser_sub = nh.subscribe(laser_topic, 1, &ParticleFilter::laserReceived, this);
 
@@ -109,7 +108,7 @@ void ParticleFilter::laserReceived(const sensor_msgs::LaserScan &msg) {
 // the velocity motion command 
 void ParticleFilter::commandVelReceived(const geometry_msgs::Twist &msg) {
     // push the new command to the command vector
-    cmd_vel.push_back(msg, msg_seq++);
+    cmd_vel.push_back(msg);
 }
 
 // the odometry motion command
@@ -120,7 +119,7 @@ void ParticleFilter::commandOdomReceived(const nav_msgs::Odometry &msg) {}
 void ParticleFilter::readMap(const nav_msgs::OccupancyGrid &msg) {
 
     // copy the OccupancyGrid to the Map
-    map.setGrid(msg);
+    map.updateMap(msg);
 }
 
 // run the particle

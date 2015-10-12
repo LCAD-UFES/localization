@@ -20,9 +20,14 @@ SampleOdometryModel::~SampleOdometryModel() {
     cmds = nullptr;
 }
 
-void SampleOdometryModel::samplePose2D(SampleSet *) {
+void SampleOdometryModel::samplePose2D(Pose2D*) {
     // auxiliar variables
     double rot1, trans, rot2, rot1_, trans_, rot2_, x_, y_, theta_;
     /* TODO */
 
+}
+
+// updates the commands
+void SampleOdometryModel::updateCommands() {
+    /* TODO */
 }
