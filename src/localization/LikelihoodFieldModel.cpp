@@ -22,7 +22,9 @@ void LikelihoodFieldModel::getWeight(Sample2D *sample) {
     double obs_range;
     double obs_bearing;
     // the endpoint of the beam
-    double x, y, x_map, y_map;
+    double x, y;
+    // the endpoint in the MapGrid coords
+    int x_map, y_map;
 
     // shortcut
     double *pose = sample->pose.v;
@@ -47,10 +49,19 @@ void LikelihoodFieldModel::getWeight(Sample2D *sample) {
             // y = pose[0] + y_s*cos(pose[2]) + x_s*sin(pose[2]) + obs_range * sin(pose[2] + obs_bearing);
 
             // Convert from world coords to map coords
-//             x_map = floor((x - ls_scan.origin_x) / ls);
+            x_map = int (std::floor((x - grid.origin_x)/grid.scale + 0.5) + grid.width/2);
+            y_map = (std::floor((y - grid.origin_y)/grid.scale + 0.5) + grid.height/2);
+
+            // get the distance
+            // verify the bounds
+            if (x_map > grid.width || y_map > grid.height) {
+                dist = grid.max_occ_dist;
+            } else {
+                // get the pre-computed value
+//                 dist = grid.getMinDistance(x_map, y_map);
+            } 
 //             #define MAP_GXWX(map, x) (floor((x - map->origin_x) / map->scale + 0.5) + map->size_x / 2)
 //             #define MAP_GYWY(map, y) (floor((y - map->origin_y) / map->scale + 0.5) + map->size_y / 2)
-            dist = 0.0;
         }
     }
 
