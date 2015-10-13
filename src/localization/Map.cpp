@@ -3,7 +3,7 @@
 #include "Map.hpp"
 
 // basic constructor
-Map::Map() : cells(nullptr), map_received(false) {}
+Map::Map() : grid(), map_received(false) {}
 
 // receives a OccupancyGrid msg and converts to internal representation
 bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
@@ -11,40 +11,14 @@ bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
     // update status
     bool update_status = false;
 
+    map_mutex.lock();
+
     if (!map_received) {
 
         // lock the mutex
-        map_mutex.lock();
 
-        // update the map infos
-        width = map_msg.info.width;
-        height = map_msg.info.height;
-        scale  =  map_msg.info.resolution;
-        origin_x = map_msg.info.origin.position.x + (width/2)*scale;
-        origin_y = map_msg.info.origin.position.y + (height/2)*scale;
-
-        // get the grid in a single row
-        // avoiding memmmry leak
-        if (nullptr != cells) {
-            delete cells;
-        }
-
-        // realocate the cells
-        cells = new MapCell[width*height]();
-        if (nullptr == cells) {
-            throw std::bad_alloc();
-        }
-
-        // copy the occupancy state
-        for (int i = 0; i < width*height; i++) {
-            if (0 == map_msg.data[i]) {
-                cells[i].occ_state = -1;
-            } else if (100 == map_msg.data[i]) {
-                cells[i].occ_state = +1;
-            } else {
-                cells[i].occ_state = 0;
-            }
-        }
+        // update the grid map
+        grid.updateGridMap(map_msg);
 
         // updates the likelihood
         nearestNeighbor();
@@ -52,9 +26,10 @@ bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
         // avoiding unnecessary copies
         update_status = map_received = true;
 
-        // unlock the mutex
-        map_mutex.unlock();
     }
+
+    // unlock the mutex
+    map_mutex.unlock();
 
     return update_status;
 }
@@ -65,26 +40,18 @@ void Map::nearestNeighbor() {
 }
 
 // returns the grid map
-MapCell* Map::getGrid() {
+void Map::getGridMap(GridMap *g) {
+
 
     // copy, is it really necessary?
     // lock the mutex
     map_mutex.lock();
 
-    MapCell *g = new MapCell[width*height]();
-    if (nullptr == g) {
-        throw std::bad_alloc();
-    }
-
-    // copy all values
-    for (int i = 0; i < width*height; i++) {
-        g[i] = cells[i];
-    }
+    // copy the entire grid map
+    g->copy(grid);
 
     // lock the mutex
     map_mutex.unlock();
-
-    return g;
 
 }
 
@@ -124,8 +91,13 @@ std::vector<int> Map::getAvailableCellsIndexes() {
     // lock the map
     map_mutex.lock();
 
+    double size = grid.width*grid.height;
+
+    // shortcut
+    MapCell *cells = grid.cells;
+
     // get all available cells
-    for (int i = 0; i < width*height; i++) {
+    for (int i = 0; i < size; i++) {
         if (-1 == cells[i].occ_state) {
             available.push_back(i);
         }
@@ -137,81 +109,81 @@ std::vector<int> Map::getAvailableCellsIndexes() {
     return available;
 
 }
-
-// get the map width
-double Map::geWidth() {
+// updateMaxOccDist
+void Map::updateMaxOccDist(double max) {
 
     // lock the map
     map_mutex.lock();
 
-    // copy the map_received flag
-    double m_width = width;
+    // update the distance
+    grid.max_occ_dist = max;
 
     // unlock the map
     map_mutex.unlock();
-
-    return m_width;
 }
 
-// get the map height
-double Map::getHeight() {
-    
-    // lock the map
-    map_mutex.lock();
-
-    // copy the map_received flag
-    double m_height = height;
-
-    // unlock the map
-    map_mutex.unlock();
-
-    return m_height;
-}
-
-// get the map scale
-double Map::getScale() {
-    
-    // lock the map
-    map_mutex.lock();
-
-    // copy the map_received flag
-    double m_scale = scale;
-
-    // unlock the map
-    map_mutex.unlock();
-
-    return m_scale;
-}
-
-
-// get origin_x
-double Map::getOriginX() {
+// spreads the particles over the entire map, randomly
+void Map::uniformSpread(SampleSet *Xt) {
 
     // lock the map
     map_mutex.lock();
 
-    // copy the map_received flag
-    double o_x = origin_x;
+    // verify if there's a map and the particles aren't already spreaded
+    if (map_received && !Xt->spreaded) {
+
+        // get the available cells indexes
+        std::vector<int> indexes = getAvailableCellsIndexes();
+
+        // set a generator engine
+        std::default_random_engine generator(std::random_device {} ());
+
+        // set a uniform distribution
+        std::uniform_int_distribution<int> uniform_dist(0, indexes.size() - 1);
+
+        // set another uniform distribution -  0 ~ 2PI
+        std::uniform_real_distribution<double> angle_dist(0.0, std::atan(1.0)*8);
+
+        // set a normal distribution
+        std::normal_distribution<double> normal_dist(0.0, 0.05);
+
+        // tmp variables
+        int index;
+        double *pose;
+        int g_i, g_j;
+        float div = 1.0/(float)grid.width;
+
+        // shortcut
+        Sample2D *samples = Xt->samples;
+
+        // sledgehammer programing style? =-/
+        // create random poses based on the unnoccupied cells
+        for (int i = 0; i < Xt->size; i++) {
+
+            // a simple pointer to avoid repetitive writing, another shortcut
+            pose = samples[i].pose.v;
+
+            // get a random index from the uniform_int_distribution
+            index = uniform_dist(generator);
+
+            // get the grid x coord
+            g_i = indexes[index]*div;
+
+            // get the grid y coord
+            g_j = indexes[index] % grid.width;
+
+            // now we have the grid index and a we can 
+            // convert to world coords and assign to the pose value
+            // with a simple gaussian noise
+            pose[0] = (grid.origin_x + (g_i - grid.width/2)*grid.scale) + normal_dist(generator);
+            pose[1] = (grid.origin_y + (g_j - grid.height/2)*grid.scale) + normal_dist(generator);
+
+            // random orientation between 0 and 2*PI radians
+            pose[2] = angle_dist(generator);
+
+        }
+
+    }
 
     // unlock the map
     map_mutex.unlock();
-
-    return o_x;
-
-}
-
-// get origin_y
-double Map::getOriginY() {
-
-    // lock the map
-    map_mutex.lock();
-
-    // copy the map_received flag
-    double o_y = origin_y;
-
-    // unlock the map
-    map_mutex.unlock();
-
-    return o_y;
-
 }

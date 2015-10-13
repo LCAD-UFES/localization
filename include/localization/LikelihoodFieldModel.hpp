@@ -23,7 +23,7 @@ class LikelihoodFieldModel : public MeasurementModel {
         virtual Map* getMap();
 
         // update the LaserScan
-        virtual ros::Time updateLaser();
+        virtual ros::Time update();
 
 };
 

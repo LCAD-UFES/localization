@@ -118,7 +118,9 @@ include_directories(${catkin_INCLUDE_DIRS})
 
 set(LOCALIZATION_LIB_SOURCES 
     src/localization/Sample2D.cpp
+    src/localization/GridMap.cpp
     src/localization/Map.cpp
+    src/localization/Scan.cpp
     src/localization/Laser.cpp
     src/localization/CommandVelocity.cpp
     src/localization/CommandOdometry.cpp

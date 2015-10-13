@@ -5,41 +5,35 @@
 
 #include "nav_msgs/OccupancyGrid.h"
 
-#include "MapCell.hpp"
+#include "SampleSet.hpp"
+#include "GridMap.hpp"
 
 class Map {
     private:
-        // Map origin; the map is a viewport onto a conceptual larger map.
-        double origin_x, origin_y;
 
-        // Map scale (m/px)
-        double scale;
-
-        // Map dimensions (number of cells)
-        int width, height;
-
-        // The map data, stored as a grid
-        MapCell *cells;
-
-        // Max distance at which we care about obstacles, for constructing
-        // likelihood field
-        double max_occ_dist;
+        // our internal GridMap/OccupancyGrid representation
+        GridMap grid;
 
         // mutex to lock map
         std::mutex map_mutex;
+
         // flag to avoiding unnecessary copies
         bool map_received;
 
     public:
+
         Map();
         // updates the grid
         bool updateMap(const nav_msgs::OccupancyGrid&);
+
+        // update max_occ_dist
+        void updateMaxOccDist(double);
 
         // pre-compute the neares neighbor - see LikelihoodFieldModel
         void nearestNeighbor();
 
         // returns the grid
-        MapCell* getGrid();
+        void getGridMap(GridMap *g);
 
         // returns the map flag
         bool mapReceived();
@@ -47,23 +41,11 @@ class Map {
         // force map update
         void forceUpdate();
 
-        // get the cells pointer
+        // get the free cells
         std::vector<int> getAvailableCellsIndexes();
 
-        // get the map width
-        double geWidth();
-
-        // get the map height
-        double getHeight();
-
-        // get the map scale
-        double getScale();
-
-        // get origin_x
-        double getOriginX();
-
-        // get origin_y
-        double getOriginY();
+        // spreads the particles over the entire map, randomly
+        void uniformSpread(SampleSet*);
 
 };
 

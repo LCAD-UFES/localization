@@ -14,7 +14,7 @@ Map* BeamRangeFinderModel::getMap() {
 }
 
 // update the LaserScan
-ros::Time BeamRangeFinderModel::updateLaser() {
+ros::Time BeamRangeFinderModel::update() {
     /* TODO */
     return ros::Time::now();
 }

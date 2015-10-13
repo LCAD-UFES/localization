@@ -22,7 +22,7 @@ void LikelihoodFieldModel::getWeight(Sample2D *sample) {
     double obs_range;
     double obs_bearing;
     // the endpoint of the beam
-    double x, y;
+    double x, y, x_map, y_map;
 
     // shortcut
     double *pose = sample->pose.v;
@@ -46,11 +46,14 @@ void LikelihoodFieldModel::getWeight(Sample2D *sample) {
             // x = pose[0] + x_s*cos(pose[2]) - y_s*sin(pose[2]) + obs_range * cos(pose[2] + obs_bearing);
             // y = pose[0] + y_s*cos(pose[2]) + x_s*sin(pose[2]) + obs_range * sin(pose[2] + obs_bearing);
 
+            // Convert from world coords to map coords
+//             x_map = floor((x - ls_scan.origin_x) / ls);
+//             #define MAP_GXWX(map, x) (floor((x - map->origin_x) / map->scale + 0.5) + map->size_x / 2)
+//             #define MAP_GYWY(map, y) (floor((y - map->origin_y) / map->scale + 0.5) + map->size_y / 2)
             dist = 0.0;
         }
     }
 
-    
     sample->weight = 0.025;
 }
 
@@ -60,9 +63,9 @@ Map* LikelihoodFieldModel::getMap() {
 }
 
 // update the LaserScan
-ros::Time LikelihoodFieldModel::updateLaser() {
+ros::Time LikelihoodFieldModel::update() {
 
-    // the Laser object manages the mutex
+    // update the laser
     laser->getScan(&ls_scan);
 
     // update the step
@@ -72,7 +75,8 @@ ros::Time LikelihoodFieldModel::updateLaser() {
         step = 1;
     }
 
-    // pre-computing z_hit
-    
+    // update the GridMap if necessary
+    /* TODO */ 
+
     return ls_scan.time;
 }

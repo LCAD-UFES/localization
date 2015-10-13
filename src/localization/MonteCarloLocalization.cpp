@@ -39,8 +39,8 @@ void MonteCarloLocalization::run() {
     // auxiliar variables
     Sample2D *samples = Xt.samples;
 
-    // get the current LaserScan
-    sync = measurement->updateLaser();
+    // update the LaserScan and the GridMap if necessary and returns the laser TimeStamp
+    sync = measurement->update();
 
     // get the available commands
     motion->updateCommands(sync);
@@ -73,8 +73,8 @@ void MonteCarloLocalization::spreadSamples(Map &map) {
     // lock the mcl
     mcl_mutex.lock();
 
-    // spread all particles
-    Xt.uniformSpread(map);
+    // spread all particle
+    map.uniformSpread(&Xt);
 
     // unlock the mcl
     mcl_mutex.unlock();

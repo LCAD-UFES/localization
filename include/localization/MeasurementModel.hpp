@@ -14,7 +14,7 @@ class MeasurementModel {
         Laser *laser;
 
         // our internal LaserScan representation
-        LS_60 ls_scan;
+        Scan ls_scan;
 
         // the laser max beams
         int max_beams;
@@ -24,18 +24,26 @@ class MeasurementModel {
         // the Map object contains the OccupancyGrid
         Map *map;
 
+        // Our internal GridMap representation
+        GridMap grid;
+ 
     public:
 
+        // basic constructor
         MeasurementModel(Laser*, Map *);
+
         // the laser must be deleted by the ParticleFilter object
         // not here
         ~MeasurementModel();
+
         // abstract getWeight method
         virtual void getWeight(Sample2D*) =0;
+
         // get the map pointer
         virtual Map* getMap() =0;
-        // update the LaserScan
-        virtual ros::Time updateLaser() =0;
+
+        // update the LaserScan and if necessary the GridMap also
+        virtual ros::Time update() =0;
 };
 
 #endif

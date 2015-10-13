@@ -4,12 +4,9 @@
 #include <ros/ros.h>
 
 #include "Sample2D.hpp"
-#include "Map.hpp"
 
 class SampleSet {
     private:
-        // spreaded?
-        bool spreaded;
         // private function just to allocate the samples
         void newSamples();
 
@@ -20,9 +17,6 @@ class SampleSet {
 
         // clear the entire set
         void resetSamples();
-
-        // uniform random distribution
-        void uniformSpread(Map&);
 
         // the attributes
         // actual number of samples/particles
@@ -36,6 +30,9 @@ class SampleSet {
 
         // the max samples parameter
         int max;
+
+        // spreaded?
+        bool spreaded;
 
 };
 

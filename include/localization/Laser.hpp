@@ -11,15 +11,15 @@ class Laser {
     private:
 
         // the laser scan data - see Scan.cpp
-        // this is a typedef Scan<60>
-        LS_60 ls_scan;
+        // it's our internal representation
+        Scan ls_scan;
 
         // locks the ls_scan
         std::mutex ls_mutex;
 
     public:
         // returns the laser scan
-        void getScan(LS_60 *);
+        void getScan(Scan*);
 
         // updates the laser scan
         void setScan(const sensor_msgs::LaserScan&);
