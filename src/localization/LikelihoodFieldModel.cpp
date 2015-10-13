@@ -3,13 +3,23 @@
 // Basic constructor
 LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *ls, Map *m) : MeasurementModel(ls, m) {
 
-    // get the zhit parameter
-    private_nh.param("likelihood_z_hit", z_hit, 0.5);
-    private_nh.param("likelihood_z_max", z_max, 0.25);
-    private_nh.param("likelihood_z_rand", z_rand, 0.25);
+    // get the z_hit parameter
+    private_nh.param("likelihood_z_hit", z_hit, 0.9);
+    // get the z_max parameter
+    private_nh.param("likelihood_z_max", z_max, 0.05);
+    private_nh.param("likelihood_z_rand", z_rand, 0.05);
+
+    private_nh.param("likelihood_sigma_hit", sigma_hit, 0.2);
 
     // get the max_beams parameter, see MeasurementModel base class
     private_nh.param("laser_max_beams", max_beams, 60);
+
+    // let's do some pre-work
+    sigma_hit2 = sigma_hit*sigma_hit;
+    z_hit_denon = -1.0/(2*sigma_hit2);
+    prob = 1.0/(sqrt((std::atan(1.0)*8)*sigma_hit2));
+
+    z_rand_max = z_rand/z_max;
 
 }
 
@@ -49,8 +59,8 @@ void LikelihoodFieldModel::getWeight(Sample2D *sample) {
             // y = pose[0] + y_s*cos(pose[2]) + x_s*sin(pose[2]) + obs_range * sin(pose[2] + obs_bearing);
 
             // Convert from world coords to map coords
-            x_map = int (std::floor((x - grid.origin_x)/grid.scale + 0.5) + grid.width/2);
-            y_map = (std::floor((y - grid.origin_y)/grid.scale + 0.5) + grid.height/2);
+            x_map = std::floor((x - grid.origin_x)/grid.scale + 0.5) + grid.width/2;
+            y_map = std::floor((y - grid.origin_y)/grid.scale + 0.5) + grid.height/2;
 
             // get the distance
             // verify the bounds
@@ -58,14 +68,24 @@ void LikelihoodFieldModel::getWeight(Sample2D *sample) {
                 dist = grid.max_occ_dist;
             } else {
                 // get the pre-computed value
-//                 dist = grid.getMinDistance(x_map, y_map);
-            } 
-//             #define MAP_GXWX(map, x) (floor((x - map->origin_x) / map->scale + 0.5) + map->size_x / 2)
-//             #define MAP_GYWY(map, y) (floor((y - map->origin_y) / map->scale + 0.5) + map->size_y / 2)
+                dist = grid.getMinDistance(x_map, y_map);
+            }
+
+            // we got some pre-computed work, let the probability be
+            // p = p*(z_hit*(1/sqrt(2*PI*sigma_hit*sigma_hit))*exp(-(x*x)/2*sigma_hit*sigma_hit) + z_rand/z_max);
+            // we got the sigma_hit^2 : sigma_hit2 = sigma_hit*sigma_hit;
+            // we pre-computed the z_hit_denon inside exponential = -1.0/(2*sigma_hit2);
+            // and pre-computing the left side:
+            // prob = 1/(sqrt((2*std::atan(1.0)*4)*sigma_hit2))
+            // and finally z_rand_max = z_rand/z_max
+            // let's hope no bugs here = )
+            p = p*(z_hit*prob*exp(dist*dist*z_hit_denon) + z_rand_max);
         }
     }
 
-    sample->weight = 0.025;
+    // save the weight
+    // are we normalizing?
+    sample->weight = p;
 }
 
 // get the map pointer
@@ -91,3 +111,4 @@ ros::Time LikelihoodFieldModel::update() {
 
     return ls_scan.time;
 }
+

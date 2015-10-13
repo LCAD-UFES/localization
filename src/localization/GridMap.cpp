@@ -119,3 +119,8 @@ void GridMap::copy(const GridMap &g) {
     max_occ_dist = g.max_occ_dist;
 
 }
+
+// get the pre-computed likelihood
+double GridMap::getMinDistance(int i, int j) {
+    return max_occ_dist;
+}

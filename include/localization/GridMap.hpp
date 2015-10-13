@@ -37,6 +37,9 @@ class GridMap {
         // copy another GridMap
         void copy(const GridMap&);
 
+        // get the pre-computed likelihood
+        double getMinDistance(int i, int j);
+
 };
 
 #endif
