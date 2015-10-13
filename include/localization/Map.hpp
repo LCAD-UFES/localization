@@ -20,6 +20,9 @@ class Map {
         // flag to avoiding unnecessary copies
         bool map_received;
 
+        // get the free cells
+        std::vector<int> getAvailableCellsIndexes();
+
     public:
 
         Map();
@@ -41,8 +44,6 @@ class Map {
         // force map update
         void forceUpdate();
 
-        // get the free cells
-        std::vector<int> getAvailableCellsIndexes();
 
         // spreads the particles over the entire map, randomly
         void uniformSpread(SampleSet*);

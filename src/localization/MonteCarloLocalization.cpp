@@ -70,6 +70,7 @@ void MonteCarloLocalization::run() {
 // spread all particles
 void MonteCarloLocalization::spreadSamples(Map &map) {
 
+
     // lock the mcl
     mcl_mutex.lock();
 

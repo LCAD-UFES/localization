@@ -88,9 +88,6 @@ std::vector<int> Map::getAvailableCellsIndexes() {
 
     std::vector<int> available;
 
-    // lock the map
-    map_mutex.lock();
-
     double size = grid.width*grid.height;
 
     // shortcut
@@ -102,9 +99,6 @@ std::vector<int> Map::getAvailableCellsIndexes() {
             available.push_back(i);
         }
     }
-
-    // unlock the map
-    map_mutex.unlock();
 
     return available;
 
@@ -183,6 +177,8 @@ void Map::uniformSpread(SampleSet *Xt) {
         }
 
     }
+
+    std::cout << "Spreaded!" << std::endl;
 
     // unlock the map
     map_mutex.unlock();

@@ -2,7 +2,7 @@
 
 // basic constructor
 // max_occ_dist default to 2.0
-GridMap::GridMap() : max_occ_dist(2.0) {}
+GridMap::GridMap() : max_occ_dist(2.0), cells(nullptr) {}
 
 // Copy Constructor
 GridMap::GridMap(const GridMap &g) : 
@@ -29,7 +29,7 @@ GridMap::GridMap(const GridMap &g) :
 
 // destructor
 GridMap::~GridMap() {
-    if (nullptr == cells) {
+    if (nullptr != cells) {
         delete cells;
     }
 }
@@ -39,6 +39,7 @@ void GridMap::updateGridMap(const nav_msgs::OccupancyGrid &map_msg) {
 
     // get the size
     int size = map_msg.info.width*map_msg.info.height;
+
 
     // maybe we don't need to delete de cells
     if (width != map_msg.info.width || height != map_msg.info.height)  {
