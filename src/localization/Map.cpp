@@ -3,18 +3,18 @@
 #include "Map.hpp"
 
 // basic constructor
-Map::Map() : map_received(false) {}
+Map::Map() : cells(nullptr), map_received(false) {}
 
 // receives a OccupancyGrid msg and converts to internal representation
-void Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
+bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
+
+    // update status
+    bool update_status = false;
 
     if (!map_received) {
 
         // lock the mutex
         map_mutex.lock();
-
-        // deprecated
-        grid = map_msg;
 
         // update the map infos
         width = map_msg.info.width;
@@ -46,22 +46,33 @@ void Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
             }
         }
 
-        map_received = true;
+        // avoiding unnecessary copies
+        update_status = map_received = true;
 
         // unlock the mutex
         map_mutex.unlock();
-
     }
+
+    return update_status;
 }
 
 // returns the grid map
-nav_msgs::OccupancyGrid Map::getGrid() {
+MapCell* Map::getGrid() {
 
     // copy, is it really necessary?
     // lock the mutex
     map_mutex.lock();
 
-    nav_msgs::OccupancyGrid g = grid;
+    MapCell *g = new MapCell[width*height]();
+    if (nullptr == g) {
+        throw std::bad_alloc();
+    }
+
+    // copy all values
+    for (int i = 0; i < width*height; i++) {
+        g[i] = cells[i];
+    }
+
     // lock the mutex
     map_mutex.unlock();
 
@@ -98,7 +109,7 @@ bool Map::mapReceived() {
 }
 
 // get the cells pointer
-std::vector<int> Map::getAvailableCellsIndex() {
+std::vector<int> Map::getAvailableCellsIndexes() {
 
     std::vector<int> available;
 

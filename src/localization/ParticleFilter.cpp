@@ -100,9 +100,11 @@ void ParticleFilter::laserReceived(const sensor_msgs::LaserScan &msg) {
 
     // the laser object manages the apropriate mutex
     laser.setScan(msg);
-    // starts the MCL
-    mcl->start();
 
+    if(map.mapReceived()) {
+        // starts the MCL
+        mcl->start();
+    }
 }
 
 // the velocity motion command 
@@ -120,7 +122,11 @@ void ParticleFilter::commandOdomReceived(const nav_msgs::Odometry &msg) {}
 void ParticleFilter::readMap(const nav_msgs::OccupancyGrid &msg) {
 
     // copy the OccupancyGrid to the Map
-    map.updateMap(msg);
+    if(map.updateMap(msg)) {
+        // spread the particles
+        // passing by the MCL and we get a free lock =)
+        mcl->spreadSamples(map);
+    }
 }
 
 // run the particle

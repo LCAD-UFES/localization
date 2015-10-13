@@ -9,7 +9,9 @@
 
 class Laser {
     private:
-        // the laser scan data
+
+        // the laser scan data - see Scan.cpp
+        // this is a typedef Scan<60>
         LS_60 ls_scan;
 
         // locks the ls_scan

@@ -5,12 +5,19 @@
 
 class LikelihoodFieldModel : public MeasurementModel {
 
+    private:
+        // LikelihoodFieldModel parameters
+        double zhit, zmax, zrand;
+        //
+        double zmax;
+        //
+        
     public:
         // basic constructor
-        LikelihoodFieldModel(Laser*, Map *);
+        LikelihoodFieldModel(ros::NodeHandle&, Laser*, Map *);
 
         // base class abstract method implementation
-        virtual void getWeight(double*);
+        virtual void getWeight(Sample2D *);
 
         // get the map pointer
         virtual Map* getMap();

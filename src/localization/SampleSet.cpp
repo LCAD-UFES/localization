@@ -2,7 +2,7 @@
 #include <cmath>
 
 // basic constructor
-SampleSet::SampleSet(const ros::NodeHandle &private_nh) {
+SampleSet::SampleSet(const ros::NodeHandle &private_nh) : spreaded(false) {
     // get the size parameter
     // if not found, it'll be 800'
     private_nh.param( (std::string) "sample_set_size", size, 800);
@@ -49,11 +49,8 @@ void SampleSet::resetSamples() {
 // uniform random distribution
 void SampleSet::uniformSpread(Map &map) {
 
-    // verify if the map is available
-    if (map.mapReceived()) {
-
-        // spread
-        std::cout << "Spreading all particles!" << std::endl;
+    // verify if the map is available'
+    if (map.mapReceived() && !spreaded) {
 
         // get the map width
         int width = map.geWidth();
@@ -66,8 +63,8 @@ void SampleSet::uniformSpread(Map &map) {
         // get the map origin_y
         double origin_y = map.getOriginY();
 
-        // get the available cells index
-        std::vector<int> indexes = map.getAvailableCellsIndex();
+        // get the available cells indexes
+        std::vector<int> indexes = map.getAvailableCellsIndexes();
 
         // set a generator engine
         std::default_random_engine generator(std::random_device {} ());

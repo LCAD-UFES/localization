@@ -5,6 +5,7 @@
 
 #include "Map.hpp"
 #include "Laser.hpp"
+#include "Sample2D.hpp"
 
 class MeasurementModel {
     protected:
@@ -19,14 +20,15 @@ class MeasurementModel {
         Map *map;
 
     public:
+
         MeasurementModel(Laser*, Map *);
         // the laser must be deleted by the ParticleFilter object
         // not here
         ~MeasurementModel();
         // abstract getWeight method
-        virtual void getWeight(double*) =0;
+        virtual void getWeight(Sample2D*) =0;
         // get the map pointer
-        virtual Map* getMap() = 0;
+        virtual Map* getMap() =0;
         // update the LaserScan
         virtual ros::Time updateLaser() =0;
 };

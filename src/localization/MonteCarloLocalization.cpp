@@ -33,7 +33,7 @@ void MonteCarloLocalization::start() {
     }
 }
 
-//
+// the MCL algoritmh
 void MonteCarloLocalization::run() {
 
     // auxiliar variables
@@ -53,7 +53,7 @@ void MonteCarloLocalization::run() {
         motion->samplePose2D(&samples[i].pose);
 
         // the measurement model - passing sample weight by reference
-        measurement->getWeight(&samples[i].weight);
+        measurement->getWeight(&samples[i]);
 
     }
     // RESAMPLING
@@ -65,4 +65,18 @@ void MonteCarloLocalization::run() {
 
     // unlock the mutex
     mcl_mutex.unlock();
+}
+
+// spread all particles
+void MonteCarloLocalization::spreadSamples(Map &map) {
+
+    // lock the mcl
+    mcl_mutex.lock();
+
+    // spread all particles
+    Xt.uniformSpread(map);
+
+    // unlock the mcl
+    mcl_mutex.unlock();
+
 }

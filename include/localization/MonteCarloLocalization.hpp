@@ -48,6 +48,9 @@ class MonteCarloLocalization {
         // it starts a thread that executes the run() method and exits smoothly
         void start();
 
+        // spread all particles
+        // avoiding to spread particles at the same time run() method
+        void spreadSamples(Map &);
 };
 
 #endif

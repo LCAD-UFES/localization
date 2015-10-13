@@ -51,7 +51,7 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
         dt = (commands[j+1].stamp - commands[j].stamp).toSec();
 
         // get the linear velocity
-        v = commands[j].linear + gaussianPDF(a1*v2 + a2*w2);
+        v = commands[j].linear*1.2 + gaussianPDF(a1*v2 + a2*w2);
         // get the angular velocity
         w = commands[j].angular + gaussianPDF(a3*v2 + a4*w2);
         // get the final angle extra noisy angular velocity
@@ -60,7 +60,16 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
         // updates the pose based on this current command
         // verify if the angular is zero or very close to zero
 
-        if (0.0 != w) {
+        if (commands.size() > 2) {
+            std::cout << std::endl;
+            std::cout << "Old pose: " << pose[0] << " " << pose[1] << " " << pose[2] << std::endl;
+            std::cout << "Noise free Command: " << commands[j].linear << " " << commands[j].angular << std::endl;
+            std::cout << "Noisy: " << v << " " << w << " and y: " << y << std::endl;
+            std::cout << "Last command: " << commands[commands.size()-1].linear << " " << commands[commands.size()-1].angular << std::endl;
+            std::cout << "Time: " << dt << std::endl;
+        }
+
+        if (0.0 != commands[j].angular) {
 
             // here we can use the given algorithm directly
             vw = v/w;
@@ -71,14 +80,29 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
             // get the new angle
             pose[2] = pose[2] + w*dt + y*dt;
 
-        } else {
+            // we assume that mostly times the orientation will exceed the limits when there's some
+            // angular velocity
+            // maintain the orientation between -2*PI and 2*PI
+            if(PI2 < pose[2]) {
+                pose[2] -= PI2;
+            } else if (-PI2 > pose[2]) {
+                pose[2] += PI2;
+            }
+
+        } else if (0.0 != commands[j].linear) {
+
             // get the x distance
             pose[0] += v*cos(pose[2])*dt;
             // get the y distance
             pose[1] += v*sin(pose[2])*dt;
             // get the new angle, just adding some noise
             pose[2] += y*dt;
+
         }
+        if (commands.size() > 2) {
+            std::cout << "New pose: " << pose[0] << " " << pose[1] << " " << pose[2] << std::endl;
+        }
+
     }
 }
 

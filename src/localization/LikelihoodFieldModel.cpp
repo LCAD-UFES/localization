@@ -4,19 +4,19 @@
 LikelihoodFieldModel::LikelihoodFieldModel(Laser *ls, Map *m) : MeasurementModel(ls, m) {}
 
 // assigns a weight to to all particles/samples
-void LikelihoodFieldModel::getWeight(double *w) {
+void LikelihoodFieldModel::getWeight(Sample2D *sample) {
 
     // auxiliar variables
     double q = 1.0;
     double dist;
 
     // iterate over the scans
-    for (int i = 0; i < 60; i++) {
-        ls_scan.ranges[i] = 0.025;
+    // we have 60 
+    for (int i = 0; i < ls; i++) {
     }
 
     //
-    *w = 0.025;
+    sample->weight = 0.025;
 }
 
 // get the map pointer

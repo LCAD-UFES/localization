@@ -8,7 +8,8 @@
 
 class SampleSet {
     private:
-
+        // spreaded?
+        bool spreaded;
         // private function just to allocate the samples
         void newSamples();
 
@@ -21,7 +22,7 @@ class SampleSet {
         void resetSamples();
 
         // uniform random distribution
-        void uniformSpread(Map &);
+        void uniformSpread(Map&);
 
         // the attributes
         // actual number of samples/particles

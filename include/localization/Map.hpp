@@ -12,7 +12,7 @@ class Map {
         // Map origin; the map is a viewport onto a conceptual larger map.
         double origin_x, origin_y;
 
-        // Map scale (m/cell)
+        // Map scale (m/px)
         double scale;
 
         // Map dimensions (number of cells)
@@ -30,16 +30,13 @@ class Map {
         // flag to avoiding unnecessary copies
         bool map_received;
 
-        // deprecated
-        nav_msgs::OccupancyGrid grid;
-
     public:
         Map();
         // updates the grid
-        void updateMap(const nav_msgs::OccupancyGrid&);
+        bool updateMap(const nav_msgs::OccupancyGrid&);
 
         // returns the grid
-        nav_msgs::OccupancyGrid getGrid();
+        MapCell* getGrid();
 
         // returns the map flag
         bool mapReceived();
@@ -48,7 +45,7 @@ class Map {
         void forceUpdate();
 
         // get the cells pointer
-        std::vector<int> getAvailableCellsIndex();
+        std::vector<int> getAvailableCellsIndexes();
 
         // get the map width
         double geWidth();

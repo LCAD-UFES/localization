@@ -4,7 +4,7 @@
 BeamRangeFinderModel::BeamRangeFinderModel(Laser *ls, Map *m) : MeasurementModel(ls, m) {}
 
 //
-void BeamRangeFinderModel::getWeight(double *w) {
+void BeamRangeFinderModel::getWeight(Sample2D *sample) {
     /* TODO */
 }
 
