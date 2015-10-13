@@ -1,7 +1,7 @@
 #include "BeamRangeFinderModel.hpp"
 
 // basic constructor
-BeamRangeFinderModel::BeamRangeFinderModel(Laser *ls, Map *m) : MeasurementModel(ls, m) {}
+BeamRangeFinderModel::BeamRangeFinderModel(ros::NodeHandle &private_nh, Laser *ls, Map *m) : MeasurementModel(ls, m) {}
 
 //
 void BeamRangeFinderModel::getWeight(Sample2D *sample) {

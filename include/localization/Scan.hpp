@@ -21,7 +21,11 @@ struct Scan {
         float range_max;
 
         // range data
-        float ranges[size];
+        float ranges[size][2];
+
+        // custom parameters
+        // the number of samples
+        int range_count;
 
         // the LaserScan time, just to sync with the commands
         ros::Time time;

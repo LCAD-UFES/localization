@@ -46,6 +46,9 @@ bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
             }
         }
 
+        // updates the likelihood
+        nearestNeighbor();
+
         // avoiding unnecessary copies
         update_status = map_received = true;
 
@@ -54,6 +57,11 @@ bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
     }
 
     return update_status;
+}
+
+// pre-computing the nearest neighbor
+void Map::nearestNeighbor() {
+    
 }
 
 // returns the grid map

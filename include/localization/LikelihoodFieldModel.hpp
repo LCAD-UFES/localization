@@ -1,20 +1,20 @@
 #ifndef Likelihood_FIELD_MODEL_H
 #define Likelihood_FIELD_MODEL_H
 
+#include <ros/ros.h>
+
 #include "MeasurementModel.hpp"
+
 
 class LikelihoodFieldModel : public MeasurementModel {
 
     private:
         // LikelihoodFieldModel parameters
-        double zhit, zmax, zrand;
-        //
-        double zmax;
-        //
-        
+        double z_hit, z_max, z_rand;
+
     public:
         // basic constructor
-        LikelihoodFieldModel(ros::NodeHandle&, Laser*, Map *);
+        LikelihoodFieldModel(ros::NodeHandle&, Laser*, Map*);
 
         // base class abstract method implementation
         virtual void getWeight(Sample2D *);

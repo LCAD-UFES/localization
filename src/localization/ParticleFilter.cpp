@@ -30,10 +30,10 @@ ParticleFilter::ParticleFilter() :
     private_nh.param<std::string>("measurement_model", measurementModel, "likelihood");
     if (0 == measurementModel.compare("beam")) {
         // default constructor
-        measurement = new BeamRangeFinderModel(&laser, &map);
+        measurement = new BeamRangeFinderModel(private_nh, &laser, &map);
     } else {
         // default constructor
-        measurement = new LikelihoodFieldModel(&laser, &map);
+        measurement = new LikelihoodFieldModel(private_nh, &laser, &map);
     }
 
     // badd allocation?

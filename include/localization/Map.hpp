@@ -35,6 +35,9 @@ class Map {
         // updates the grid
         bool updateMap(const nav_msgs::OccupancyGrid&);
 
+        // pre-compute the neares neighbor - see LikelihoodFieldModel
+        void nearestNeighbor();
+
         // returns the grid
         MapCell* getGrid();
 

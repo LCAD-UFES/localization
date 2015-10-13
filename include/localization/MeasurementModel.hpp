@@ -16,6 +16,11 @@ class MeasurementModel {
         // our internal LaserScan representation
         LS_60 ls_scan;
 
+        // the laser max beams
+        int max_beams;
+        // the step
+        int step;
+
         // the Map object contains the OccupancyGrid
         Map *map;
 

@@ -36,9 +36,21 @@ void Laser::setScan(const sensor_msgs::LaserScan &ls) {
     ls_scan.range_max = ls.range_max;
 
     // range data
-    for (int i = 0; i < 60; i++) {
-        ls_scan.ranges[i] = ls.ranges[i];
+    for (int i = 0; i < ls.ranges.size(); i++) {
+
+        // copy the range value
+        if (ls.range_min < ls.ranges[i]) {
+            ls_scan.ranges[i][0] = ls.ranges[i];
+        } else {
+            ls_scan.ranges[i][0] = ls.range_max;
+        }
+
+        // the angle value
+        ls_scan.ranges[i][1] = ls.angle_min + (i * ls.angle_increment);
     }
+
+    // the range count
+    ls_scan.range_count = ls.ranges.size();
 
     // save the LaserScan timestamp
     ls_scan.time = ls.header.stamp;
