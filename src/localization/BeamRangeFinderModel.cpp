@@ -8,11 +8,6 @@ void BeamRangeFinderModel::getWeight(Sample2D *sample) {
     /* TODO */
 }
 
-// get the map pointer
-Map* BeamRangeFinderModel::getMap() {
-    return map;
-}
-
 // update the LaserScan
 ros::Time BeamRangeFinderModel::update() {
     /* TODO */

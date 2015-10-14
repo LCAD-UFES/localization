@@ -39,9 +39,6 @@ class MeasurementModel {
         // abstract getWeight method
         virtual void getWeight(Sample2D*) =0;
 
-        // get the map pointer
-        virtual Map* getMap() =0;
-
         // update the LaserScan and if necessary the GridMap also
         virtual ros::Time update() =0;
 };

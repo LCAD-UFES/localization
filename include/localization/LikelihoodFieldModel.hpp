@@ -21,9 +21,6 @@ class LikelihoodFieldModel : public MeasurementModel {
         // base class abstract method implementation
         virtual void getWeight(Sample2D *);
 
-        // get the map pointer
-        virtual Map* getMap();
-
         // update the LaserScan
         virtual ros::Time update();
 

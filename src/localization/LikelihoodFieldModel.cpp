@@ -87,11 +87,6 @@ void LikelihoodFieldModel::getWeight(Sample2D *sample) {
     sample->weight = p;
 }
 
-// get the map pointer
-Map* LikelihoodFieldModel::getMap() {
-    return map;
-}
-
 // update the LaserScan
 ros::Time LikelihoodFieldModel::update() {
 

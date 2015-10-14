@@ -11,8 +11,6 @@ class BeamRangeFinderModel : public MeasurementModel {
         BeamRangeFinderModel(ros::NodeHandle&, Laser *, Map *);
         // base class abstract method implementation
         virtual void getWeight(Sample2D *);
-        // get the map pointer
-        virtual Map* getMap();
         // update the LaserScan
         virtual ros::Time update();
 };

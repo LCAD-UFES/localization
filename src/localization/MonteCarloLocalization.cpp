@@ -61,6 +61,7 @@ void MonteCarloLocalization::run() {
 
     // usually the MCL returns the Xt sample set
     // what should we do here?
+    // let's publish in a convenient topic
     /* TODO */
 
     // unlock the mutex
