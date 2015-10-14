@@ -16,10 +16,11 @@ LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *l
 
     // let's do some pre-work
     sigma_hit2 = sigma_hit*sigma_hit;
-    z_hit_denon = -1.0/(2*sigma_hit2);
-    prob = 1.0/(sqrt((std::atan(1.0)*8)*sigma_hit2));
+    z_hit_denon = -(1.0/(2*sigma_hit2));
+    prob = 1/(sigma_hit*sqrt(8*std::atan(1.0)));
 
     z_rand_max = z_rand/z_max;
+
 
 }
 
@@ -48,7 +49,7 @@ void LikelihoodFieldModel::getWeight(Sample2D *sample) {
         obs_bearing = ls_scan.ranges[i][1];
 
         // consider only ranges below range_max and check for NaN
-        if (obs_range < ls_scan.range_max && obs_range != obs_range) {
+        if (obs_range < ls_scan.range_max) {
 
             // get the x and y observation coordinates
             // without tf, we assume the laser is in the center of mass
@@ -79,7 +80,7 @@ void LikelihoodFieldModel::getWeight(Sample2D *sample) {
             // prob = 1/(sqrt((2*std::atan(1.0)*4)*sigma_hit2))
             // and finally z_rand_max = z_rand/z_max
             // let's hope no bugs here = )
-            p = p*(z_hit*prob*exp(dist*dist*z_hit_denon) + z_rand_max);
+            p = p*z_hit*prob*exp(dist*dist*z_hit_denon);
         }
     }
 

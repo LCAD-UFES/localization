@@ -36,7 +36,7 @@ bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
 
 // pre-computing the nearest neighbor
 void Map::nearestNeighbor() {
-    
+    /* TODO */
 }
 
 // returns the grid map
