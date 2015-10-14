@@ -20,8 +20,6 @@ LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *l
     prob = 1/(sigma_hit*sqrt(8*std::atan(1.0)));
 
     z_rand_max = z_rand/z_max;
-
-
 }
 
 // assigns a weight to to all particles/samples

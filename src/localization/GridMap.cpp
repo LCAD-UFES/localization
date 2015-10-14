@@ -122,6 +122,21 @@ void GridMap::copy(const GridMap &g) {
 }
 
 // get the pre-computed likelihood
+// i = x and j = y in GridMap coordinates
 double GridMap::getMinDistance(int i, int j) {
+
+    // get the correct index in our unidimensional array
+    int index = i + j*width;
+
+    // verifing the bounds
+    if (index >= 0 && index < width*height) {
+
+        // get the pre computed distance value!!!
+        return cells[index].occ_dist;
+
+    }
+
+    // otherwise returns the mas occlusion distance
     return max_occ_dist;
+
 }
