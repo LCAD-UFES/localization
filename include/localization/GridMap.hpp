@@ -1,11 +1,14 @@
 #ifndef GRID_MAP_H
 #define GRID_MAP_H
 
+#include <queue>
+
 #include <nav_msgs/OccupancyGrid.h>
 
 #include "MapCell.hpp"
+#include "CellData.hpp"
 
-#define MAP_INDEX(i, j) ((i) + (j) * width)
+#define MAP_INDEX(i, j) ((i) + (j) *width )
 
 class GridMap {
 
@@ -35,6 +38,18 @@ class GridMap {
 
         // update the grid map with a new ros OccupancyGrid msg
         void updateGridMap(const nav_msgs::OccupancyGrid&);
+
+        // 
+        void enqueue(
+            unsigned int,
+            unsigned int,
+            unsigned int,
+            unsigned int,
+            std::priority_queue<CellData> &,
+            double**,
+            int,
+            unsigned char*
+        );
 
         // pre-computing the max occlusion disance
         void nearestNeighbor();

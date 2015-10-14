@@ -84,6 +84,9 @@ void LikelihoodFieldModel::getWeight(Sample2D *sample) {
 
     // save the weight
     // are we normalizing?
+    if (p > 0) {
+        std::cout << "The weigth: " << p << std::endl;
+    }
     sample->weight = p;
 }
 

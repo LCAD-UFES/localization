@@ -21,7 +21,7 @@ bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
         grid.updateGridMap(map_msg);
 
         // updates the likelihood
-        nearestNeighbor();
+        grid.nearestNeighbor();
 
         // avoiding unnecessary copies
         update_status = map_received = true;

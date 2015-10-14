@@ -100,12 +100,15 @@ void GridMap::copy(const GridMap &g) {
         if (nullptr == cells) {
             throw std::bad_alloc();
         }
+
     } else if (nullptr == cells) {
+
         // realocate the cells
         cells = new MapCell[grid_size];
         if (nullptr == cells) {
             throw std::bad_alloc();
         }
+
     }
 
     scale  =  g.scale;
@@ -150,8 +153,8 @@ void GridMap::enqueue(
     unsigned int src_j, 
     std::priority_queue<CellData> &Q,
     double **distances,
-    double &cell_radius,
-    unsigned char *marked;
+    int cell_radius,
+    unsigned char *marked
     ) {
 
     // if the current cell is already marked we can leave it with the same value
@@ -162,7 +165,7 @@ void GridMap::enqueue(
 
     // get the displacement
     unsigned int di = abs(i - src_i);
-    unsigned int di = abs(j - src_j);
+    unsigned int dj = abs(j - src_j);
 
     // get the pre-computed distance
     double dist = distances[di][dj];
@@ -184,6 +187,10 @@ void GridMap::enqueue(
     // save the actual cell index
     c.i = i;
     c.j = j;
+
+    // save the actual unidimensional index
+    c.map_index = MAP_INDEX(i, j);
+
     // save the first source index (src_i, src_j)
     // so the neighbors will be compared to the same source
     c.src_i = src_i;
@@ -204,7 +211,7 @@ void GridMap::enqueue(
 void GridMap::nearestNeighbor() {
 
     // get the occlusion radius
-    double cell_radius = max_occ_dist/scale;
+    int cell_radius = max_occ_dist/scale;
 
     // build a cached distance matrix
     double **distances = new double*[cell_radius + 2];
@@ -219,9 +226,9 @@ void GridMap::nearestNeighbor() {
     }
 
     // just to flag the marked ones
-    unsigned char marked[size];
-    for (int i = 0; i < size; i++) {
-        marked = 0;
+    unsigned char *marked = new unsigned char[size];
+    for (int i = 0; i < size/10000; i++) {
+        marked[i] = 0;
     }
 
     // the priority queue of CellData
@@ -231,6 +238,8 @@ void GridMap::nearestNeighbor() {
     // build an auxiliar CellData
     // its passed by reference
     CellData c(cells);
+
+
 
     // get all obsctacle cells
     for (int i = 0; i < width; i++) {
@@ -249,13 +258,19 @@ void GridMap::nearestNeighbor() {
                 //copy the j index to the CellData
                 c.j = c.src_j = j;
 
+                // update the unidimensional index
+                c.map_index = MAP_INDEX(i,j);
+
+                // mark
+                marked[MAP_INDEX(i, j)] = 1;
+
                 // keep the obstacle cell
                 Q.push(c);
 
             } else {
 
                 // assignt the max occlusion distance
-                cells[MAP_INDEX(i, u)].occ_dist = max_occ_dist;
+                cells[MAP_INDEX(i, j)].occ_dist = max_occ_dist;
 
             }
         }
@@ -268,7 +283,7 @@ void GridMap::nearestNeighbor() {
         // get the hight priority CellData
         // based on the max_occ_dist of that cell in the grid
         // se the CellData class and the < operator overloading
-        CellData current(Q.top);
+        CellData current(Q.top());
 
         // verify the cases
         // maybe the current cell is next to the matrix borders
@@ -297,8 +312,16 @@ void GridMap::nearestNeighbor() {
             enqueue(current.i, current.j + 1, current.src_i, current.src_j, Q, distances, cell_radius,  marked);
             // there's a neighbor below the current cell
         }
+
+        // remove the element
         Q.pop();
     }
 
+    // free memmory
+    // remove the pre-computed distances
     delete [] distances;
+
+    // remove the marked vector
+    delete marked;
+
 }
