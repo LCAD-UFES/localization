@@ -5,6 +5,8 @@
 
 #include "MapCell.hpp"
 
+#define MAP_INDEX(i, j) ((i) + (j) * width)
+
 class GridMap {
 
     public:
@@ -15,7 +17,7 @@ class GridMap {
         float scale;
 
         // Map dimensions (number of cells)
-        int width, height;
+        int width, height, size;
 
         // The map data, stored as a grid
         MapCell *cells;
@@ -33,6 +35,9 @@ class GridMap {
 
         // update the grid map with a new ros OccupancyGrid msg
         void updateGridMap(const nav_msgs::OccupancyGrid&);
+
+        // pre-computing the max occlusion disance
+        void nearestNeighbor();
 
         // copy another GridMap
         void copy(const GridMap&);

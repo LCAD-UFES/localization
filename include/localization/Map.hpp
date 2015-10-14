@@ -32,9 +32,6 @@ class Map {
         // update max_occ_dist
         void updateMaxOccDist(double);
 
-        // pre-compute the neares neighbor - see LikelihoodFieldModel
-        void nearestNeighbor();
-
         // returns the grid
         void getGridMap(GridMap *g);
 
@@ -43,7 +40,6 @@ class Map {
 
         // force map update
         void forceUpdate();
-
 
         // spreads the particles over the entire map, randomly
         void uniformSpread(SampleSet*);
