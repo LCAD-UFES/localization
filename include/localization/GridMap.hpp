@@ -29,6 +29,9 @@ class GridMap {
         // likelihood field
         float max_occ_dist;
 
+        // the grid map timestamp
+        ros::Time stamp;
+
         // basic constructor
         GridMap ();
         // Copy Constructor

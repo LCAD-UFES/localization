@@ -43,7 +43,9 @@ void Map::getGridMap(GridMap *g) {
     map_mutex.lock();
 
     // copy the entire grid map
-    g->copy(grid);
+    if (grid.stamp < g->stamp) {
+        g->copy(grid);
+    }
 
     // lock the mutex
     map_mutex.unlock();
@@ -61,6 +63,7 @@ void Map::forceUpdate() {
 
     // unlock the map
     map_mutex.unlock();
+
 }
 
 // returns the map flag
@@ -76,6 +79,7 @@ bool Map::mapReceived() {
     map_mutex.unlock();
 
     return flag;
+
 }
 
 // get the cells pointer
@@ -109,6 +113,7 @@ void Map::updateMaxOccDist(double max) {
 
     // unlock the map
     map_mutex.unlock();
+
 }
 
 // spreads the particles over the entire map, randomly
@@ -177,4 +182,5 @@ void Map::uniformSpread(SampleSet *Xt) {
 
     // unlock the map
     map_mutex.unlock();
+
 }

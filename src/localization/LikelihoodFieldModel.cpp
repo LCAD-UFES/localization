@@ -7,19 +7,26 @@ LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *l
     private_nh.param("likelihood_z_hit", z_hit, 0.9);
     // get the z_max parameter
     private_nh.param("likelihood_z_max", z_max, 0.05);
+    // get the z_rand parameter
     private_nh.param("likelihood_z_rand", z_rand, 0.05);
-
+    // get the sigma_hit parameter
     private_nh.param("likelihood_sigma_hit", sigma_hit, 0.2);
 
     // get the max_beams parameter, see MeasurementModel base class
     private_nh.param("laser_max_beams", max_beams, 60);
 
+    // the PI
+    double PI = std::atan(1.0)*4;
+
     // let's do some pre-work
     sigma_hit2 = sigma_hit*sigma_hit;
-    z_hit_denon = -(1.0/(2*sigma_hit2));
-    prob = 1/(sigma_hit*sqrt(8*std::atan(1.0)));
+    //
+    sigma_hit_den = -1.0/(2*sigma_hit2);
+    //
+    prob = 1.0/(sigma_hit*sqrt(2*PI));
+    //
+    z_random_max = z_rand/30.0;
 
-    z_rand_max = z_rand/z_max;
 }
 
 // assigns a weight to to all particles/samples
@@ -61,6 +68,7 @@ void LikelihoodFieldModel::getWeight(Sample2D *sample) {
             x_map = std::floor((x - grid.origin_x)/grid.scale + 0.5) + grid.width/2;
             y_map = std::floor((y - grid.origin_y)/grid.scale + 0.5) + grid.height/2;
 
+
             // get the distance
             // verify the bounds
             if (x_map > grid.width || y_map > grid.height) {
@@ -73,20 +81,20 @@ void LikelihoodFieldModel::getWeight(Sample2D *sample) {
             // we got some pre-computed work, let the probability be
             // p = p*(z_hit*(1/sqrt(2*PI*sigma_hit*sigma_hit))*exp(-(x*x)/2*sigma_hit*sigma_hit) + z_rand/z_max);
             // we got the sigma_hit^2 : sigma_hit2 = sigma_hit*sigma_hit;
-            // we pre-computed the z_hit_denon inside exponential = -1.0/(2*sigma_hit2);
+            // we pre-computed the sigma_hit_den inside exponential = -1.0/(2*sigma_hit2);
             // and pre-computing the left side:
             // prob = 1/(sqrt((2*std::atan(1.0)*4)*sigma_hit2))
-            // and finally z_rand_max = z_rand/z_max
+            // and finally z_random_max = z_rand/z_max
             // let's hope no bugs here = )
-            p = p*z_hit*prob*exp(dist*dist*z_hit_denon);
+            p = p*(z_hit*(prob*exp(dist*dist*sigma_hit_den)) + z_random_max);
+
         }
+
     }
 
     // save the weight
     // are we normalizing?
-    if (p > 0) {
-        std::cout << "The weigth: " << p << std::endl;
-    }
+
     sample->weight = p;
 }
 
@@ -104,8 +112,8 @@ ros::Time LikelihoodFieldModel::update() {
     }
 
     // update the GridMap if necessary
-    /* TODO */ 
+    map->getGridMap(&grid);
 
+    // the laser scan time, used to sync everything
     return ls_scan.time;
 }
-

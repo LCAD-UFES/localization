@@ -2,7 +2,7 @@
 
 // basic constructor
 // max_occ_dist default to 2.0
-GridMap::GridMap() : max_occ_dist(2.0), cells(nullptr) {}
+GridMap::GridMap() : max_occ_dist(2.0), cells(nullptr), stamp(0) {}
 
 // Copy Constructor
 GridMap::GridMap(const GridMap &g) : 
@@ -75,6 +75,10 @@ void GridMap::updateGridMap(const nav_msgs::OccupancyGrid &map_msg) {
             cells[i].occ_state = 0;
         }
     }
+
+    // finally, the timestamp
+    stamp = map_msg.header.stamp;
+
 }
 
 // update the grid mad, now with another GridMap, overloading
@@ -124,6 +128,9 @@ void GridMap::copy(const GridMap &g) {
     // the max occlusion distance parameter
     max_occ_dist = g.max_occ_dist;
 
+    // finally, the timestamp
+    stamp = g.stamp;
+
 }
 
 // get the pre-computed likelihood
@@ -136,7 +143,6 @@ double GridMap::getMinDistance(int i, int j) {
     // verifing the bounds
     if (index >= 0 && index < width*height) {
 
-        // get the pre computed distance value!!!
         return cells[index].occ_dist;
 
     }
@@ -201,7 +207,7 @@ void GridMap::enqueue(
     Q.push(c);
 
     // change the marked flag
-    // we can be sure about this because of the Priority Queue
+    // we can be sure about this situation. The Priority Queue
     // ensures that this cell (i, j) is found first by the nearest obstacle cell
     marked[MAP_INDEX(i, j)] = 1;
 
@@ -238,8 +244,6 @@ void GridMap::nearestNeighbor() {
     // build an auxiliar CellData
     // its passed by reference
     CellData c(cells);
-
-
 
     // get all obsctacle cells
     for (int i = 0; i < width; i++) {

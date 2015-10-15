@@ -12,7 +12,7 @@ class LikelihoodFieldModel : public MeasurementModel {
         // LikelihoodFieldModel parameters
         double z_hit, z_max, z_rand, sigma_hit;
         // helpers
-        double z_rand_max, sigma_hit2, prob, z_hit_denon;
+        double z_random_max, sigma_hit2, prob, sigma_hit_den;
 
     public:
         // basic constructor
