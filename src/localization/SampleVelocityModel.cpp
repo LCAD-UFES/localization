@@ -60,15 +60,6 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
         // updates the pose based on this current command
         // verify if the angular is zero or very close to zero
 
-        if (commands.size() > 2) {
-            std::cout << std::endl;
-            std::cout << "Old pose: " << pose[0] << " " << pose[1] << " " << pose[2] << std::endl;
-            std::cout << "Noise free Command: " << commands[j].linear << " " << commands[j].angular << std::endl;
-            std::cout << "Noisy: " << v << " " << w << " and y: " << y << std::endl;
-            std::cout << "Last command: " << commands[commands.size()-1].linear << " " << commands[commands.size()-1].angular << std::endl;
-            std::cout << "Time: " << dt << std::endl;
-        }
-
         if (0.0 != commands[j].angular) {
 
             // here we can use the given algorithm directly
@@ -99,10 +90,6 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
             pose[2] += y*dt;
 
         }
-        if (commands.size() > 2) {
-            std::cout << "New pose: " << pose[0] << " " << pose[1] << " " << pose[2] << std::endl;
-        }
-
     }
 }
 

@@ -96,22 +96,6 @@ double LikelihoodFieldModel::getWeight(Sample2D *sample) {
     }
 
     // save the weight
-    // are we normalizing?
-//     if (p > 0.001) {
-//         std::cout << std::endl;
-//         std::cout << "dist: " << dist << std::endl;
-//         std::cout << "z_hit: " << z_hit << std::endl;
-//         std::cout << "sigma_hit: " << sigma_hit << std::endl;
-//         std::cout << "sigma_hit2: " << sigma_hit2 << std::endl;
-//         std::cout << "sigma_hit_den: " << sigma_hit_den << std::endl;
-//         std::cout << "z_rand: " << z_rand << std::endl;
-//         std::cout << "z_random_max: " << z_random_max << std::endl;
-//         std::cout << "prob sqrt: " << prob << std::endl;
-//         std::cout << "exp(dist*dist*sigma_hit_den: " << exp(dist*dist*sigma_hit_den) << std::endl;
-//         std::cout << "z_hit*exp(dist*dist*sigma_hit_den: " << z_hit*exp(dist*dist*sigma_hit_den) << std::endl;
-//         std::cout << "Prob " << p << std::endl;
-//     }
-
     sample->weight = p;
 
     return p;
