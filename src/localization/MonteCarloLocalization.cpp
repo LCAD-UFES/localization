@@ -50,7 +50,6 @@ void MonteCarloLocalization::run() {
 
     // SIMPLE SAMPLING
     // iterate over the samples and updates everything
-
     for (int i = 0; i < Xt.size; i++) {
 
         // the motion model - passing sample pose by reference
@@ -62,8 +61,6 @@ void MonteCarloLocalization::run() {
         Xt.total_weight  += measurement->getWeight(&samples[i]);
 
     }
-
-    Xt.normalizeWeights();
 
     // RESAMPLING
     Xt.resample();
@@ -79,7 +76,6 @@ void MonteCarloLocalization::run() {
 
 // spread all particles
 void MonteCarloLocalization::spreadSamples(Map &map) {
-
 
     // lock the mcl
     mcl_mutex.lock();

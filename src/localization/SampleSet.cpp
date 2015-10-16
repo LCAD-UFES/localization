@@ -30,6 +30,9 @@ void SampleSet::resample() {
     int i = 0;
     double U;
 
+    // our particle weight normalizer
+    double normalizer = 1.0/total_weight;
+
     // a default random generator
     std::default_random_engine generator(std::random_device {} ());
 
@@ -41,7 +44,10 @@ void SampleSet::resample() {
     double r = uniform(generator);
 
     // get the first weight
-    double c = samples[0].weight;
+    double c = samples[0].weight*normalizer;
+
+    // reset total weight
+    total_weight = 0.0;
 
     // create a new Sample2D array
     Sample2D *set = new Sample2D[size];
@@ -54,7 +60,7 @@ void SampleSet::resample() {
         while (U > c) {
 
             i = i + 1;
-            c += samples[i].weight;
+            c += samples[i].weight*normalizer;
 
         }
 
@@ -64,6 +70,11 @@ void SampleSet::resample() {
         set[m].pose.v[1] = samples[i].pose.v[1]; 
         // copy the yaw orientation
         set[m].pose.v[2] = samples[i].pose.v[2];
+
+        // copy the weight
+        set[m].weight = samples[i].weight;
+        // updates the new total_weight
+        total_weight += samples[i].weight;
 
     }
 
@@ -113,19 +124,4 @@ void SampleSet::resetSamples() {
 
     }
 
-}
-
-// normalize the particles weights
-void SampleSet::normalizeWeights() {
-
-    if (total_weight > 0) {
-
-        double norm = 1.0/total_weight;
-
-        for (int i = 0; i < size; i++) {
-
-            samples[i].weight *= norm;
-
-        }
-    }
 }

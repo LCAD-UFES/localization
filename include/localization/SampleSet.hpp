@@ -21,9 +21,6 @@ class SampleSet {
         // clear the entire set
         void resetSamples();
 
-        // normalize the particles weights
-        void normalizeWeights();
-
         // the attributes
         // actual number of samples/particles
         int size;
@@ -43,7 +40,6 @@ class SampleSet {
         // spreaded?
         bool spreaded;
 
-        
 
 };
 

@@ -16,6 +16,7 @@
 
 
 class MonteCarloLocalization {
+
     private:
 
         // The set of samples
