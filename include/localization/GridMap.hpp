@@ -8,7 +8,6 @@
 #include "MapCell.hpp"
 #include "CellData.hpp"
 
-#define MAP_INDEX(i, j) ((i) + (j) *width )
 
 class GridMap {
 
@@ -64,5 +63,7 @@ class GridMap {
         double getMinDistance(int i, int j);
 
 };
+
+#define MAP_INDEX(i, j) ((i) + (j) *width)
 
 #endif

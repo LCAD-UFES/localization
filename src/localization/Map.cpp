@@ -37,15 +37,12 @@ bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
 // returns the grid map
 void Map::getGridMap(GridMap *g) {
 
-
     // copy, is it really necessary?
     // lock the mutex
     map_mutex.lock();
 
     // copy the entire grid map
-    if (grid.stamp < g->stamp) {
-        g->copy(grid);
-    }
+    g->copy(grid);
 
     // lock the mutex
     map_mutex.unlock();

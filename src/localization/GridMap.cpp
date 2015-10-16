@@ -2,7 +2,7 @@
 
 // basic constructor
 // max_occ_dist default to 2.0
-GridMap::GridMap() : max_occ_dist(2.0), cells(nullptr), stamp(0) {}
+GridMap::GridMap() : scale(1), max_occ_dist(2.0), cells(nullptr), stamp(0) {}
 
 // Copy Constructor
 GridMap::GridMap(const GridMap &g) : 

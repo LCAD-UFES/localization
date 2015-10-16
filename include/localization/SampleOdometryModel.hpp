@@ -22,7 +22,7 @@ class SampleOdometryModel : public SampleMotionModel {
         virtual void samplePose2D(Pose2D*);
 
         // updates the commands
-        virtual void updateCommands(const ros::Time&);
+        virtual void update(const ros::Time&);
 };
 
 #endif

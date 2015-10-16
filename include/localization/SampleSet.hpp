@@ -15,8 +15,14 @@ class SampleSet {
         SampleSet(const ros::NodeHandle&);
         ~SampleSet();
 
+        // resample all particles based on the pose and weight
+        void resample();
+
         // clear the entire set
         void resetSamples();
+
+        // normalize the particles weights
+        void normalizeWeights();
 
         // the attributes
         // actual number of samples/particles
@@ -24,6 +30,9 @@ class SampleSet {
 
         // the set of the pose samples
         Sample2D *samples;
+
+        // the total weight
+        double total_weight;
 
         // the min parameter
         int min;
@@ -33,6 +42,8 @@ class SampleSet {
 
         // spreaded?
         bool spreaded;
+
+        
 
 };
 

@@ -28,6 +28,6 @@ void SampleOdometryModel::samplePose2D(Pose2D*) {
 }
 
 // updates the commands
-void SampleOdometryModel::updateCommands(const ros::Time&) {
+void SampleOdometryModel::update(const ros::Time&) {
     /* TODO */
 }

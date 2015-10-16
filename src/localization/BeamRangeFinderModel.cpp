@@ -4,7 +4,7 @@
 BeamRangeFinderModel::BeamRangeFinderModel(ros::NodeHandle &private_nh, Laser *ls, Map *m) : MeasurementModel(ls, m) {}
 
 //
-void BeamRangeFinderModel::getWeight(Sample2D *sample) {
+double BeamRangeFinderModel::getWeight(Sample2D *sample) {
     /* TODO */
 }
 

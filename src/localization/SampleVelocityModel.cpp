@@ -107,7 +107,7 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
 }
 
 // update the commands
-void SampleVelocityModel::updateCommands(const ros::Time &end) {
+void SampleVelocityModel::update(const ros::Time &end) {
 
     if (!commands.empty()) {
         commands.clear();

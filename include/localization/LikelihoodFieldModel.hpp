@@ -19,7 +19,7 @@ class LikelihoodFieldModel : public MeasurementModel {
         LikelihoodFieldModel(ros::NodeHandle&, Laser*, Map*);
 
         // base class abstract method implementation
-        virtual void getWeight(Sample2D *);
+        virtual double getWeight(Sample2D *);
 
         // update the LaserScan
         virtual ros::Time update();

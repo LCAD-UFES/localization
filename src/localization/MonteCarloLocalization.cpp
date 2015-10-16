@@ -43,21 +43,30 @@ void MonteCarloLocalization::run() {
     sync = measurement->update();
 
     // get the available commands
-    motion->updateCommands(sync);
+    motion->update(sync);
+
+    // reset the total weight
+    Xt.total_weight = 0.0;
 
     // SIMPLE SAMPLING
     // iterate over the samples and updates everything
+
     for (int i = 0; i < Xt.size; i++) {
 
         // the motion model - passing sample pose by reference
         motion->samplePose2D(&samples[i].pose);
 
-        // the measurement model - passing sample weight by reference
-        measurement->getWeight(&samples[i]);
+        // the measurement model - passing the Sample2D by pointer
+        // the weight is assigned to the sample inside the method
+        // it returns the pose weight
+        Xt.total_weight  += measurement->getWeight(&samples[i]);
 
     }
+
+    Xt.normalizeWeights();
+
     // RESAMPLING
-    /* TODO */
+    Xt.resample();
 
     // usually the MCL returns the Xt sample set
     // what should we do here?

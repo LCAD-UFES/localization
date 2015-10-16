@@ -21,7 +21,7 @@ LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *l
     // let's do some pre-work
     sigma_hit2 = sigma_hit*sigma_hit;
     //
-    sigma_hit_den = -1.0/(2*sigma_hit2);
+    sigma_hit_den = -1.0/(2*sigma_hit);
     //
     prob = 1.0/(sigma_hit*sqrt(2*PI));
     //
@@ -30,10 +30,10 @@ LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *l
 }
 
 // assigns a weight to to all particles/samples
-void LikelihoodFieldModel::getWeight(Sample2D *sample) {
+double LikelihoodFieldModel::getWeight(Sample2D *sample) {
 
     // auxiliar variables
-    double p = 1.0;
+    double p = 0.0;
     double dist;
     double obs_range;
     double obs_bearing;
@@ -60,6 +60,7 @@ void LikelihoodFieldModel::getWeight(Sample2D *sample) {
             // without tf, we assume the laser is in the center of mass
             x = pose[0] + obs_range * cos(pose[2] + obs_bearing);
             y = pose[1] + obs_range * sin(pose[2] + obs_bearing);
+
             // the recommended one in a real life situation
             // x = pose[0] + x_s*cos(pose[2]) - y_s*sin(pose[2]) + obs_range * cos(pose[2] + obs_bearing);
             // y = pose[0] + y_s*cos(pose[2]) + x_s*sin(pose[2]) + obs_range * sin(pose[2] + obs_bearing);
@@ -68,14 +69,17 @@ void LikelihoodFieldModel::getWeight(Sample2D *sample) {
             x_map = std::floor((x - grid.origin_x)/grid.scale + 0.5) + grid.width/2;
             y_map = std::floor((y - grid.origin_y)/grid.scale + 0.5) + grid.height/2;
 
-
             // get the distance
             // verify the bounds
             if (x_map > grid.width || y_map > grid.height) {
+
                 dist = grid.max_occ_dist;
+
             } else {
+
                 // get the pre-computed value
                 dist = grid.getMinDistance(x_map, y_map);
+
             }
 
             // we got some pre-computed work, let the probability be
@@ -86,16 +90,32 @@ void LikelihoodFieldModel::getWeight(Sample2D *sample) {
             // prob = 1/(sqrt((2*std::atan(1.0)*4)*sigma_hit2))
             // and finally z_random_max = z_rand/z_max
             // let's hope no bugs here = )
-            p = p*(z_hit*(prob*exp(dist*dist*sigma_hit_den)) + z_random_max);
-
+            p += z_hit*prob*(exp(dist*dist*sigma_hit_den)) + z_random_max;
         }
 
     }
 
     // save the weight
     // are we normalizing?
+//     if (p > 0.001) {
+//         std::cout << std::endl;
+//         std::cout << "dist: " << dist << std::endl;
+//         std::cout << "z_hit: " << z_hit << std::endl;
+//         std::cout << "sigma_hit: " << sigma_hit << std::endl;
+//         std::cout << "sigma_hit2: " << sigma_hit2 << std::endl;
+//         std::cout << "sigma_hit_den: " << sigma_hit_den << std::endl;
+//         std::cout << "z_rand: " << z_rand << std::endl;
+//         std::cout << "z_random_max: " << z_random_max << std::endl;
+//         std::cout << "prob sqrt: " << prob << std::endl;
+//         std::cout << "exp(dist*dist*sigma_hit_den: " << exp(dist*dist*sigma_hit_den) << std::endl;
+//         std::cout << "z_hit*exp(dist*dist*sigma_hit_den: " << z_hit*exp(dist*dist*sigma_hit_den) << std::endl;
+//         std::cout << "Prob " << p << std::endl;
+//     }
 
     sample->weight = p;
+
+    return p;
+
 }
 
 // update the LaserScan
@@ -116,4 +136,5 @@ ros::Time LikelihoodFieldModel::update() {
 
     // the laser scan time, used to sync everything
     return ls_scan.time;
+
 }
