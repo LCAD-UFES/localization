@@ -31,13 +31,11 @@ Vá até a janela do RVIZ e adicione um mapa que ouça o tópico /map. Bom, esto
 
 Ainda no RVIZ, mude o frame global de base_link para /map
 
-Adicione um PoseArray, também no rviz, por padrão ele vai pegar o tópico do amcl padrão do ROS e vai exibir um conjunto de partículas ao redor do Pioneer.
-
-Agora vamos iniciar o nosso nó:
+Adicione um PoseArray, também no RVIZ. O RVIZ ele vai pegar o tópico padrão do amcl do ROS e vai exibir um conjunto de partículas ao redor do Pioneer, vamos então rodar o nosso nó para visualizar as partículas que serão geradas por ele e não pelo amcl:
 
     $ rosrun localization localization_node
 
-Vá até o PoseArray, dentro do RVIZ, e altere o tópico de /particle_cloud para /pose_array. Estamos publicando nesse tópico.
+Volte até o PoseArray, dentro do RVIZ, e altere o tópico de /particle_cloud para /pose_array. Estamos publicando nesse tópico.
 
 Imediatamente você verá as párticulas espalhadas pelo mapa de forma uniforme e randômica. O algoritmo somente faz o sampling e resampling quando ocorre movimentos, então prossigamos para o último terminal (perdeu a conta?):
 
