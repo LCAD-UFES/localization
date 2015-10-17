@@ -1,12 +1,13 @@
 #include <iostream>
 
 #include "MonteCarloLocalization.hpp"
+
 // Constructor
 MonteCarloLocalization::MonteCarloLocalization(
             ros::NodeHandle &private_nh,
             SampleMotionModel *motionModel,
             MeasurementModel *measurementModel
-        ) : Xt(private_nh), motion(motionModel), measurement(measurementModel) {
+        ) : Xt(private_nh), motion(motionModel), measurement(measurementModel), generator(std::random_device {} ()) {
 
 }
 
@@ -36,9 +37,6 @@ void MonteCarloLocalization::start() {
 // the MCL algoritmh
 void MonteCarloLocalization::run() {
 
-    // auxiliar variables
-    Sample2D *samples = Xt.samples;
-
     // update the LaserScan and the GridMap if necessary and returns the laser TimeStamp
     sync = measurement->update();
 
@@ -47,6 +45,9 @@ void MonteCarloLocalization::run() {
 
     // reset the total weight
     Xt.total_weight = 0.0;
+
+    // shortcut
+    Sample2D *samples = Xt.samples;
 
     // SIMPLE SAMPLING
     // iterate over the samples and updates everything
@@ -62,13 +63,21 @@ void MonteCarloLocalization::run() {
 
     }
 
+    // normalize
+    // normalize
+    Xt.normalizeWeights();
+
     // RESAMPLING
-    Xt.resample();
+    if (motion->moved) {
+        resample();
+    }
+
+    // normalize
+    Xt.normalizeWeights();
 
     // usually the MCL returns the Xt sample set
     // what should we do here?
     // let's publish in a convenient topic
-    /* TODO */
 
     // unlock the mutex
     mcl_mutex.unlock();
@@ -85,5 +94,113 @@ void MonteCarloLocalization::spreadSamples(Map &map) {
 
     // unlock the mcl
     mcl_mutex.unlock();
+
+}
+
+// return a copy of the Sample2D
+geometry_msgs::PoseArray MonteCarloLocalization::getPoseArray() {
+
+    // shortcut
+    Sample2D *samples = Xt.samples;
+
+    // build a copy of the Sample2D array
+    geometry_msgs::PoseArray msg;
+
+    // set the frame_id
+    msg.header.frame_id = "map";
+
+    // lock the mcl
+    mcl_mutex.lock();
+
+    // get the current timestamp
+    msg.header.stamp = ros::Time::now();
+
+    // resize the pose array
+    msg.poses.resize(Xt.size);
+
+    // copy the poses
+    for (int i = 0; i < Xt.size; i++) {
+        // copy the current pose transformed by the appropriate tf
+        // Euler to Quaternion
+        tf::poseTFToMsg(
+                            tf::Pose(
+                                tf::createQuaternionFromYaw(samples[i].pose.v[2]),
+                                tf::Vector3(samples[i].pose.v[0], samples[i].pose.v[1], 0)),
+                            msg.poses[i]
+                       );
+        }
+
+    // unlock the mcl
+    mcl_mutex.unlock();
+
+    return msg;
+
+}
+
+// resample the entire SampleSet - low-variance
+// resampling all particles based on the weight
+void MonteCarloLocalization::resample() {
+
+    // auxiliar variables
+    double M = 1.0/((double) Xt.size);
+    int i = 0;
+    double U;
+
+    // shortcut
+    Sample2D *samples = Xt.samples;
+
+    // a uniform distribution
+    // from zero to size - 1, our SampleSet size
+    std::uniform_real_distribution<double> uniform(0, M);
+
+    // get a random value
+    double r = uniform(generator);
+
+    // get the first weight
+    double c = samples[0].weight;
+
+    // reset total weight
+    Xt.total_weight = 0.0;
+
+    // create a new Sample2D array
+    Sample2D *set = new Sample2D[Xt.size];
+
+    // iterate over the entire SampleSet
+    for (int m = 1; m <= Xt.size; m++) {
+
+        U = r + (m-1)*M;
+
+        while (U > c) {
+
+            i = i + 1;
+            c += samples[i].weight;
+
+        }
+
+        // copy the x coordinate
+        set[m-1].pose.v[0] = samples[i].pose.v[0];
+
+        // copy the y coordinate
+        set[m-1].pose.v[1] = samples[i].pose.v[1];
+
+        // copy the yaw orientation
+        set[m-1].pose.v[2] = samples[i].pose.v[2];
+
+        // copy the sample weight
+        set[m-1].weight = samples[i].weight;
+
+        // updates the new total_weight
+        Xt.total_weight += samples[i].weight;
+
+    }
+
+    // now we have to delete the old array
+    delete Xt.samples;
+
+    // assign the new array to this object pointer
+    Xt.samples = set;
+
+    // just to be sure...
+    set = samples = nullptr;
 
 }

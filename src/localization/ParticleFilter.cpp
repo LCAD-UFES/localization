@@ -7,7 +7,7 @@ ParticleFilter::ParticleFilter() :
                                     cmd_vel(),
                                     cmd_odom(),
                                     laser(),
-                                    map() {
+                                    map(), loop_rate(30) {
 
     // Motion model
     std::string motionModel;
@@ -48,7 +48,15 @@ ParticleFilter::ParticleFilter() :
     }
 
     // The MCL object
-    mcl = new MonteCarloLocalization(private_nh, motion, measurement);
+    std::string mcl_version;
+    private_nh.param<std::string>("monte_carlo_version", mcl_version, "augmented");
+
+    if (0 == mcl_version.compare("normal")) {
+        mcl = new MonteCarloLocalization(private_nh, motion, measurement);
+    } else {
+        mcl = new AugmentedMonteCarloLocalization(private_nh, motion, measurement);
+    }
+
     if (nullptr == mcl) {
         throw std::bad_alloc();
     }
@@ -76,6 +84,13 @@ ParticleFilter::ParticleFilter() :
     private_nh.param<std::string>("map_server_topic", map_topic, "map");
     // subscribe to the map topic
     map_sub = nh.subscribe(map_topic, 1, &ParticleFilter::readMap, this);
+
+    // get the PoseArray topic name
+    std::string pose_array_topic;
+    private_nh.param<std::string>("pose_array_topic", pose_array_topic, "pose_array");
+
+    // set the pose_array_pub, the correct topic and messages
+    pose_array_pub = nh.advertise<geometry_msgs::PoseArray>(pose_array_topic, 10);
 
 }
 
@@ -121,8 +136,11 @@ void ParticleFilter::commandVelReceived(const geometry_msgs::Twist &msg) {
 }
 
 // the odometry motion command
-/* TODO */
-void ParticleFilter::commandOdomReceived(const nav_msgs::Odometry &msg) {}
+void ParticleFilter::commandOdomReceived(const nav_msgs::Odometry &msg) {
+
+    /* TODO */
+
+}
 
 // the occupancy grid
 void ParticleFilter::readMap(const nav_msgs::OccupancyGrid &msg) {
@@ -135,6 +153,16 @@ void ParticleFilter::readMap(const nav_msgs::OccupancyGrid &msg) {
     }
 }
 
+// publish the poses - the PoseArray Publisher
+void ParticleFilter::publishPoseArray() {
+
+    // get the Poses
+    geometry_msgs::PoseArray msg = mcl->getPoseArray();
+
+    // publish
+    pose_array_pub.publish(msg);
+}
+
 // run the particle
 void ParticleFilter::start() {
 
@@ -144,8 +172,16 @@ void ParticleFilter::start() {
     // start spinning
     spinner.start();
 
-    // wait for Control + C
-    ros::waitForShutdown();
+    while(ros::ok()) {
 
+        // publish the pose array
+        publishPoseArray();
+
+        // sleep
+        loop_rate.sleep();
+
+    }
+//     // wait for Control + C
+//     ros::waitForShutdown();
 
 }

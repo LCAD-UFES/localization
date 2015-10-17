@@ -22,75 +22,24 @@ SampleSet::~SampleSet() {
     delete samples;
 }
 
-// resampling all particles based on the weight
-void SampleSet::resample() {
+// normalize the weights
+void SampleSet::normalizeWeights() {
 
-    // auxiliar variables
-    double M = 1.0/size;
-    int i = 0;
-    double U;
+    // normalize the weights
+    double normalize = 1.0/( (double) total_weight);
 
-    // our particle weight normalizer
-    double normalizer = 1.0/total_weight;
+    for (int i = 0; i < size; i++) {
 
-    // a default random generator
-    std::default_random_engine generator(std::random_device {} ());
-
-    // a uniform distribution
-    // from zero to size - 1, our SampleSet size
-    std::uniform_real_distribution<double> uniform(0, M);
-
-    // get a random value
-    double r = uniform(generator);
-
-    // get the first weight
-    double c = samples[0].weight*normalizer;
-
-    // reset total weight
-    total_weight = 0.0;
-
-    // create a new Sample2D array
-    Sample2D *set = new Sample2D[size];
-
-    // iterate over the entire SampleSet
-    for (int m = 0; m < size; m++) {
-
-        U = r + (m)*M;
-
-        while (U > c) {
-
-            i = i + 1;
-            c += samples[i].weight*normalizer;
-
-        }
-
-        // copy the x coordinate
-        set[m].pose.v[0] = samples[i].pose.v[0]; 
-        // copy the y coordinate
-        set[m].pose.v[1] = samples[i].pose.v[1]; 
-        // copy the yaw orientation
-        set[m].pose.v[2] = samples[i].pose.v[2];
-
-        // copy the weight
-        set[m].weight = samples[i].weight;
-        // updates the new total_weight
-        total_weight += samples[i].weight;
+        // normalize
+        samples[i].weight *= normalize;
 
     }
-
-    // now we have to delete the old array
-    delete samples;
-
-    // assign the new array to this object pointer
-    samples = set;
-
-    // just to be sure...
-    set = nullptr;
 
 }
 
 // allocate the samples in memmory
 void SampleSet::newSamples() {
+
     // the sample set size limits
     if (min <= size && size <= max && nullptr == samples) {
 
@@ -113,7 +62,7 @@ void SampleSet::resetSamples() {
     if (nullptr != samples) {
 
         // size must be greater than zero
-        double min_w = 1/size;
+        double min_w = 1.0/((double)size);
 
         for (int i = 0; i < size; i++) {
 

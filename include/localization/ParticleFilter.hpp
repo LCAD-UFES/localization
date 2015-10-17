@@ -8,6 +8,7 @@
 #include <nav_msgs/Odometry.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/TwistStamped.h>
+#include <geometry_msgs/PoseArray.h>
 
 #include "CommandVelocity.hpp"
 #include "CommandOdometry.hpp"
@@ -17,6 +18,7 @@
 #include "LikelihoodFieldModel.hpp"
 
 #include "MonteCarloLocalization.hpp"
+#include "AugmentedMonteCarloLocalization.hpp"
 
 class ParticleFilter {
     private:
@@ -29,6 +31,12 @@ class ParticleFilter {
         ros::Subscriber laser_sub;
         ros::Subscriber cmd_sub;
         ros::Subscriber map_sub;
+
+        // advertises
+        ros::Publisher pose_array_pub;
+
+        // the ROS LoopRate
+        ros::Rate loop_rate;
 
         // The CommandVel Reader
         CommandVel cmd_vel;
@@ -68,6 +76,7 @@ class ParticleFilter {
         // the map topic
         void readMap(const nav_msgs::OccupancyGrid&);
 
+        void publishPoseArray();
         // run
         void start();
 

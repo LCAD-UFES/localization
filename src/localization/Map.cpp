@@ -3,7 +3,7 @@
 #include "Map.hpp"
 
 // basic constructor
-Map::Map() : grid(), map_received(false) {}
+Map::Map() : grid(), map_received(false), angle_dist(0, std::atan(1.0)*8), normal_dist(0.0, 0.05), generator(std::random_device {} ()) {}
 
 // receives a OccupancyGrid msg and converts to internal representation
 bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
@@ -22,6 +22,9 @@ bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
 
         // updates the likelihood
         grid.nearestNeighbor();
+
+        // update the availableCells
+        updateAvailableCells();
 
         // avoiding unnecessary copies
         update_status = map_received = true;
@@ -80,9 +83,11 @@ bool Map::mapReceived() {
 }
 
 // get the cells pointer
-std::vector<int> Map::getAvailableCellsIndexes() {
+void Map::updateAvailableCells() {
 
-    std::vector<int> available;
+    if(!availableCells.empty()) {
+        availableCells.clear();
+    }
 
     double size = grid.width*grid.height;
 
@@ -91,12 +96,14 @@ std::vector<int> Map::getAvailableCellsIndexes() {
 
     // get all available cells
     for (int i = 0; i < size; i++) {
-        if (-1 == cells[i].occ_state) {
-            available.push_back(i);
-        }
-    }
 
-    return available;
+        if (-1 == cells[i].occ_state) {
+
+            availableCells.push_back(i);
+
+        }
+
+    }
 
 }
 // updateMaxOccDist
@@ -122,20 +129,8 @@ void Map::uniformSpread(SampleSet *Xt) {
     // verify if there's a map and the particles aren't already spreaded
     if (map_received && !Xt->spreaded) {
 
-        // get the available cells indexes
-        std::vector<int> indexes = getAvailableCellsIndexes();
-
-        // set a generator engine
-        std::default_random_engine generator(std::random_device {} ());
-
         // set a uniform distribution
-        std::uniform_int_distribution<int> uniform_dist(0, indexes.size() - 1);
-
-        // set another uniform distribution -  0 ~ 2PI
-        std::uniform_real_distribution<double> angle_dist(0.0, std::atan(1.0)*8);
-
-        // set a normal distribution
-        std::normal_distribution<double> normal_dist(0.0, 0.05);
+        std::uniform_int_distribution<int> uniform_dist(0, availableCells.size() - 1);
 
         // tmp variables
         int index;
@@ -146,7 +141,7 @@ void Map::uniformSpread(SampleSet *Xt) {
         // shortcut
         Sample2D *samples = Xt->samples;
 
-        // sledgehammer programing style? =-/
+        // sledgehammer programing style? =-)
         // create random poses based on the unnoccupied cells
         for (int i = 0; i < Xt->size; i++) {
 
@@ -157,10 +152,10 @@ void Map::uniformSpread(SampleSet *Xt) {
             index = uniform_dist(generator);
 
             // get the grid x coord
-            g_i = indexes[index]*div;
+            g_i = availableCells[index]%grid.width;
 
-            // get the grid y coord
-            g_j = indexes[index] % grid.width;
+            // get the grid y coord - div is defined above as 1/grid.width
+            g_j = availableCells[index]*div;
 
             // now we have the grid index and a we can 
             // convert to world coords and assign to the pose value
@@ -173,6 +168,8 @@ void Map::uniformSpread(SampleSet *Xt) {
 
         }
 
+        // spreaded!
+        Xt->spreaded = true;
     }
 
     std::cout << "Spreaded!" << std::endl;
@@ -180,4 +177,40 @@ void Map::uniformSpread(SampleSet *Xt) {
     // unlock the map
     map_mutex.unlock();
 
+}
+
+// generates random pose
+Pose2D Map::randomPose2D() {
+
+    // a new pose to return
+    Pose2D pose;
+
+    // lock the map
+    map_mutex.lock();
+
+    // set a uniform distribution
+    std::uniform_int_distribution<int> uniform_dist(0, availableCells.size() - 1);
+
+    // get the index to acess the availableCells
+    int index = uniform_dist(generator);
+
+    // get the grid x coord
+    int g_i = availableCells[index]%grid.width;
+
+    // get the grid y coord - div is defined above as 1/grid.width
+    int g_j = availableCells[index]/grid.width;
+
+    // now we have the grid index and a we can 
+    // convert to world coords and assign to the pose value
+    // with a simple gaussian noise
+    pose.v[0] = (grid.origin_x + (g_i - grid.width/2)*grid.scale) + normal_dist(generator);
+    pose.v[1] = (grid.origin_y + (g_j - grid.height/2)*grid.scale) + normal_dist(generator);
+
+    // random orientation between 0 and 2*PI radians
+    pose.v[2] = angle_dist(generator);
+
+    // unlock the map
+    map_mutex.unlock();
+
+    return pose;
 }

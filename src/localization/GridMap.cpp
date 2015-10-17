@@ -63,14 +63,14 @@ void GridMap::updateGridMap(const nav_msgs::OccupancyGrid &map_msg) {
     scale  =  map_msg.info.resolution;
     origin_x = map_msg.info.origin.position.x + (map_msg.info.width/2)*map_msg.info.resolution;
     origin_y = map_msg.info.origin.position.y + (map_msg.info.height/2)*map_msg.info.resolution;
-
+    orientation = map_msg.info.origin.orientation;
 
     // copy the occupancy state
     for (int i = 0; i < grid_size; i++) {
-        if (0 == map_msg.data[i]) {
-            cells[i].occ_state = -1;
-        } else if (100 == map_msg.data[i]) {
+        if (0.65 < map_msg.data[i]) {
             cells[i].occ_state = +1;
+        } else if (map_msg.data[i] >= 0) {
+            cells[i].occ_state = -1;
         } else {
             cells[i].occ_state = 0;
         }
@@ -118,6 +118,7 @@ void GridMap::copy(const GridMap &g) {
     scale  =  g.scale;
     origin_x = g.origin_x;
     origin_y = g.origin_y;
+    orientation = g.orientation;
 
 
     // copy the occupancy state

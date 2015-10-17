@@ -6,6 +6,8 @@
 #include <string>
 
 #include <ros/ros.h>
+#include <geometry_msgs/PoseArray.h>
+#include <tf/transform_datatypes.h>
 
 #include "SampleSet.hpp"
 
@@ -14,10 +16,9 @@
 #include "LikelihoodFieldModel.hpp"
 #include "BeamRangeFinderModel.hpp"
 
-
 class MonteCarloLocalization {
 
-    private:
+    protected:
 
         // The set of samples
         SampleSet Xt;
@@ -34,11 +35,16 @@ class MonteCarloLocalization {
         // a mutex to avoid multiple starts
         std::mutex mcl_mutex;
 
+        // set a generator engine
+        std::default_random_engine generator;
+
         // the run method is private
         // it can be called only inside the MonteCarloLocalization::start() method
-        void run();
+        virtual void run();
 
     public:
+
+
         // basic constructor, it receives private_nh, motion, measurement
         MonteCarloLocalization(ros::NodeHandle &, SampleMotionModel*, MeasurementModel*);
 
@@ -47,11 +53,18 @@ class MonteCarloLocalization {
 
         // start a thread
         // it starts a thread that executes the run() method and exits smoothly
-        void start();
+        virtual void start();
 
         // spread all particles
         // avoiding to spread particles at the same time run() method
-        void spreadSamples(Map &);
+        virtual void spreadSamples(Map &);
+
+        // resample the entire SampleSet
+        virtual void resample();
+
+        // return a copy of the Sample2D
+        virtual geometry_msgs::PoseArray getPoseArray();
+
 };
 
 #endif

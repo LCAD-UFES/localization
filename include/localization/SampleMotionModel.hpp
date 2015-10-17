@@ -21,6 +21,9 @@ class SampleMotionModel {
         // inside the method we get the standard deviation
         virtual double gaussianPDF(double);
 
+        // a flag to indicate if the robot moved
+        bool moved;
+
 };
 
 #endif

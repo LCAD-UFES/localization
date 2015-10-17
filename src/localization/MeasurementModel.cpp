@@ -8,3 +8,8 @@ MeasurementModel::MeasurementModel(Laser* ls, Map *m) : laser(ls), ls_scan(), st
 MeasurementModel::~MeasurementModel() {
     map = nullptr;
 }
+
+// get the map pointer
+Map* MeasurementModel::getMap() {
+    return map;
+}

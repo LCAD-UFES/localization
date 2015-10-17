@@ -116,6 +116,11 @@ catkin_package(
 include_directories(include/localization)
 include_directories(${catkin_INCLUDE_DIRS})
 
+set(MY_SRCS
+    include/localization/Sample2D.hpp
+    include/localization/GridMap.hpp
+)
+
 set(LOCALIZATION_LIB_SOURCES 
     src/localization/Sample2D.cpp
     src/localization/GridMap.cpp
@@ -133,6 +138,7 @@ set(LOCALIZATION_LIB_SOURCES
     src/localization/LikelihoodFieldModel.cpp
     src/localization/SampleSet.cpp
     src/localization/MonteCarloLocalization.cpp
+    src/localization/AugmentedMonteCarloLocalization.cpp
     src/localization/ParticleFilter.cpp
 )
 

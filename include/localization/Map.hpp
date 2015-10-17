@@ -21,9 +21,23 @@ class Map {
         bool map_received;
 
         // get the free cells
-        std::vector<int> getAvailableCellsIndexes();
+        std::vector<int> availableCells;
+
+        // update the availableCells
+        void updateAvailableCells();
+
+        // random 
+        // set another uniform distribution -  0 ~ 2PI
+        std::uniform_real_distribution<double> angle_dist;
+
+        // set a normal distribution
+        std::normal_distribution<double> normal_dist;
+
+        // set a generator engine
+        std::default_random_engine generator;
 
     public:
+
 
         Map();
         // updates the grid
@@ -43,6 +57,9 @@ class Map {
 
         // spreads the particles over the entire map, randomly
         void uniformSpread(SampleSet*);
+
+        // returns an random Pose2D inside the available cells
+        Pose2D randomPose2D();
 
 };
 

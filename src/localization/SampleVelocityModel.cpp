@@ -14,8 +14,8 @@ SampleVelocityModel::SampleVelocityModel(
     // the alphas
     private_nh.param("sample_velocity_model_alpha_1", a1, 0.05);
     private_nh.param("sample_velocity_model_alpha_2", a2, 0.05);
-    private_nh.param("sample_velocity_model_alpha_3", a3, 0.05);
-    private_nh.param("sample_velocity_model_alpha_4", a4, 0.05);
+    private_nh.param("sample_velocity_model_alpha_3", a3, 0.005);
+    private_nh.param("sample_velocity_model_alpha_4", a4, 0.005);
     private_nh.param("sample_velocity_model_alpha_5", a5, 0.025);
     private_nh.param("sample_velocity_model_alpha_6", a6, 0.025);
 
@@ -41,8 +41,8 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
     for (int j = 0; j < commands.size() - 1; j++) {
 
         // just to be easy to write and reduce repetitive multiplication
-        v2 = commands[j].linear*commands[j].linear;
-        w2 = commands[j].angular*commands[j].angular;
+        v2 = std::fabs(commands[j].linear);
+        w2 = std::fabs(commands[j].angular);
 
         // the time betwen the current and the next command
         // the last command in this command vector is a hack
@@ -53,7 +53,7 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
         // get the linear velocity
         v = commands[j].linear*1.2 + gaussianPDF(a1*v2 + a2*w2);
         // get the angular velocity
-        w = commands[j].angular + gaussianPDF(a3*v2 + a4*w2);
+        w = commands[j].angular*1.5 + gaussianPDF(a3*v2 + a4*w2);
         // get the final angle extra noisy angular velocity
         y = gaussianPDF(a5*v2 + a6*w2);
 
@@ -69,16 +69,19 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
             // get the y distance
             pose[1] += + vw*cos(pose[2]) - vw*cos(pose[2] + w*dt);
             // get the new angle
-            pose[2] = pose[2] + w*dt + y*dt;
+            pose[2] += w*dt + y*dt;
 
             // we assume that mostly times the orientation will exceed the limits when there's some
             // angular velocity
-            // maintain the orientation between -2*PI and 2*PI
-            if(PI2 < pose[2]) {
+            // maintain the orientation between 0 and 2*PI
+            if (PI2 < pose[2]) {
                 pose[2] -= PI2;
-            } else if (-PI2 > pose[2]) {
+            } else if (0 > pose[2]) {
                 pose[2] += PI2;
             }
+
+            // indicates the movement
+            moved = true;
 
         } else if (0.0 != commands[j].linear) {
 
@@ -89,8 +92,18 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
             // get the new angle, just adding some noise
             pose[2] += y*dt;
 
+            // indicates the movement
+            moved = true;
+
+        } else {
+
+            // indicates the movement
+            moved = false;
+
         }
+
     }
+
 }
 
 // update the commands

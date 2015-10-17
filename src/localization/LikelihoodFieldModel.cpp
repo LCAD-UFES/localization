@@ -33,7 +33,7 @@ LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *l
 double LikelihoodFieldModel::getWeight(Sample2D *sample) {
 
     // auxiliar variables
-    double p = 0.0;
+    double q = 0.0;
     double dist;
     double obs_range;
     double obs_bearing;
@@ -47,7 +47,7 @@ double LikelihoodFieldModel::getWeight(Sample2D *sample) {
 
     // iterate over the scans
     // we have 60 
-    for (int i = 0; i < ls_scan.range_count ; i += step) {
+    for (int i = 0; i < ls_scan.range_count; i += step) {
 
         // copy the range and the angle
         obs_range = ls_scan.ranges[i][0];
@@ -90,15 +90,16 @@ double LikelihoodFieldModel::getWeight(Sample2D *sample) {
             // prob = 1/(sqrt((2*std::atan(1.0)*4)*sigma_hit2))
             // and finally z_random_max = z_rand/z_max
             // let's hope no bugs here = )
-            p += z_hit*prob*(exp(dist*dist*sigma_hit_den)) + z_random_max;
+            q += z_hit*(exp(dist*dist*sigma_hit_den)) + z_random_max;
+
         }
 
     }
 
+    // ???
+    sample->weight *= (1.0 + q*q*q);
     // save the weight
-    sample->weight = p;
-
-    return p;
+    return sample->weight;
 
 }
 

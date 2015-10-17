@@ -15,6 +15,9 @@ class GridMap {
         // Map origin; the map is a viewport onto a conceptual larger map.
         float origin_x, origin_y;
 
+        // the grid orientation
+        geometry_msgs::Quaternion orientation;
+
         // Map scale (m/px)
         float scale;
 
@@ -64,6 +67,7 @@ class GridMap {
 
 };
 
+// i is the collum and j is the row :-/
 #define MAP_INDEX(i, j) ((i) + (j) *width)
 
 #endif

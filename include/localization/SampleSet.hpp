@@ -15,8 +15,8 @@ class SampleSet {
         SampleSet(const ros::NodeHandle&);
         ~SampleSet();
 
-        // resample all particles based on the pose and weight
-        void resample();
+        // normalize
+        void normalizeWeights();
 
         // clear the entire set
         void resetSamples();

@@ -41,6 +41,9 @@ class MeasurementModel {
 
         // update the LaserScan and if necessary the GridMap also
         virtual ros::Time update() =0;
+
+        // get the map pointer
+        virtual Map* getMap();
 };
 
 #endif
