@@ -45,6 +45,6 @@ Imediatamente você verá as párticulas espalhadas pelo mapa de forma uniforme 
   
 Posicione as janelas de forma que você consiga ver o rviz enquanto controla o Pioneer pelo terminal. Caso prefira, use uma outra alternativa como controlar via joystick, daí não é necessário manter o terminal ativado.
 
-O algoritmo parece convergir os samples para áreas erradas mas com o tempo ele se recupera, passeie com o Pioneer por um tempinho, experimente dar uma volta.
+O algoritmo parece convergir os samples, inicialmente, para áreas erradas mas com o tempo ele se recupera, passeie com o Pioneer por um tempinho, experimente dar uma volta.
 
-Falta agora refinar o código para obter mais perfomance em algumas áreas, evitar algumas cópias de objetos desnecessárias e melhorar os parâmetros alphas os modelos de medição e locomoção.
+Falta agora refinar o código para obter mais perfomance em algumas áreas, evitar algumas cópias de objetos desnecessárias e melhorar os parâmetros alphas dos modelos de medição e locomoção.
