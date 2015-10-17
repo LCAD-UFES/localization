@@ -5,7 +5,7 @@ Para copiar o pojeto, faça o clone do respositório dentro da pasta $catkin_ws/
 
     git clone https://github.com/LCAD-UFES/localization.git
 
-Falta ainda publicar o mapa por conta própria e estabelecer as relações de tf entre os objetos.Para testar a implementação, desde já, siga os passos:
+Falta ainda publicar o mapa por conta própria e estabelecer as relações de tf para o mapa.Para testar a implementação, desde já, siga os passos:
 
 Volte até a pasta do catkin $catkin_ws/ e compile o projeto:
 
