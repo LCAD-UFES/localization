@@ -29,7 +29,7 @@ Pode ser que ocorra algum problema do rviz ou do gazebo no caminho, sem stress, 
 
 Vá até a janela do RVIZ e adicione um mapa que ouça o tópico /map. Bom, estou precisando do amcl (comando acima) somente para visualizar o mapa corretamente. Logo mais estará resolvido.
 
-Mude a frame global de base_link para /map.
+Ainda no RVIZ, mude o frame global de base_link para /map
 
 Adicione um PoseArray, também no rviz, por padrão ele vai pegar o tópico do amcl padrão do ROS e vai exibir um conjunto de partículas ao redor do Pioneer.
 
