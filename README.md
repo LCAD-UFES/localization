@@ -31,7 +31,7 @@ Vá até a janela do RVIZ e adicione um mapa que ouça o tópico /map. Bom, esto
 
 Ainda no RVIZ, mude o frame global de base_link para /map
 
-Adicione um PoseArray, também no RVIZ. O RVIZ ele vai pegar o tópico padrão do amcl do ROS e vai exibir um conjunto de partículas ao redor do Pioneer, vamos então rodar o nosso nó para visualizar as partículas que serão geradas por ele e não pelo amcl:
+Adicione um PoseArray, também no RVIZ. O RVIZ vai automaticamente procurar o tópico padrão do amcl do ROS (/particle_cloud) e vai exibir um conjunto de partículas ao redor do Pioneer, vamos então rodar o nosso nó para visualizar as partículas que serão geradas por ele e não pelo amcl:
 
     $ rosrun localization localization_node
 
