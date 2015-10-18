@@ -1,5 +1,5 @@
-project(localization)
 cmake_minimum_required(VERSION 2.8.3)
+project(localization)
 
 
 ## Find catkin macros and libraries

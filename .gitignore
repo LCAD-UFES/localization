@@ -10,3 +10,4 @@ t
 *.txt~
 .gitignore~
 build
+CMakeLists.txt.user
