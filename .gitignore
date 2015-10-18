@@ -11,3 +11,4 @@ t
 .gitignore~
 build
 CMakeLists.txt.user
+*.*.autosave
