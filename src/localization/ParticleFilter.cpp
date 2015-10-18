@@ -139,6 +139,9 @@ void ParticleFilter::commandVelReceived(const geometry_msgs::Twist &msg) {
 void ParticleFilter::commandOdomReceived(const nav_msgs::Odometry &msg) {
 
     /* TODO */
+    //edit the new_pose received
+    cmd_odom.setNew_pose(msg);
+
 
 }
 
