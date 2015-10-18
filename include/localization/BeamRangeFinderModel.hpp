@@ -13,6 +13,7 @@ class BeamRangeFinderModel : public MeasurementModel {
         virtual double getWeight(Sample2D *);
         // update the LaserScan
         virtual ros::Time update();
+        int t;
 };
 
 #endif
