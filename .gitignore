@@ -6,4 +6,6 @@ test.cpp
 src/t
 t
 .directory
-
+*.md~
+*.txt~
+.gitignore~
