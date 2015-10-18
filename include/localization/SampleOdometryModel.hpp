@@ -3,14 +3,22 @@
 
 #include "CommandOdometry.hpp"
 #include "SampleMotionModel.hpp"
+#include "wrap2pi.h"
+#include "Pose2D.hpp"
 
 class SampleOdometryModel : public SampleMotionModel {
 
     // parameters
     double a1, a2, a3, a4;
 
-    // the command
+    // the CommandOdom reader (?)
     CommandOdom *cmds;
+    //the command
+    std::vector<Pose2D> commands;
+    //the command xt-1
+    Pose2D old_odom;
+    //the command xt
+    Pose2D odom;
 
     public:
         // constructor
@@ -23,6 +31,8 @@ class SampleOdometryModel : public SampleMotionModel {
 
         // updates the commands
         virtual void update(const ros::Time&);
+        double SampleOdometryModel::angleDiff(double a, double b);
+        double SampleOdometryModel::normalize(double a);
 };
 
 #endif

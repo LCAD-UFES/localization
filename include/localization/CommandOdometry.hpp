@@ -8,7 +8,6 @@
 #include "geometry_msgs/Vector3.h"
 #include "geometry_msgs/Quaternion.h"
 #include "tf/transform_datatypes.h"
-#include "wrap2pi.h"
 
 class CommandOdom {
 
