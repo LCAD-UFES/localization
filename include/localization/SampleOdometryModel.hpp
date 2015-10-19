@@ -15,16 +15,17 @@ class SampleOdometryModel : public SampleMotionModel {
 
     // the CommandOdom reader (?)
     CommandOdom *cmds;
-    //the command
-    std::vector<Pose2D> commands;
+
     //the command xt-1
     Pose2D old_odom;
+
     //the command xt
     Pose2D odom;
 
     public:
         // constructor
         SampleOdometryModel(const ros::NodeHandle&, CommandOdom *);
+
         // you probably will need to provide a destructor to avoid duplicated deletes over the Commmand pointer
         ~SampleOdometryModel();
 
@@ -33,7 +34,9 @@ class SampleOdometryModel : public SampleMotionModel {
 
         // updates the commands
         virtual void update(const ros::Time&);
+
         double angleDiff(double a, double b);
+
         double normalize(double a);
 };
 
