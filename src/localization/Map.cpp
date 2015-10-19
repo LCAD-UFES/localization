@@ -166,11 +166,11 @@ void Map::uniformSpread(SampleSet *Xt) {
             // now we have the grid index and a we can 
             // convert to world coords and assign to the pose value
             // with a simple gaussian noise
-            pose[0] = 0.0; //(grid.origin_x + (g_i - grid.width/2)*grid.scale) + normal_dist(generator);
-            pose[1] = 0.0; //(grid.origin_y + (g_j - grid.height/2)*grid.scale) + normal_dist(generator);
+            pose[0] = (grid.origin_x + (g_i - grid.width/2)*grid.scale) + normal_dist(generator);
+            pose[1] = (grid.origin_y + (g_j - grid.height/2)*grid.scale) + normal_dist(generator);
 
             // random orientation between 0 and 2*PI radians
-            pose[2] = 0.0; //angle_dist(generator);
+            pose[2] = angle_dist(generator);
 
         }
 

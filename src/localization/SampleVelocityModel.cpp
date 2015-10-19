@@ -62,8 +62,6 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
         // updates the pose based on this current command
         // verify if the angular is zero or very close to zero
 
-        std::cout << "Commands: " << commands[j].angular << " e " << commands[j].linear << std::endl;
-        
         if (0.0 != commands[j].angular) {
 
             // here we can use the given algorithm directly
@@ -78,10 +76,10 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
             // we assume that mostly times the orientation will exceed the limits when there's some
             // angular velocity
             // maintain the orientation between 0 and 2*PI
-            if (PI2 < pose[2]) {
-                pose[2] -= PI2;
-            } else if (0 > pose[2]) {
+            if (-PI > pose[2]) {
                 pose[2] += PI2;
+            } else if (PI < pose[2]) {
+                pose[2] -= PI2;
             }
 
             // indicates the movement

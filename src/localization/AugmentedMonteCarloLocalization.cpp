@@ -121,7 +121,7 @@ void AugmentedMonteCarloLocalization::resample() {
     // iterate over the entire SampleSet
     for (int m = 1; m <= Xt.size; m++) {
 
-        if (drand48() < w_diff) {
+        if (drand48()*0.25 < w_diff) {
 
             // get a random pose
             set[m-1].pose = map->randomPose2D();
