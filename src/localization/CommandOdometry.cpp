@@ -51,8 +51,11 @@ std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end){
 
     }
 
+    // get the poseStamped
+    geometry_msgs::PoseStamped ps = *rit;
+
     // copy the command
-    Pose2D new_pose = convertToPose2D(rit);
+    Pose2D new_pose = convertToPose2D(ps);
 
     // push to the commands list
     commands.push_back(new_pose);
@@ -60,12 +63,8 @@ std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end){
     // updates the old_pose
     old_pose = new_pose;
 
-    // slice the list
-    std::list<geometry_msgs::PoseStamped>::iterator it2 = poses.begin();
-    while(it2->header.stamp < rit->header.stamp) {
-        it2++;
-    }
-    poses.erase(it, it2);
+    // erase the unnecessary commmands
+    poses.erase(it, (++rit).base());
 
     // push the updated old_pose
     commands.push_back(old_pose);
