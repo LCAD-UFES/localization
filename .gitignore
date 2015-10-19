@@ -12,3 +12,5 @@ t
 build
 CMakeLists.txt.user
 *.*.autosave
+*.cpp~
+*.hpp~
