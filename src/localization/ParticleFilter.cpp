@@ -7,7 +7,7 @@ ParticleFilter::ParticleFilter() :
                                     cmd_vel(),
                                     cmd_odom(),
                                     laser(),
-                                    map(), loop_rate(30) {
+                                    map(), loop_rate(10) {
 
     // Motion model
     std::string motionModel;

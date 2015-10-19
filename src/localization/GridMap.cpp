@@ -2,7 +2,7 @@
 
 // basic constructor
 // max_occ_dist default to 2.0
-GridMap::GridMap() : scale(1), max_occ_dist(2.0), cells(nullptr), stamp(0) {}
+GridMap::GridMap() : scale(1), max_occ_dist(0.5), cells(nullptr), stamp(0) {}
 
 // Copy Constructor
 GridMap::GridMap(const GridMap &g) : 
@@ -144,10 +144,13 @@ double GridMap::getMinDistance(int i, int j) {
     // verifing the bounds
     if (index >= 0 && index < width*height) {
 
+        std::cout << "(i, j): " << i << " e " << j << " Index: " << index << std::endl;
+        std::cout << "Distance here: " << cells[index].occ_dist << std::endl;
         return cells[index].occ_dist;
 
     }
 
+    std::cout << "Fora de área: " << max_occ_dist << std::endl;
     // otherwise returns the mas occlusion distance
     return max_occ_dist;
 

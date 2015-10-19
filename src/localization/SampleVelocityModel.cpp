@@ -52,8 +52,10 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
 
         // get the linear velocity
         v = commands[j].linear*1.2 + gaussianPDF(a1*v2 + a2*w2);
+
         // get the angular velocity
         w = commands[j].angular*1.5 + gaussianPDF(a3*v2 + a4*w2);
+
         // get the final angle extra noisy angular velocity
         y = gaussianPDF(a5*v2 + a6*w2);
 
@@ -67,7 +69,7 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
             // get the x distance
             pose[0] += - vw*sin(pose[2]) + vw*sin(pose[2] + w*dt);
             // get the y distance
-            pose[1] += + vw*cos(pose[2]) - vw*cos(pose[2] + w*dt);
+            pose[1] += (vw*cos(pose[2]) - vw*cos(pose[2] + w*dt));
             // get the new angle
             pose[2] += w*dt + y*dt;
 
@@ -114,4 +116,5 @@ void SampleVelocityModel::update(const ros::Time &end) {
     }
     //get the correct commands
     commands = cmds->getAll(end);
+
 }

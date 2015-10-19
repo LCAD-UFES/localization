@@ -4,16 +4,16 @@
 LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *ls, Map *m) : MeasurementModel(ls, m) {
 
     // get the z_hit parameter
-    private_nh.param("likelihood_z_hit", z_hit, 0.9);
+    private_nh.param("likelihood_z_hit", z_hit, 0.5);
     // get the z_max parameter
     private_nh.param("likelihood_z_max", z_max, 0.05);
     // get the z_rand parameter
-    private_nh.param("likelihood_z_rand", z_rand, 0.05);
+    private_nh.param("likelihood_z_rand", z_rand, 0.5);
     // get the sigma_hit parameter
     private_nh.param("likelihood_sigma_hit", sigma_hit, 0.2);
 
     // get the max_beams parameter, see MeasurementModel base class
-    private_nh.param("laser_max_beams", max_beams, 60);
+    private_nh.param("laser_max_beams", max_beams, 30);
 
     // the PI
     double PI = std::atan(1.0)*4;
@@ -21,7 +21,7 @@ LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *l
     // let's do some pre-work
     sigma_hit2 = sigma_hit*sigma_hit;
     //
-    sigma_hit_den = -1.0/(2*sigma_hit);
+    sigma_hit_den = -1.0/(2*sigma_hit*sigma_hit);
     //
     prob = 1.0/(sigma_hit*sqrt(2*PI));
     //
@@ -33,6 +33,7 @@ LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *l
 double LikelihoodFieldModel::getWeight(Sample2D *sample) {
 
     // auxiliar variables
+    double p = 1.0;
     double q = 0.0;
     double dist;
     double obs_range;
@@ -92,12 +93,19 @@ double LikelihoodFieldModel::getWeight(Sample2D *sample) {
             // let's hope no bugs here = )
             q += z_hit*(exp(dist*dist*sigma_hit_den)) + z_random_max;
 
+            if (0 > q || 1 < q) {
+                std::cout << "Error! Invalid q: " << q << std::endl;
+            }
+
+            p += q*q*q;
+            q = 0;
+
         }
 
     }
 
     // ???
-    sample->weight *= (1.0 + q*q*q);
+    sample->weight *= p;
     // save the weight
     return sample->weight;
 

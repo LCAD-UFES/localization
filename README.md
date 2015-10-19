@@ -5,7 +5,7 @@ Para copiar o pojeto, faça o clone do respositório dentro da pasta $catkin_ws/
 
     git clone https://github.com/LCAD-UFES/localization.git
 
-Falta ainda publicar o mapa por conta própria e estabelecer as relações de tf para o mapa.Para testar a implementação, desde já, siga os passos:
+Falta ainda publicar o mapa por conta própria e estabelecer as relações de tf para o mapa. Para testar a implementação, desde já, siga os passos:
 
 Volte até a pasta do catkin $catkin_ws/ e compile o projeto:
 
@@ -14,15 +14,15 @@ Volte até a pasta do catkin $catkin_ws/ e compile o projeto:
 Abra 7 terminais e em faça em sequẽncia, um comando por terminal:
 
     $ roscore
-    
+
     $ rosrun map_server map_server ${diretório_que_contém_o_mapa_yaml}/map.yaml
-    
+
     $ roslaunch p3dx_gazebo gazebo.launch
 
 Espere o gazebo ser lançado e:
 
     $ rosrun amcl amcl
-    
+
     $ roslaunch p3dx_description rviz.launch
 
 Pode ser que ocorra algum problema do rviz ou do gazebo no caminho, sem stress, encerre o processo pelo terminal adequado com o comando CTRL+C e tente novamente.
@@ -40,7 +40,7 @@ Volte até o PoseArray, dentro do RVIZ, e altere o tópico de /particle_cloud pa
 Imediatamente você verá as párticulas espalhadas pelo mapa de forma uniforme e randômica. O algoritmo somente faz o sampling e resampling quando ocorre movimentos, então prossigamos para o último terminal (perdeu a conta?):
 
     $ rosrun p3dx_controller mover.py
-  
+
 Posicione as janelas de forma que você consiga ver o rviz enquanto controla o Pioneer pelo terminal. Caso prefira, use uma outra alternativa como controlar via joystick, daí não é necessário manter o terminal ativado.
 
 O algoritmo parece convergir os samples, inicialmente, para áreas erradas mas com o tempo ele se recupera, passeie com o Pioneer por um tempinho, experimente dar uma volta.

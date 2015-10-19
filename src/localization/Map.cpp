@@ -3,7 +3,7 @@
 #include "Map.hpp"
 
 // basic constructor
-Map::Map() : grid(), map_received(false), angle_dist(0, std::atan(1.0)*8), normal_dist(0.0, 0.05), generator(std::random_device {} ()) {}
+Map::Map() : grid(), map_received(false), grid_copy(false), angle_dist(0, std::atan(1.0)*8), normal_dist(0.0, 0.05), generator(std::random_device {} ()) {}
 
 // receives a OccupancyGrid msg and converts to internal representation
 bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
@@ -44,8 +44,14 @@ void Map::getGridMap(GridMap *g) {
     // lock the mutex
     map_mutex.lock();
 
-    // copy the entire grid map
-    g->copy(grid);
+    if (!grid_copy) {
+
+        // copy the entire grid map
+        g->copy(grid);
+
+        grid_copy = true;
+
+    }
 
     // lock the mutex
     map_mutex.unlock();

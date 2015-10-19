@@ -20,6 +20,9 @@ class Map {
         // flag to avoiding unnecessary copies
         bool map_received;
 
+        // 
+        bool grid_copy;
+
         // get the free cells
         std::vector<int> availableCells;
 
