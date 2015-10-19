@@ -106,5 +106,9 @@ Pose2D CommandOdom::convertToPose2D(geometry_msgs::PoseStamped p) {
 
     return new_pose;
 
+<<<<<<< HEAD
+}
+=======
 
 }
+>>>>>>> master
