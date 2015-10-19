@@ -29,9 +29,11 @@ CommandOdom::CommandOdom() : cmds_mutex(), new_pose(), old_pose() {}
          std::vector<Pose2D> commands;
          commands.push_back(old_pose);
          commands.push_back(new_pose);
+         old_pose = new_pose;
 
          // unlock the mutex
          cmds_mutex.unlock();
+         return commands;
 
      }
 
