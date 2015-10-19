@@ -25,11 +25,13 @@ SampleOdometryModel::~SampleOdometryModel() {
  * Table 5.4
 */
 void SampleOdometryModel::samplePose2D(Pose2D *p) {
+
     // auxiliar variables
     double rot1, trans, rot2, rot1_hat, trans_hat, rot2_hat, x_, y_, theta_, *sample_pose;
 
     //pose para atualizar
     sample_pose = p->v;
+
     //calc rot1
     rot1  = angleDiff(atan2(odom.v[1] - old_odom.v[1], odom.v[0] - old_odom.v[0]) , old_odom.v[2]);
 
@@ -62,7 +64,6 @@ void SampleOdometryModel::samplePose2D(Pose2D *p) {
 //    ROS_INFO("sample Y: [%f]       [%f]\n", sample_pose[1]);
 //    ROS_INFO("sample Theta: [%f]       [%f]\n\n", sample_pose[2]);
 
-    cmds->setOld_pose(odom);
 }
 
 // updates the commands

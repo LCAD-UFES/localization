@@ -2,6 +2,7 @@
 #define COMMAND_ODOMETRY_H
 
 #include <mutex>
+#include <list>
 #include <vector>
 
 #include "Pose2D.hpp"
@@ -17,7 +18,7 @@ class CommandOdom {
     private:
 
         // the command queue
-        std::vector<geometry_msgs::PoseStamped> poses;
+        std::list<geometry_msgs::PoseStamped> poses;
 
         // the old and new poses are set by the ParticleFilter callback method
         Pose2D old_pose;

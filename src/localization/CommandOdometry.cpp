@@ -7,14 +7,25 @@ void CommandOdom::setNew_pose(const nav_msgs::Odometry &msg){
     //lock the mutex
     cmds_mutex.lock();
 
+    // copy the pose from the Odometry message
+    geometry_msgs::PoseStamped p;
+
+    // copy the header
+    p.header = msg.header;
+
+    // copy the pose - Can we just drop the Covariance Matrix? 
+    // the incoming message contains a geometry_msgs::PoseWithCovariance 
+    // and we are droping the covariance matrix
+    p.pose = msg.pose.pose;
+
     // save the Pose
-    poses.push(msg.pose.pose);
+    poses.push_back(p);
 
     // unlock the mutex
     cmds_mutex.unlock();
 
 }
-// standar vector just to transport the poses
+// standard vector just to transport the poses
 std::vector<Pose2D> CommandOdom::getCommandOdom(ros::Time &end){
 
     // just a container
@@ -26,47 +37,31 @@ std::vector<Pose2D> CommandOdom::getCommandOdom(ros::Time &end){
     // get the last pose
     commands.push_back(old_pose);
 
-    // iterate over the poses vector and get the last Odom command before the LaserScan
-    int size = poses.size() - 1;
-    if (1 > size) {
+    // build the iterators
+    // the reverse one
+    std::list<geometry_msgs::PoseStamped>reverse_iterator rit = poses.rbegin();
+    // the first element
+    std::list<geometry_msgs::PoseStamped>iterator it = poses.begin();
 
-        // just 1 odom command, so..
-        // update the old pose to the next iteration
-        old_pose = convertToPose2D(poses[0].pose);
+    // iterate the poses List and get the last command before the LaserScan
+    while(rit.header.stamp > end && rit.header.stamp != it.header.stamp) {
 
-    } else {
+        // it's a plus plus sign (++) but this a reverse iterator!! Under the hood it's looks like a (--)
+        rit++;
 
-        // 1 or more commands
-        // verify the last command
-        if (poses[size].header.stamp <= end) {
-
-            // the last command is a valid one
-            // update the old pose to the next iteration
-            old_pose = convertToPose2D(poses[0].pose);
-
-        } else {
-
-            // the valid command is somewhere in the middle
-            for (int i = 0; i < size; i++) {
-
-                // verify the next one
-                if (poses[i+1].header.stamp > end) {
-
-                    // get the current
-                    // update the old pose to the next iteration
-                    old_pose = convertToPose2D(poses[0].pose);
-
-                }
-
-            }
-
-        }
-
-    } else {
-
-        // ERROR, this should not happen!
     }
 
+    // copy the command
+    Pose2D new_pose = convertToPose2D(rit.pose);
+
+    // push to the commands list
+    commands.push_back(new_pose);
+
+    // updates the old_pose
+    old_pose = new_pose;
+
+    // slice the list
+    poses.erase(it, rit);
 
     // push the updated old_pose
     commands.push_back(old_pose);
