@@ -39,35 +39,28 @@ std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end){
 
     // build the iterators
     // the reverse one
-    std::list<geometry_msgs::PoseStamped>::reverse_iterator rit(poses.rbegin());
-    // the first element
-    std::list<geometry_msgs::PoseStamped>::iterator it(poses.begin());
 
-    // iterate the poses List and get the last command before the LaserScan
-    while(rit->header.stamp > end && rit->header.stamp != it->header.stamp) {
+    if (poses.empty()) {
+        commands.push_back(old_pose);
+    } else {
 
-        // it's a plus plus sign (++) but this a reverse iterator!! Under the hood it's looks like a (--)
-        rit++;
+        geometry_msgs::PoseStamped ps = poses.back();
+
+        poses.clear();
+        // copy the command
+        Pose2D new_pose = convertToPose2D(ps);
+
+        // push to the commands list
+        commands.push_back(new_pose);
+        // updates the old_pose
+        old_pose = new_pose;
 
     }
 
-    // get the poseStamped
-    geometry_msgs::PoseStamped ps = *rit;
 
-    // copy the command
-    Pose2D new_pose = convertToPose2D(ps);
 
-    // push to the commands list
-    commands.push_back(new_pose);
-
-    // updates the old_pose
-    old_pose = new_pose;
 
     // erase the unnecessary commmands
-    poses.erase(it, (++rit).base());
-
-    // push the updated old_pose
-    commands.push_back(old_pose);
 
     // unlock the mutex
     cmds_mutex.unlock();
@@ -82,9 +75,6 @@ Pose2D CommandOdom::convertToPose2D(geometry_msgs::PoseStamped p) {
 
     Pose2D new_pose;
 
-    // lock the mutex
-    cmds_mutex.lock();
-    
     // copy the x coord
     new_pose.v[0] = p.pose.position.x;
     // copy the y coord
@@ -99,10 +89,7 @@ Pose2D CommandOdom::convertToPose2D(geometry_msgs::PoseStamped p) {
 
     m.getRPY(roll, pitch, yaw);
 
-    new_pose.v[3] = yaw;
-
-    // unlock the mutex
-    cmds_mutex.unlock();
+    new_pose.v[2] = yaw;
 
     return new_pose;
 

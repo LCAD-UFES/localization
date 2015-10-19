@@ -11,7 +11,7 @@ ParticleFilter::ParticleFilter() :
 
     // Motion model
     std::string motionModel;
-    private_nh.param<std::string>("sample_motion_model", motionModel, "vel");
+    private_nh.param<std::string>("sample_motion_model", motionModel, "odom");
     if (0 == motionModel.compare("odom")) {
         // the default constructor
         motion = new SampleOdometryModel(private_nh, &cmd_odom);
@@ -25,19 +25,23 @@ ParticleFilter::ParticleFilter() :
         throw std::bad_alloc();
     }
 
-    // get the max_occ_dist
-    double max_occ_dist;
-    private_nh.param("map_max_occ_distance", max_occ_dist, 2.0);
-    // update map max_occ_dist
-    map.updateMaxOccDist(max_occ_dist);
 
     // Measurement Model
     std::string measurementModel;
     private_nh.param<std::string>("measurement_model", measurementModel, "likelihood");
     if (0 == measurementModel.compare("beam")) {
+
         // default constructor
         measurement = new BeamRangeFinderModel(private_nh, &laser, &map);
+
     } else {
+
+        // get the max_occ_dist
+        double max_occ_dist;
+        private_nh.param("map_max_occ_distance", max_occ_dist, 2.0);
+        // update map max_occ_dist
+        map.updateMaxOccDist(max_occ_dist);
+
         // default constructor
         measurement = new LikelihoodFieldModel(private_nh, &laser, &map);
     }
@@ -49,7 +53,7 @@ ParticleFilter::ParticleFilter() :
 
     // The MCL object
     std::string mcl_version;
-    private_nh.param<std::string>("monte_carlo_version", mcl_version, "augmented");
+    private_nh.param<std::string>("monte_carlo_version", mcl_version, "normal");
 
     if (0 == mcl_version.compare("normal")) {
         mcl = new MonteCarloLocalization(private_nh, motion, measurement);
@@ -70,7 +74,7 @@ ParticleFilter::ParticleFilter() :
 
     // get the command topic name
     std::string cmd_topic;
-    private_nh.param<std::string>("motion_model_command_topic", cmd_topic, "cmd_vel");
+    private_nh.param<std::string>("motion_model_command_topic", cmd_topic, "odom");
 
     // subscribe to the command topic
     if (0 == cmd_topic.compare("odom")) {

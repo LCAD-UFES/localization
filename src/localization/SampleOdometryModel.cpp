@@ -9,10 +9,10 @@ SampleOdometryModel::SampleOdometryModel(
 
     // get the sample velocity model parameters parameters
     // the alphas
-    private_nh.param("sample_odometry_model_alpha_1", alpha1, 0.1);
-    private_nh.param("sample_odometry_model_alpha_2", alpha2, 0.1);
-    private_nh.param("sample_odometry_model_alpha_3", alpha3, 0.1);
-    private_nh.param("sample_odometry_model_alpha_4", alpha4, 0.1);
+    private_nh.param("sample_odometry_model_alpha_1", alpha1, 0.005);
+    private_nh.param("sample_odometry_model_alpha_2", alpha2, 0.001);
+    private_nh.param("sample_odometry_model_alpha_3", alpha3, 0.001);
+    private_nh.param("sample_odometry_model_alpha_4", alpha4, 0.005);
 }
 
 // basic destructor 
@@ -38,31 +38,34 @@ void SampleOdometryModel::samplePose2D(Pose2D *p) {
     //calculate trans and test if moved
     trans = sqrt(pow(odom.v[0] - old_odom.v[0],2) + pow(odom.v[1] - old_odom.v[1],2));
 
-    if(trans<0.0001){
-        trans = 0.0;
-    }
+    if(trans > 0.001){
+        //calc rot2
+        rot2 = angleDiff(angleDiff(odom.v[2], old_odom.v[2]), rot1);
 
-    //calc rot2
-    rot2 = angleDiff(angleDiff(odom.v[2], old_odom.v[2]), rot1);
+        //Noise
+        //trocar
+        rot1_hat = angleDiff(gaussianPDF(alpha1 * fabs(rot1) + alpha2 * fabs(trans))*0.5,rot1);
 
-    //Noise
-    //trocar
-    rot1_hat = angleDiff(gaussianPDF(alpha1 * fabs(rot1) + alpha2 * fabs(trans)),rot1);
+        //anglediff
+        trans_hat = trans - gaussianPDF(alpha3*fabs(trans)+ alpha4 * fabs(angleDiff(rot1, rot2)))*0.5;
 
-    //anglediff
-    trans_hat = trans - gaussianPDF(alpha3*fabs(trans)+ alpha4 * fabs(angleDiff(rot1, rot2)));
-
-    //trocar
-    rot2_hat = angleDiff( gaussianPDF(alpha1*fabs(rot2) + alpha2 * fabs(trans)),rot2);
+        //trocar
+        rot2_hat = angleDiff( gaussianPDF(alpha1*fabs(rot2) + alpha2 * fabs(trans))*0.5,rot2);
 
 
-    //update the command odom
-    sample_pose[0] +=  trans_hat * cos(sample_pose[2]+rot1_hat);
-    sample_pose[1] +=  trans_hat * sin(sample_pose[2]-rot1_hat);// - rot1
-    sample_pose[2] = normalize(sample_pose[2]+ angleDiff(rot1_hat, rot2_hat));
-//    ROS_INFO("sample X: [%f]       [%f]\n", sample_pose[0]);
-//    ROS_INFO("sample Y: [%f]       [%f]\n", sample_pose[1]);
-//    ROS_INFO("sample Theta: [%f]       [%f]\n\n", sample_pose[2]);
+        //update the command odom
+        sample_pose[0] +=  trans_hat * cos(sample_pose[2]+rot1_hat);
+        sample_pose[1] +=  trans_hat * sin(sample_pose[2]-rot1_hat);// - rot1
+        sample_pose[2] = normalize(sample_pose[2]+ angleDiff(rot1_hat, rot2_hat));
+    //    ROS_INFO("sample X: [%f]       [%f]\n", sample_pose[0]);
+    //    ROS_INFO("sample Y: [%f]       [%f]\n", sample_pose[1]);
+    //    ROS_INFO("sample Theta: [%f]       [%f]\n\n", sample_pose[2]);
+
+        if (trans_hat > 0.0 || rot2_hat != 0.0) {
+            moved = true;
+        }
+        
+    } 
 
 }
 

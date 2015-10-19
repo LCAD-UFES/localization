@@ -62,6 +62,8 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
         // updates the pose based on this current command
         // verify if the angular is zero or very close to zero
 
+        std::cout << "Commands: " << commands[j].angular << " e " << commands[j].linear << std::endl;
+        
         if (0.0 != commands[j].angular) {
 
             // here we can use the given algorithm directly

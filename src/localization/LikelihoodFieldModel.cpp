@@ -33,7 +33,7 @@ LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *l
 double LikelihoodFieldModel::getWeight(Sample2D *sample) {
 
     // auxiliar variables
-    double p = 1.0;
+    double p = 0.0;
     double q = 0.0;
     double dist;
     double obs_range;
