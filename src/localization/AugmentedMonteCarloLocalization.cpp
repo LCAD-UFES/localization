@@ -84,7 +84,6 @@ void AugmentedMonteCarloLocalization::run() {
 
 }
 
-
 // resample the entire SampleSet with random variables option
 void AugmentedMonteCarloLocalization::resample() {
 

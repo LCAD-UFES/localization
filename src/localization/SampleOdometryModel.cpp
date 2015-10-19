@@ -25,26 +25,33 @@ SampleOdometryModel::~SampleOdometryModel() {
  * Table 5.4
 */
 void SampleOdometryModel::samplePose2D(Pose2D *p) {
+
     // auxiliar variables
     double rot1, trans, rot2, rot1_hat, trans_hat, rot2_hat, x_, y_, theta_, *sample_pose;
 
     //pose para atualizar
     sample_pose = p->v;
+
     //calc rot1
     rot1  = angleDiff(atan2(odom.v[1] - old_odom.v[1], odom.v[0] - old_odom.v[0]) , old_odom.v[2]);
+
     //calculate trans and test if moved
     trans = sqrt(pow(odom.v[0] - old_odom.v[0],2) + pow(odom.v[1] - old_odom.v[1],2));
-      if(trans<0.0001){
-          trans = 0.0;
-      }
-      //calc rot2
+
+    if(trans<0.0001){
+        trans = 0.0;
+    }
+
+    //calc rot2
     rot2 = angleDiff(angleDiff(odom.v[2], old_odom.v[2]), rot1);
 
     //Noise
     //trocar
     rot1_hat = angleDiff(gaussianPDF(alpha1 * fabs(rot1) + alpha2 * fabs(trans)),rot1);
+
     //anglediff
     trans_hat = trans - gaussianPDF(alpha3*fabs(trans)+ alpha4 * fabs(angleDiff(rot1, rot2)));
+
     //trocar
     rot2_hat = angleDiff( gaussianPDF(alpha1*fabs(rot2) + alpha2 * fabs(trans)),rot2);
 
@@ -57,19 +64,22 @@ void SampleOdometryModel::samplePose2D(Pose2D *p) {
 //    ROS_INFO("sample Y: [%f]       [%f]\n", sample_pose[1]);
 //    ROS_INFO("sample Theta: [%f]       [%f]\n\n", sample_pose[2]);
 
-    cmds->setOld_pose(odom);
 }
 
 // updates the commands
-void SampleOdometryModel::update(const ros::Time&) {
+void SampleOdometryModel::update(const ros::Time &end) {
+
     if (!commands.empty()) {
         commands.clear();
     }
+
     //get the commands (ut<xt-1, xt>)
-    commands = cmds->getCommandOdom();
+    std::vector<Pose2D> commands = cmds->getCommandOdom(end);
+
     //more easy to read
     old_odom = commands[0];
     odom = commands[1];
+
 }
 //Reduce call to function anglDistance, return diference between two angles
 double SampleOdometryModel::angleDiff(double a, double b){
