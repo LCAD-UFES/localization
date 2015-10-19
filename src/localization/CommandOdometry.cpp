@@ -51,18 +51,21 @@ std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end){
 
     }
 
-//     // copy the command
-//     Pose2D new_pose = convertToPose2D(rit->pose);
-// 
-//     // push to the commands list
-//     commands.push_back(new_pose);
-// 
-//     // updates the old_pose
-//     old_pose = new_pose;
-// 
-//     // slice the list
-//     std::list<geometry_msgs::PoseStamped>::iterator it2(rit);
-//     poses.erase(it, it2);
+    // copy the command
+    Pose2D new_pose = convertToPose2D(rit);
+
+    // push to the commands list
+    commands.push_back(new_pose);
+
+    // updates the old_pose
+    old_pose = new_pose;
+
+    // slice the list
+    std::list<geometry_msgs::PoseStamped>::iterator it2 = poses.begin();
+    while(it2->header.stamp < rit->header.stamp) {
+        it2++;
+    }
+    poses.erase(it, it2);
 
     // push the updated old_pose
     commands.push_back(old_pose);
@@ -76,7 +79,7 @@ std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end){
 }
 
 // geometry_msgs::Pose to our internal representation Pose2D
-Pose2D CommandOdom::convertToPose2D(geometry_msgs::Pose p) {
+Pose2D CommandOdom::convertToPose2D(geometry_msgs::PoseStamped p) {
 
     Pose2D new_pose;
 
@@ -84,11 +87,11 @@ Pose2D CommandOdom::convertToPose2D(geometry_msgs::Pose p) {
     cmds_mutex.lock();
     
     // copy the x coord
-    new_pose.v[0] = p.position.x;
+    new_pose.v[0] = p.pose.position.x;
     // copy the y coord
-    new_pose.v[1] = p.position.y;
+    new_pose.v[1] = p.pose.position.y;
 
-    tf::Quaternion q(p.orientation.x, p.orientation.y, p.orientation.z, p.orientation.w);
+    tf::Quaternion q(p.pose.orientation.x, p.pose.orientation.y, p.pose.orientation.z, p.pose.orientation.w);
 
     // get the quaternion and builds a tf Matrix3x3
     tf::Matrix3x3 m(q);
