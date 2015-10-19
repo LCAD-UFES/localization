@@ -6,4 +6,9 @@ test.cpp
 src/t
 t
 .directory
-
+*.md~
+*.txt~
+.gitignore~
+build
+CMakeLists.txt.user
+*.*.autosave

@@ -11,7 +11,7 @@ Volte até a pasta do catkin $catkin_ws/ e compile o projeto:
 
     catkin_make localization
 
-Abra 7 terminais e em faça em sequẽncia, um comando por terminal:
+Abra 7 terminais e em faça em sequẽncia, um comando por terminal(Sugiro usar o Terminator):
 
     $ roscore
 
