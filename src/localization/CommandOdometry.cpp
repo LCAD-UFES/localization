@@ -26,7 +26,7 @@ void CommandOdom::setNew_pose(const nav_msgs::Odometry &msg){
 
 }
 // standard vector just to transport the poses
-std::vector<Pose2D> CommandOdom::getCommandOdom(ros::Time &end){
+std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end){
 
     // just a container
     std::vector<Pose2D> commands;
@@ -39,29 +39,30 @@ std::vector<Pose2D> CommandOdom::getCommandOdom(ros::Time &end){
 
     // build the iterators
     // the reverse one
-    std::list<geometry_msgs::PoseStamped>reverse_iterator rit = poses.rbegin();
+    std::list<geometry_msgs::PoseStamped>::reverse_iterator rit(poses.rbegin());
     // the first element
-    std::list<geometry_msgs::PoseStamped>iterator it = poses.begin();
+    std::list<geometry_msgs::PoseStamped>::iterator it(poses.begin());
 
     // iterate the poses List and get the last command before the LaserScan
-    while(rit.header.stamp > end && rit.header.stamp != it.header.stamp) {
+    while(rit->header.stamp > end && rit->header.stamp != it->header.stamp) {
 
         // it's a plus plus sign (++) but this a reverse iterator!! Under the hood it's looks like a (--)
         rit++;
 
     }
 
-    // copy the command
-    Pose2D new_pose = convertToPose2D(rit.pose);
-
-    // push to the commands list
-    commands.push_back(new_pose);
-
-    // updates the old_pose
-    old_pose = new_pose;
-
-    // slice the list
-    poses.erase(it, rit);
+//     // copy the command
+//     Pose2D new_pose = convertToPose2D(rit->pose);
+// 
+//     // push to the commands list
+//     commands.push_back(new_pose);
+// 
+//     // updates the old_pose
+//     old_pose = new_pose;
+// 
+//     // slice the list
+//     std::list<geometry_msgs::PoseStamped>::iterator it2(rit);
+//     poses.erase(it, it2);
 
     // push the updated old_pose
     commands.push_back(old_pose);
@@ -79,13 +80,18 @@ Pose2D CommandOdom::convertToPose2D(geometry_msgs::Pose p) {
 
     Pose2D new_pose;
 
+    // lock the mutex
+    cmds_mutex.lock();
+    
     // copy the x coord
-    new_pose.v[0] = msg.pose.pose.position.x;
+    new_pose.v[0] = p.position.x;
     // copy the y coord
-    new_pose.v[1] = msg.pose.pose.position.y;
+    new_pose.v[1] = p.position.y;
+
+    tf::Quaternion q(p.orientation.x, p.orientation.y, p.orientation.z, p.orientation.w);
 
     // get the quaternion and builds a tf Matrix3x3
-    tf::Matrix3x3 m(p.orientation);
+    tf::Matrix3x3 m(q);
 
     double roll, pitch, yaw;
 
@@ -93,6 +99,10 @@ Pose2D CommandOdom::convertToPose2D(geometry_msgs::Pose p) {
 
     new_pose.v[3] = yaw;
 
+    // unlock the mutex
+    cmds_mutex.unlock();
+
     return new_pose;
+
 
 }

@@ -35,7 +35,7 @@ class CommandOdom {
         void setNew_pose(const nav_msgs::Odometry &msg);
 
         //return old and atual poses from odom (comand ut(xt-1, xt))
-        std::vector<Pose2D> getCommandOdom(ros::Time&);
+        std::vector<Pose2D> getCommandOdom(const ros::Time&);
 
         // geometry_msgs::Pose to our internal representation Pose2D
         Pose2D convertToPose2D(geometry_msgs::Pose p);

@@ -5,7 +5,7 @@
 SampleOdometryModel::SampleOdometryModel(
                                             const ros::NodeHandle &private_nh,
                                             CommandOdom *cmd_input
-                                        ) : SampleMotionModel(), cmds(cmd_input), commands(), old_odom(), odom()  {
+                                        ) : SampleMotionModel(), cmds(cmd_input), old_odom(), odom()  {
 
     // get the sample velocity model parameters parameters
     // the alphas
@@ -68,10 +68,6 @@ void SampleOdometryModel::samplePose2D(Pose2D *p) {
 
 // updates the commands
 void SampleOdometryModel::update(const ros::Time &end) {
-
-    if (!commands.empty()) {
-        commands.clear();
-    }
 
     //get the commands (ut<xt-1, xt>)
     std::vector<Pose2D> commands = cmds->getCommandOdom(end);
