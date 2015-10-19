@@ -47,7 +47,6 @@ void AugmentedMonteCarloLocalization::run() {
     // updates the average
     // normalize
     w_avg = Xt.total_weight/Xt.size;
-    std::cout << "Average: " << w_avg << std::endl;
 
     // normalize
     Xt.normalizeWeights();
@@ -57,14 +56,12 @@ void AugmentedMonteCarloLocalization::run() {
         w_slow = w_avg;
     } else {
         w_slow += alpha_slow*(w_avg - w_slow);
-        std::cout << "slow: " << w_slow << std::endl;
     }
 
     if (0.0 == w_fast) {
         w_fast = w_avg;
     } else {
         w_fast += alpha_fast*(w_avg - w_fast);
-        std::cout << "fast: " << w_fast << std::endl;
     }
 
     // RESAMPLING
@@ -97,8 +94,6 @@ void AugmentedMonteCarloLocalization::resample() {
     double w_diff = 1.0 - w_fast/w_slow;
 
     if (0.0 > w_diff) {
-        std::cout << "diff zerado" << std::endl;
-        std::cout << "w_fast: " << w_fast << " w_slow: " << w_slow << std::endl;
         w_diff = 0.0;
     }
 

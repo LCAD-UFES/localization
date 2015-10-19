@@ -4,7 +4,7 @@
 #include <ros/ros.h>
 
 #include "MeasurementModel.hpp"
-#include "occupancy_grid_utils/ray_tracer.h"
+// #include "occupancy_grid_utils/ray_tracer.h"
 
 
 class BeamRangeFinderModel : public MeasurementModel {

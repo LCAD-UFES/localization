@@ -93,10 +93,6 @@ double LikelihoodFieldModel::getWeight(Sample2D *sample) {
             // let's hope no bugs here = )
             q += z_hit*(exp(dist*dist*sigma_hit_den)) + z_random_max;
 
-            if (0 > q || 1 < q) {
-                std::cout << "Error! Invalid q: " << q << std::endl;
-            }
-
             p += q*q*q;
             q = 0;
 
