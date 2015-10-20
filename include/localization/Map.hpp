@@ -39,6 +39,9 @@ class Map {
         // set a generator engine
         std::default_random_engine generator;
 
+        //to beam model ray cast - provisionally
+        nav_msgs::OccupancyGrid mapaMsg;
+
     public:
 
 
@@ -63,6 +66,9 @@ class Map {
 
         // returns an random Pose2D inside the available cells
         Pose2D randomPose2D();
+        //To ray cast - provisionally
+        const nav_msgs::OccupancyGrid getMsgMap();
+
 
 };
 

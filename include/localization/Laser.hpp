@@ -14,6 +14,8 @@ class Laser {
         // it's our internal representation
         Scan ls_scan;
 
+        //need to Beam Model Ray Cast - provisionally
+        sensor_msgs::LaserScan laser_msg;
         // locks the ls_scan
         std::mutex ls_mutex;
 
@@ -23,6 +25,11 @@ class Laser {
 
         // updates the laser scan
         void setScan(const sensor_msgs::LaserScan&);
+
+        //to Beam Model - Provisionally
+        const sensor_msgs::LaserScan getMsgScan();
+
+
 };
 
 #endif
