@@ -30,7 +30,7 @@ BeamRangeFinderModel::BeamRangeFinderModel(ros::NodeHandle &private_nh, Laser *l
 //
 double BeamRangeFinderModel::getWeight(Sample2D *sample) {
     //verificar o numero de beam!!!
-      int numRanges = ls_scan.range_count;
+      int numRanges = 360;
       //double z;
       double q = 1;
       double p;
@@ -39,7 +39,6 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
     sensor_msgs::LaserScan::Ptr ray_casting;
       //w = 1;
       p = 0;
-
 
       //ray_casting com os parametros do laser
       ray_casting = occupancy_grid_utils::simulateRangeScan(map->getMsgMap(), convertToPose(sample), laser->getMsgScan(), false);
@@ -56,7 +55,7 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
 
           //zhit
           pHit = exp(-0.5*((pow((ztk-ztk_star),2))/sigma_hit2));
-          ROS_INFO("hit: %f", pHit);
+         // ROS_INFO("hit: %f", pHit);
           //        z = laseri.ranges[zt] - ray_casting->ranges[zt];
           //        p += zhit*(pre_calculo_hit*(exp(-(z * z) / (2 * sigma_hit * sigma_hit))));
 
@@ -65,22 +64,22 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
               //p+= zshort * (1/(1-exp(-lambda_short*ztk_star))) * (lambda_short*exp(-lambda_short*ztk));
               pShort = (1.0 / (1.0 - (exp(-lambda_short * ztk_star)))) * lambda_short * exp(-lambda_short * ztk);
           }
-          ROS_INFO("short: %f", pShort);
+         // ROS_INFO("short: %f", pShort);
           //zmax
           if(ztk == 30.0){
               pMax=z_max*1.0;
           }else{
               pMax = 0;
           }
-          ROS_INFO("max: %f", pMax);
-          ROS_INFO("ZTK: %f", ztk);
+       //   ROS_INFO("max: %f", pMax);
+        //  ROS_INFO("ZTK: %f", ztk);
           //zrand
           if((0<=ztk) && (ztk<=30)){
               pRand=1.0/30;
           }else{
               pRand = 0;
           }
-          ROS_INFO("rando: %f\n", pRand);
+        //  ROS_INFO("rando: %f\n", pRand);
 
           p = z_hit * pHit + z_short * pShort + z_max * pMax + z_rand * pRand;
           //if?
@@ -88,14 +87,16 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
       }
         sample->weight = q;
     // save the weight
+
     return sample->weight;
-      ROS_INFO("peso: %f\n", q);
+     // ROS_INFO("peso: %f\n", q);
+
 }
 
 // update the LaserScan
 ros::Time BeamRangeFinderModel::update() {
     laser->getScan(&ls_scan);
-    step = ls_scan.range_count/(max_beams-1);
+    step = 6;
     if(step<1){
         step = 1;
     }

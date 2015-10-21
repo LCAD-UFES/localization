@@ -55,7 +55,7 @@ std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end, bool &move
 
         // updates the old_pose
         double x = sqrt(pow(new_pose.v[0] - old_pose.v[0],2) + pow(new_pose.v[1] - old_pose.v[1],2));
-        if(x>0.00001 || fabs(mrpt::math::angDistance(new_pose.v[2], old_pose.v[2]))>0.000001){
+        if(x>0.00001 || fabs(mrpt::math::angDistance(new_pose.v[2], old_pose.v[2]))>0.00001){
             old_pose = new_pose;
             move = true;
         }

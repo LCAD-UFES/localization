@@ -9,10 +9,10 @@ SampleOdometryModel::SampleOdometryModel(
 
     // get the sample velocity model parameters parameters
     // the alphas
-    private_nh.param("sample_odometry_model_alpha_1", alpha1, 0.005);
+    private_nh.param("sample_odometry_model_alpha_1", alpha1, 0.001);
     private_nh.param("sample_odometry_model_alpha_2", alpha2, 0.001);
     private_nh.param("sample_odometry_model_alpha_3", alpha3, 0.001);
-    private_nh.param("sample_odometry_model_alpha_4", alpha4, 0.005);
+    private_nh.param("sample_odometry_model_alpha_4", alpha4, 0.001);
 }
 
 // basic destructor 
