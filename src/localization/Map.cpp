@@ -17,6 +17,8 @@ bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
 
         // lock the mutex
 
+        //Only to Beam Model ray cast
+        mapaMsg = map_msg;
         // update the grid map
         grid.updateGridMap(map_msg);
 
@@ -28,6 +30,7 @@ bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
 
         // avoiding unnecessary copies
         update_status = map_received = true;
+
 
     }
 
@@ -219,4 +222,8 @@ Pose2D Map::randomPose2D() {
     map_mutex.unlock();
 
     return pose;
+}
+const nav_msgs::OccupancyGrid Map::getMsgMap(){
+    const nav_msgs::OccupancyGrid &m=mapaMsg;
+    return m;
 }
