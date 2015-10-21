@@ -23,8 +23,15 @@ void Laser::setScan(const sensor_msgs::LaserScan &msg) {
 
     // update the Scan with a new ros LaserScan message
     ls_scan.updateScan(msg);
+    laser_msg = msg;
 
     // unlock the mutex
     ls_mutex.unlock();
 
+}
+//To ray cast - provisionally
+const sensor_msgs::LaserScan Laser::getMsgScan(){
+    const sensor_msgs::LaserScan &l = laser_msg;
+
+    return l;
 }

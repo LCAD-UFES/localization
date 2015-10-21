@@ -13,8 +13,8 @@ void CommandOdom::setNew_pose(const nav_msgs::Odometry &msg){
     // copy the header
     p.header = msg.header;
 
-    // copy the pose - Can we just drop the Covariance Matrix? 
-    // the incoming message contains a geometry_msgs::PoseWithCovariance 
+    // copy the pose - Can we just drop the Covariance Matrix?
+    // the incoming message contains a geometry_msgs::PoseWithCovariance
     // and we are droping the covariance matrix
     p.pose = msg.pose.pose;
 
@@ -26,7 +26,7 @@ void CommandOdom::setNew_pose(const nav_msgs::Odometry &msg){
 
 }
 // standard vector just to transport the poses
-std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end){
+std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end, bool &move){
 
     // just a container
     std::vector<Pose2D> commands;
@@ -52,13 +52,18 @@ std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end){
 
         // push to the commands list
         commands.push_back(new_pose);
+
         // updates the old_pose
-        old_pose = new_pose;
+        double x = sqrt(pow(new_pose.v[0] - old_pose.v[0],2) + pow(new_pose.v[1] - old_pose.v[1],2));
+        if(x>0.00001 || fabs(mrpt::math::angDistance(new_pose.v[2], old_pose.v[2]))>0.00001){
+            old_pose = new_pose;
+            move = true;
+        }
+        else{
+            move = false;
+        }
 
     }
-
-
-
 
     // erase the unnecessary commmands
 

@@ -12,6 +12,7 @@
 #include "geometry_msgs/Quaternion.h"
 #include <geometry_msgs/PoseStamped.h>
 #include "tf/transform_datatypes.h"
+#include "wrap2pi.h"
 
 class CommandOdom {
 
@@ -35,7 +36,7 @@ class CommandOdom {
         void setNew_pose(const nav_msgs::Odometry &msg);
 
         //return old and atual poses from odom (comand ut(xt-1, xt))
-        std::vector<Pose2D> getCommandOdom(const ros::Time&);
+        std::vector<Pose2D> getCommandOdom(const ros::Time&, bool &move);
 
         // geometry_msgs::Pose to our internal representation Pose2D
         Pose2D convertToPose2D(geometry_msgs::PoseStamped p);
