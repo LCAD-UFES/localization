@@ -5,7 +5,7 @@ AugmentedMonteCarloLocalization::AugmentedMonteCarloLocalization(
                         ros::NodeHandle &private_nh,
                         SampleMotionModel *motion,
                         MeasurementModel *measurement
-                    ) : MonteCarloLocalization(private_nh, motion, measurement), w_slow(0), w_fast(0) {
+                     ) : MonteCarloLocalization(private_nh, motion, measurement), w_slow(0), w_fast(0) {
 
     // get the recovery alpha parameters
     private_nh.param("recovery_alpha_slow", alpha_slow, 0.001);
@@ -27,6 +27,7 @@ void AugmentedMonteCarloLocalization::run() {
     // get the available commands
     motion->update(sync);
 
+    // if the robot moves
     // reset the total weight
     Xt.total_weight = 0.0;
 
@@ -45,12 +46,12 @@ void AugmentedMonteCarloLocalization::run() {
     }
 
     // updates the average
-    // normalize
     w_avg = Xt.total_weight/Xt.size;
 
     // normalize
     Xt.normalizeWeights();
 
+    // updates the w_slow and w_fast parameters
     // updates the w_slow and w_fast parameters
     if(0.0 == w_slow) {
         w_slow = w_avg;
@@ -64,8 +65,7 @@ void AugmentedMonteCarloLocalization::run() {
         w_fast += alpha_fast*(w_avg - w_fast);
     }
 
-    // RESAMPLING
-    if (motion->moved) {
+    if (motion->moved){
 
         // resample the entire SampleSet with random variables option
         resample();
@@ -75,7 +75,7 @@ void AugmentedMonteCarloLocalization::run() {
     // usually the MCL returns the Xt sample set
     // what should we do here?
     // let's publish in a convenient topic
-
+    
     // unlock the mutex
     mcl_mutex.unlock();
 
@@ -108,8 +108,6 @@ void AugmentedMonteCarloLocalization::resample() {
     // get the first weight
     double c = samples[0].weight;
 
-    double random_weight = 1.0/Xt.total_weight;
-
     // reset total weight
     Xt.total_weight = 0.0;
 
@@ -121,13 +119,12 @@ void AugmentedMonteCarloLocalization::resample() {
     // iterate over the entire SampleSet
     for (int m = 1; m <= Xt.size; m++) {
 
-        if (drand48()*0.25 < w_diff) {
+        if (drand48() < w_diff) {
 
             // get a random pose
             set[m-1].pose = map->randomPose2D();
 
-            // assign the sample weight
-            set[m-1].weight = random_weight;
+            set[m-1].weight = 1.0;
 
         } else {
 
@@ -146,8 +143,8 @@ void AugmentedMonteCarloLocalization::resample() {
             // copy the yaw orientation
             set[m-1].pose = samples[i].pose;
 
-            // copy the weight
             set[m-1].weight = samples[i].weight;
+
         }
 
         // updates the new total_weight
@@ -164,6 +161,9 @@ void AugmentedMonteCarloLocalization::resample() {
     // just to be sure...
     set = samples = nullptr;
 
+    // normalize
+    Xt.normalizeWeights();
+
     if (w_diff > 0.0) {
 
         // reset the w_slow and w_fast parameters
@@ -171,8 +171,5 @@ void AugmentedMonteCarloLocalization::resample() {
         w_slow = w_fast = 0.0;
 
     }
-
-    // normalize
-    Xt.normalizeWeights();
 
 }

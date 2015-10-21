@@ -9,7 +9,7 @@ SampleSet::SampleSet(const ros::NodeHandle &private_nh) : spreaded(false), sampl
     private_nh.param( (std::string) "sample_set_size", size, 800);
 
     // get the min and max samples
-    private_nh.param("min_sample_set_size", min, 100);
+    private_nh.param("min_sample_set_size", min, 80);
     private_nh.param( (std::string) "max_sample_set_size", max, 10000);
 
     // allocate the array of 2D samples
@@ -26,19 +26,37 @@ SampleSet::~SampleSet() {
 void SampleSet::normalizeWeights() {
 
     // normalize the weights
-    double normalize = 1.0/( (double) total_weight);
+    double normalizer;
+    if (0 < total_weight) {
+        normalizer = 1.0/( (double) total_weight);
+        for (int i = 0; i < size; i++) {
 
-    for (int i = 0; i < size; i++) {
+            // normalize
+            samples[i].weight *= normalizer;
 
-        // normalize
-        samples[i].weight *= normalize;
+        }
+    } else {
+        normalizer = 1.0/size;
 
+        for (int i = 0; i < size; i++) {
+
+            // normalize
+            samples[i].weight = normalizer;
+
+        }
     }
+
 
 }
 
 // allocate the samples in memmory
 void SampleSet::newSamples() {
+
+    if (size > max) {
+        size = max;
+    } else if (size < min) {
+        size = min;
+    }
 
     // the sample set size limits
     if (min <= size && size <= max && nullptr == samples) {

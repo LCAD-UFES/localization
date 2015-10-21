@@ -3,7 +3,7 @@
 #include "Map.hpp"
 
 // basic constructor
-Map::Map() : grid(), map_received(false), grid_copy(false), angle_dist(0, std::atan(1.0)*8), normal_dist(0.0, 0.05), generator(std::random_device {} ()) {}
+Map::Map() : grid(), map_received(false), grid_copy(false), angle_dist(-std::atan(1.0)*4, std::atan(1.0)*4), normal_dist(0.0, 0.05), generator(std::random_device {} ()) {}
 
 // receives a OccupancyGrid msg and converts to internal representation
 bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
@@ -129,6 +129,7 @@ void Map::updateMaxOccDist(double max) {
 // spreads the particles over the entire map, randomly
 void Map::uniformSpread(SampleSet *Xt) {
 
+    return;
     // lock the map
     map_mutex.lock();
 
@@ -178,7 +179,7 @@ void Map::uniformSpread(SampleSet *Xt) {
         Xt->spreaded = true;
     }
 
-    std::cout << "Spreaded!" << std::endl;
+     << "Spreaded!" << std::endl;
 
     // unlock the map
     map_mutex.unlock();

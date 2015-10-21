@@ -65,6 +65,8 @@ class GridMap {
         // get the pre-computed likelihood
         double getMinDistance(int i, int j);
 
+        // verify if the pose is valid - not inside a wall...
+        bool validPose(double x, double y);
 };
 
 // i is the collum and j is the row :-/

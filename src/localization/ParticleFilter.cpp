@@ -38,7 +38,7 @@ ParticleFilter::ParticleFilter() :
 
         // get the max_occ_dist
         double max_occ_dist;
-        private_nh.param("map_max_occ_distance", max_occ_dist, 2.0);
+        private_nh.param("map_max_occ_distance", max_occ_dist, 3.0);
         // update map max_occ_dist
         map.updateMaxOccDist(max_occ_dist);
 
@@ -115,6 +115,7 @@ ParticleFilter::~ParticleFilter() {
     if (nullptr != mcl) {
         delete mcl;
     }
+
 }
 
 // base constructor
