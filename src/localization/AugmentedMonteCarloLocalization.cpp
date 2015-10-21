@@ -88,6 +88,7 @@ void AugmentedMonteCarloLocalization::resample() {
     double M = 1.0/((double) Xt.size);
     int i = 0;
     double U;
+
     // shortcut
     Sample2D *samples = Xt.samples;
 
@@ -107,6 +108,8 @@ void AugmentedMonteCarloLocalization::resample() {
     // get the first weight
     double c = samples[0].weight;
 
+    double random_weight = 1.0/Xt.total_weight;
+
     // reset total weight
     Xt.total_weight = 0.0;
 
@@ -118,13 +121,13 @@ void AugmentedMonteCarloLocalization::resample() {
     // iterate over the entire SampleSet
     for (int m = 1; m <= Xt.size; m++) {
 
-        if (drand48() < w_diff) {
+        if (drand48()*0.25 < w_diff) {
 
             // get a random pose
             set[m-1].pose = map->randomPose2D();
 
             // assign the sample weight
-            set[m-1].weight = 1.0;
+            set[m-1].weight = random_weight;
 
         } else {
 

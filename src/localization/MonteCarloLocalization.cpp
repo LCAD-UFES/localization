@@ -72,9 +72,6 @@ void MonteCarloLocalization::run() {
         resample();
     }
 
-    // normalize
-    Xt.normalizeWeights();
-
     // usually the MCL returns the Xt sample set
     // what should we do here?
     // let's publish in a convenient topic
@@ -202,5 +199,7 @@ void MonteCarloLocalization::resample() {
 
     // just to be sure...
     set = samples = nullptr;
+
+    Xt.normalizeWeights();
 
 }

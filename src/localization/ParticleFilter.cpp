@@ -25,19 +25,23 @@ ParticleFilter::ParticleFilter() :
         throw std::bad_alloc();
     }
 
-    // get the max_occ_dist
-    double max_occ_dist;
-    private_nh.param("map_max_occ_distance", max_occ_dist, 2.0);
-    // update map max_occ_dist
-    map.updateMaxOccDist(max_occ_dist);
 
     // Measurement Model
     std::string measurementModel;
     private_nh.param<std::string>("measurement_model", measurementModel, "likelihood");
     if (0 == measurementModel.compare("beam")) {
+
         // default constructor
         measurement = new BeamRangeFinderModel(private_nh, &laser, &map);
+
     } else {
+
+        // get the max_occ_dist
+        double max_occ_dist;
+        private_nh.param("map_max_occ_distance", max_occ_dist, 2.0);
+        // update map max_occ_dist
+        map.updateMaxOccDist(max_occ_dist);
+
         // default constructor
         measurement = new LikelihoodFieldModel(private_nh, &laser, &map);
     }

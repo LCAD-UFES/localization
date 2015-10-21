@@ -13,8 +13,8 @@ void CommandOdom::setNew_pose(const nav_msgs::Odometry &msg){
     // copy the header
     p.header = msg.header;
 
-    // copy the pose - Can we just drop the Covariance Matrix? 
-    // the incoming message contains a geometry_msgs::PoseWithCovariance 
+    // copy the pose - Can we just drop the Covariance Matrix?
+    // the incoming message contains a geometry_msgs::PoseWithCovariance
     // and we are droping the covariance matrix
     p.pose = msg.pose.pose;
 
@@ -26,7 +26,7 @@ void CommandOdom::setNew_pose(const nav_msgs::Odometry &msg){
 
 }
 // standard vector just to transport the poses
-std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end){
+std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end, bool &move){
 
     // just a container
     std::vector<Pose2D> commands;
@@ -39,35 +39,33 @@ std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end){
 
     // build the iterators
     // the reverse one
-    std::list<geometry_msgs::PoseStamped>::reverse_iterator rit(poses.rbegin());
-    // the first element
-    std::list<geometry_msgs::PoseStamped>::iterator it(poses.begin());
 
-    // iterate the poses List and get the last command before the LaserScan
-    while(rit->header.stamp > end && rit->header.stamp != it->header.stamp) {
+    if (poses.empty()) {
+        commands.push_back(old_pose);
+    } else {
 
-        // it's a plus plus sign (++) but this a reverse iterator!! Under the hood it's looks like a (--)
-        rit++;
+        geometry_msgs::PoseStamped ps = poses.back();
+
+        poses.clear();
+        // copy the command
+        Pose2D new_pose = convertToPose2D(ps);
+
+        // push to the commands list
+        commands.push_back(new_pose);
+
+        // updates the old_pose
+        double x = sqrt(pow(new_pose.v[0] - old_pose.v[0],2) + pow(new_pose.v[1] - old_pose.v[1],2));
+        if(x>0.00001 || fabs(mrpt::math::angDistance(new_pose.v[2], old_pose.v[2]))>0.000001){
+            old_pose = new_pose;
+            move = true;
+        }
+        else{
+            move = false;
+        }
 
     }
 
-    // get the poseStamped
-    geometry_msgs::PoseStamped ps = *rit;
-
-    // copy the command
-    Pose2D new_pose = convertToPose2D(ps);
-
-    // push to the commands list
-    commands.push_back(new_pose);
-
-    // updates the old_pose
-    old_pose = new_pose;
-
     // erase the unnecessary commmands
-    poses.erase(it, (++rit).base());
-
-    // push the updated old_pose
-    commands.push_back(old_pose);
 
     // unlock the mutex
     cmds_mutex.unlock();
@@ -82,9 +80,6 @@ Pose2D CommandOdom::convertToPose2D(geometry_msgs::PoseStamped p) {
 
     Pose2D new_pose;
 
-    // lock the mutex
-    cmds_mutex.lock();
-    
     // copy the x coord
     new_pose.v[0] = p.pose.position.x;
     // copy the y coord
@@ -99,10 +94,7 @@ Pose2D CommandOdom::convertToPose2D(geometry_msgs::PoseStamped p) {
 
     m.getRPY(roll, pitch, yaw);
 
-    new_pose.v[3] = yaw;
-
-    // unlock the mutex
-    cmds_mutex.unlock();
+    new_pose.v[2] = yaw;
 
     return new_pose;
 

@@ -76,10 +76,10 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
             // we assume that mostly times the orientation will exceed the limits when there's some
             // angular velocity
             // maintain the orientation between 0 and 2*PI
-            if (PI2 < pose[2]) {
-                pose[2] -= PI2;
-            } else if (0 > pose[2]) {
+            if (-PI > pose[2]) {
                 pose[2] += PI2;
+            } else if (PI < pose[2]) {
+                pose[2] -= PI2;
             }
 
             // indicates the movement
