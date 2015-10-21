@@ -87,6 +87,7 @@ void SampleOdometryModel::update(const ros::Time &end) {
 double SampleOdometryModel::angleDiff(double a, double b){
     return mrpt::math::angDistance(a,b);
 }
+
 //Reduce call to function wrapToPi, return the angle [-pi, pi]
 double SampleOdometryModel::normalize(double a){
     return mrpt::math::wrapToPi(a);

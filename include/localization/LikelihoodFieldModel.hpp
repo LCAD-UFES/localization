@@ -12,7 +12,14 @@ class LikelihoodFieldModel : public MeasurementModel {
         // LikelihoodFieldModel parameters
         double z_hit, z_max, z_rand, sigma_hit;
         // helpers
+
         double z_random_max, sigma_hit2, prob, sigma_hit_den;
+
+        // our internal LaserScan representation
+        Scan ls_scan;
+
+        // Our internal GridMap representation
+        GridMap grid;
 
     public:
         // basic constructor

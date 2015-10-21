@@ -20,9 +20,11 @@ class Map {
         // flag to avoiding unnecessary copies
         bool map_received;
 
-        // 
-        bool grid_copy;
+        // flag to avoiding unnecessary copies
+        bool map_copy;
 
+        // flag to build the gridMap and the likelihood
+        bool built;
         // get the free cells
         std::vector<int> availableCells;
 
@@ -40,20 +42,28 @@ class Map {
         std::default_random_engine generator;
 
         //to beam model ray cast - provisionally
-        nav_msgs::OccupancyGrid mapaMsg;
+        nav_msgs::OccupancyGrid map;
+
+        // build the likelihood
+        void buildGridMap();
 
     public:
 
-
+        // basic constructor
         Map();
-        // updates the grid
+
+        // updates the map
         bool updateMap(const nav_msgs::OccupancyGrid&);
 
         // update max_occ_dist
         void updateMaxOccDist(double);
 
+
         // returns the grid
-        void getGridMap(GridMap *g);
+        void getGridMap(GridMap *);
+
+        //To ray cast - provisionally
+        void getMap(nav_msgs::OccupancyGrid *);
 
         // returns the map flag
         bool mapReceived();
@@ -66,8 +76,6 @@ class Map {
 
         // returns an random Pose2D inside the available cells
         Pose2D randomPose2D();
-        //To ray cast - provisionally
-        const nav_msgs::OccupancyGrid getMsgMap();
 
 
 };

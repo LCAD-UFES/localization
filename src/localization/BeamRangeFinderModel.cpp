@@ -3,7 +3,7 @@
 
 
 // basic constructor
-BeamRangeFinderModel::BeamRangeFinderModel(ros::NodeHandle &private_nh, Laser *ls, Map *m) : MeasurementModel(ls, m) {
+BeamRangeFinderModel::BeamRangeFinderModel(ros::NodeHandle &private_nh, Laser *ls, Map *m) : MeasurementModel(ls, m), laser_update(), map_update() {
     // get the z_hit parameter
     private_nh.param("likelihood_z_hit", z_hit, 0.9);
     // get the z_short parameter
@@ -14,6 +14,7 @@ BeamRangeFinderModel::BeamRangeFinderModel(ros::NodeHandle &private_nh, Laser *l
     private_nh.param("likelihood_z_rand", z_rand, 0.05);
     // get the sigma_hit parameter
     private_nh.param("likelihood_sigma_hit", sigma_hit, 0.2);
+    // get the lambda short
     private_nh.param("likelihood_lambda_short", lambda_short, 0.2);
 
     // get the max_beams parameter, see MeasurementModel base class
@@ -41,13 +42,13 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
       p = 0;
 
       //ray_casting com os parametros do laser
-      ray_casting = occupancy_grid_utils::simulateRangeScan(map->getMsgMap(), convertToPose(sample), laser->getMsgScan(), false);
+      ray_casting = occupancy_grid_utils::simulateRangeScan(map_update, convertToPose(sample), laser_update, false);
 
 
       //calculo da probabilidade de cada beam
       for(int zt = 0; zt<numRanges; zt+=step){
           double pHit, pShort, pMax, pRand = 0;
-          double ztk = laser->getMsgScan().ranges[zt];
+          double ztk = laser_update.ranges[zt];
           double ztk_star = ray_casting->ranges[zt];
 
           //pHit = (1/(sqrt(2 * M_PI * pow(sHit,2)))) * exp(-0.5*((pow((zkt-zkt_star),2))/pow(sHit,2)));
@@ -95,12 +96,16 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
 
 // update the LaserScan
 ros::Time BeamRangeFinderModel::update() {
-    laser->getScan(&ls_scan);
+
+    // copy the laser
+    laser->getLaserScan(&laser_update);
     step = 6;
     if(step<1){
         step = 1;
     }
-    map->getGridMap(&grid);
+
+    // copy the map
+    map->getMap(&map_update);
 
     return ls_scan.time;
 }

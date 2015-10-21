@@ -13,9 +13,6 @@ class MeasurementModel {
         // a pointer to the global Laser
         Laser *laser;
 
-        // our internal LaserScan representation
-        Scan ls_scan;
-
         // the laser max beams
         int max_beams;
         // the step
@@ -23,9 +20,6 @@ class MeasurementModel {
 
         // the Map object contains the OccupancyGrid
         Map *map;
-
-        // Our internal GridMap representation
-        GridMap grid;
  
     public:
 

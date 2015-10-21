@@ -161,15 +161,14 @@ void AugmentedMonteCarloLocalization::resample() {
     // just to be sure...
     set = samples = nullptr;
 
-    // normalize
-    Xt.normalizeWeights();
-
     if (w_diff > 0.0) {
-
         // reset the w_slow and w_fast parameters
         // it avoids the complete randomness
         w_slow = w_fast = 0.0;
 
     }
+
+    // normalize
+    Xt.normalizeWeights();
 
 }

@@ -3,7 +3,7 @@
 #include "Map.hpp"
 
 // basic constructor
-Map::Map() : grid(), map_received(false), grid_copy(false), angle_dist(-std::atan(1.0)*4, std::atan(1.0)*4), normal_dist(0.0, 0.05), generator(std::random_device {} ()) {}
+Map::Map() : grid(), map_received(false), map_copy(false), normal_dist(0.0, 0.05), generator(std::random_device {} ()) {}
 
 // receives a OccupancyGrid msg and converts to internal representation
 bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
@@ -18,19 +18,16 @@ bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
         // lock the mutex
 
         //Only to Beam Model ray cast
-        mapaMsg = map_msg;
-        // update the grid map
-        grid.updateGridMap(map_msg);
-
-        // updates the likelihood
-        grid.nearestNeighbor();
+        map = map_msg;
 
         // update the availableCells
         updateAvailableCells();
 
+        // build the gridmap
+        buildGridMap();
+
         // avoiding unnecessary copies
         update_status = map_received = true;
-
 
     }
 
@@ -38,6 +35,23 @@ bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
     map_mutex.unlock();
 
     return update_status;
+
+}
+
+void Map::buildGridMap() {
+
+    // lock the mutex
+    map_mutex.lock();
+
+    // update the grid map
+    grid.updateGridMap(map);
+
+    // updates the likelihood
+    grid.nearestNeighbor();
+
+    // unlock the map
+    map_mutex.unlock();
+
 }
 
 // returns the grid map
@@ -47,12 +61,33 @@ void Map::getGridMap(GridMap *g) {
     // lock the mutex
     map_mutex.lock();
 
-    if (!grid_copy) {
+    if (!map_copy) {
 
         // copy the entire grid map
         g->copy(grid);
 
-        grid_copy = true;
+        map_copy = true;
+
+    }
+
+    // lock the mutex
+    map_mutex.unlock();
+
+}
+
+//To ray cast 
+void Map::getMap(nav_msgs::OccupancyGrid *m) {
+
+    // copy, is it really necessary?
+    // lock the mutex
+    map_mutex.lock();
+
+    if (!map_copy) {
+
+        // copy the entire grid map
+        *m = map;
+
+        map_copy = true;
 
     }
 
@@ -69,6 +104,7 @@ void Map::forceUpdate() {
 
     // set to false
     map_received = false;
+    map_copy = false;
 
     // unlock the map
     map_mutex.unlock();
@@ -98,23 +134,17 @@ void Map::updateAvailableCells() {
         availableCells.clear();
     }
 
-    double size = grid.width*grid.height;
-
-    // shortcut
-    MapCell *cells = grid.cells;
+    double size = map.info.width*map.info.height;
 
     // get all available cells
     for (int i = 0; i < size; i++) {
 
-        if (-1 == cells[i].occ_state) {
-
+        if (0.65 <= map.data[i]) {
             availableCells.push_back(i);
-
         }
-
     }
-
 }
+
 // updateMaxOccDist
 void Map::updateMaxOccDist(double max) {
 
@@ -132,7 +162,6 @@ void Map::updateMaxOccDist(double max) {
 // spreads the particles over the entire map, randomly
 void Map::uniformSpread(SampleSet *Xt) {
 
-    return;
     // lock the map
     map_mutex.lock();
 
@@ -182,7 +211,7 @@ void Map::uniformSpread(SampleSet *Xt) {
         Xt->spreaded = true;
     }
 
-     << "Spreaded!" << std::endl;
+     std::cout << "Spreaded!" << std::endl;
 
     // unlock the map
     map_mutex.unlock();
@@ -223,8 +252,5 @@ Pose2D Map::randomPose2D() {
     map_mutex.unlock();
 
     return pose;
-}
-const nav_msgs::OccupancyGrid Map::getMsgMap(){
-    const nav_msgs::OccupancyGrid &m=mapaMsg;
-    return m;
+
 }

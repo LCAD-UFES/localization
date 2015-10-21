@@ -1,5 +1,32 @@
 #include "Laser.hpp"
 
+// updates the laser scan
+void Laser::setLaserScan(const sensor_msgs::LaserScan &msg) {
+
+    // lock the mutex
+    ls_mutex.lock();
+
+    // save the LaserScan message
+    laser_msg = msg;
+
+    // unlock the mutex
+    ls_mutex.unlock();
+
+}
+//To ray cast - provisionally
+void Laser::getLaserScan(sensor_msgs::LaserScan *ls){
+
+    // lock the mutex
+    ls_mutex.lock();
+
+    // copy the LaserScan to our BeamRangeFinderModel
+    *ls = laser_msg;
+
+    // unlock the mutex
+    ls_mutex.unlock();
+
+}
+
 // returns the entire LaserScan
 // copy, is it really necessary???
 void Laser::getScan(Scan *s) {
@@ -8,30 +35,9 @@ void Laser::getScan(Scan *s) {
     ls_mutex.lock();
 
     // our internal LaserScan representation
-    s->copy(ls_scan);
+    s->updateScan(laser_msg);
 
     // unlock the mutex
     ls_mutex.unlock();
 
-}
-
-// updates the laser scan
-void Laser::setScan(const sensor_msgs::LaserScan &msg) {
-
-    // lock the mutex
-    ls_mutex.lock();
-
-    // update the Scan with a new ros LaserScan message
-    ls_scan.updateScan(msg);
-    laser_msg = msg;
-
-    // unlock the mutex
-    ls_mutex.unlock();
-
-}
-//To ray cast - provisionally
-const sensor_msgs::LaserScan Laser::getMsgScan(){
-    const sensor_msgs::LaserScan &l = laser_msg;
-
-    return l;
 }

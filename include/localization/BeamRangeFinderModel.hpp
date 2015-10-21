@@ -19,14 +19,23 @@ class BeamRangeFinderModel : public MeasurementModel {
         //aux
         double ztk, ztk_star, delta_ztk, part_gaussian, z_random_max, sigma_hit2;
 
+        // occupancy grid
+        nav_msgs::OccupancyGrid map_update;
+
+        // our internal copy
+        sensor_msgs::LaserScan laser_update;
 
     public:
         // the beam model
         BeamRangeFinderModel(ros::NodeHandle&, Laser*, Map* );
+
         // base class abstract method implementation
         virtual double getWeight(Sample2D *);
+
         // update the LaserScan
         virtual ros::Time update();
+
+        //
         const geometry_msgs::Pose convertToPose(Sample2D *p);
 
 };
