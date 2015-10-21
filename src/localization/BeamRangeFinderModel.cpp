@@ -87,6 +87,8 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
           q = q* p;
       }
         sample->weight = q;
+    // save the weight
+    return sample->weight;
       ROS_INFO("peso: %f\n", q);
 }
 
