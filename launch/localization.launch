@@ -1,0 +1,17 @@
+<launch>
+<node pkg="localization" type="localization_node" name="localization_node" output="screen">
+  <!-- Publish scans from best pose at a max of 10 Hz -->
+  <param name="sample_motion_model" value="vel"/> <!-- odom or vel-->
+  <param name="measurement_model" value="likelihood"/> <!-- likelihood or beam-->
+
+  <param name="map_max_occ_distance" value="2.0" />
+
+  <param name="monte_carlo_version" value="normal"/><!--augmented or normal -->
+  <param name="laser_scan_topic" value="p3dx/laser/scan"/> <!-- the laser topic-->
+
+  <param name="motion_model_command_topic" value="cmd_vel"/><!--cmd_vel or odom -->
+
+  <param name="map_server_topic" value="map"/>
+  <param name="pose_array_topic" value="pose_array"/>
+</node>
+</launch>
