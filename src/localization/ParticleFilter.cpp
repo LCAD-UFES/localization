@@ -51,13 +51,17 @@ ParticleFilter::ParticleFilter() :
         throw std::bad_alloc();
     }
 
-    // The MCL object
+    // The MCL object normal - injection - augmented
     std::string mcl_version;
     private_nh.param<std::string>("monte_carlo_version", mcl_version, "normal");
 
     if (0 == mcl_version.compare("normal")) {
         mcl = new MonteCarloLocalization(private_nh, motion, measurement);
-    } else {
+    }
+    else if(0 == mcl_version.compare("injection")){
+        mcl = new InjectionMonteCarloLocalization(private_nh, motion, measurement);
+
+    }else {
         mcl = new AugmentedMonteCarloLocalization(private_nh, motion, measurement);
     }
 

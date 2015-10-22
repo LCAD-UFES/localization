@@ -19,6 +19,7 @@
 
 #include "MonteCarloLocalization.hpp"
 #include "AugmentedMonteCarloLocalization.hpp"
+#include "InjectionMonteCarloLocalization.hpp"
 
 class ParticleFilter {
     private:
