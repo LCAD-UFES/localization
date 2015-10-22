@@ -5,10 +5,10 @@
 SampleVelocityModel::SampleVelocityModel(
                                             ros::NodeHandle &private_nh,
                                             CommandVel *cmd_input
-                                        ) : SampleMotionModel(),  cmds(cmd_input), commands(), PI(std::atan(1.0)*4.0) {
+                                        ) : SampleMotionModel(),  cmds(cmd_input), commands() {
 
     // the pi value
-    PI2 = PI*2.0;
+    PI2 = M_PI*2.0;
 
     // get the sample velocity model parameters parameters
     // the alphas
@@ -97,9 +97,9 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
         }
         // angular velocity
         // maintain the orientation between -PI and PI
-        if (-PI > pose[2]) {
+        if (-M_PI > pose[2]) {
             pose[2] += PI2;
-        } else if (PI < pose[2]) {
+        } else if (M_PI < pose[2]) {
             pose[2] -= PI2;
         }
 

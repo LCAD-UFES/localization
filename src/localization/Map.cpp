@@ -3,7 +3,7 @@
 #include "Map.hpp"
 
 // basic constructor
-Map::Map() : grid(), map_received(false), map_copy(false), normal_dist(0.0, 0.05), generator(std::random_device {} ()) {}
+Map::Map() : grid(), map_received(false), map_copy(false), normal_dist(0.0, 0.05), generator(std::random_device {} ()), angle_dist(-M_PI, M_PI) {}
 
 // receives a OccupancyGrid msg and converts to internal representation
 bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
@@ -38,19 +38,14 @@ bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
 
 }
 
+// private method
 void Map::buildGridMap() {
-
-    // lock the mutex
-    map_mutex.lock();
 
     // update the grid map
     grid.updateGridMap(map);
 
     // updates the likelihood
     grid.nearestNeighbor();
-
-    // unlock the map
-    map_mutex.unlock();
 
 }
 
@@ -139,7 +134,7 @@ void Map::updateAvailableCells() {
     // get all available cells
     for (int i = 0; i < size; i++) {
 
-        if (0.65 <= map.data[i]) {
+        if (0 <= map.data[i] && 0.65 > map.data[i]) {
             availableCells.push_back(i);
         }
     }
@@ -211,7 +206,7 @@ void Map::uniformSpread(SampleSet *Xt) {
         Xt->spreaded = true;
     }
 
-     std::cout << "Spreaded!" << std::endl;
+    std::cout << "Spreaded!" << std::endl;
 
     // unlock the map
     map_mutex.unlock();

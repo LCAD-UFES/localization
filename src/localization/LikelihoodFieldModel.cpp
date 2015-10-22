@@ -15,15 +15,12 @@ LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *l
     // get the max_beams parameter, see MeasurementModel base class
     private_nh.param("laser_max_beams", max_beams, 5);
 
-    // the PI
-    double PI = std::atan(1.0)*4;
-
     // let's do some pre-work
     sigma_hit2 = sigma_hit*sigma_hit;
     //
     sigma_hit_den = -1.0/(2*sigma_hit*sigma_hit);
     //
-    prob = 1.0/(sigma_hit*sqrt(2*PI));
+    prob = 1.0/(sigma_hit*sqrt(2*M_PI));
     //
     z_random_max = z_rand/30.0;
 
@@ -91,7 +88,7 @@ double LikelihoodFieldModel::getWeight(Sample2D *sample) {
             // we got the sigma_hit^2 : sigma_hit2 = sigma_hit*sigma_hit;
             // we pre-computed the sigma_hit_den inside exponential = -1.0/(2*sigma_hit2);
             // and pre-computing the left side:
-            // prob = 1/(sqrt((2*std::atan(1.0)*4)*sigma_hit2))
+            // prob = 1/(sqrt((2*M_PI)*sigma_hit2))
             // and finally z_random_max = z_rand/z_max
             // let's hope no bugs here = )
             p += z_hit*(exp(dist*dist*sigma_hit_den)) + z_random_max;

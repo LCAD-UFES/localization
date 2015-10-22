@@ -21,7 +21,6 @@ class SampleVelocityModel : public SampleMotionModel {
     std::vector<Velocity> commands;
 
     // a pi value
-    const double PI;
     double PI2;
 
     public:

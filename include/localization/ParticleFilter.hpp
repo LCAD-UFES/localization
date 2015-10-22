@@ -68,6 +68,7 @@ class ParticleFilter {
 
         // the motion command to be used by the Velocity Motion Model
         void commandVelReceived(const geometry_msgs::Twist&);
+
         // the motion command to be used by the Odometry Motion Model
         // we  need to format the correct message and subscribe this callback
         /* TODO */
@@ -76,7 +77,9 @@ class ParticleFilter {
         // the map topic
         void readMap(const nav_msgs::OccupancyGrid&);
 
+        // publish PoseArray to /pose_array topic
         void publishPoseArray();
+
         // run
         void start();
 

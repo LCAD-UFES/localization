@@ -151,18 +151,7 @@ void ParticleFilter::commandOdomReceived(const nav_msgs::Odometry &msg) {
 }
 
 // the occupancy grid
-void ParticleFilter::likelihoodMapReader(const nav_msgs::OccupancyGrid &msg) {
-
-    // copy the OccupancyGrid to the Map
-    if(map.updateMap(msg)) {
-        // spread the particles
-        // passing by the MCL and we get a free lock =)
-        map.nearestNeighbor()
-        mcl->spreadSamples(map);
-    }
-}
-
-void ParticleFilter::beamMapReader(const nav_msgs::OccupancyGrid &msg) {
+void ParticleFilter::readMap(const nav_msgs::OccupancyGrid &msg) {
 
     // copy the OccupancyGrid to the Map
     if(map.updateMap(msg)) {
@@ -171,8 +160,6 @@ void ParticleFilter::beamMapReader(const nav_msgs::OccupancyGrid &msg) {
         mcl->spreadSamples(map);
     }
 }
-
-
 
 // publish the poses - the PoseArray Publisher
 void ParticleFilter::publishPoseArray() {

@@ -32,7 +32,7 @@ class Map {
         void updateAvailableCells();
 
         // random 
-        // set another uniform distribution -  0 ~ 2PI
+        // set another uniform distribution from -PI to PI
         std::uniform_real_distribution<double> angle_dist;
 
         // set a normal distribution
@@ -57,7 +57,6 @@ class Map {
 
         // update max_occ_dist
         void updateMaxOccDist(double);
-
 
         // returns the grid
         void getGridMap(GridMap *);

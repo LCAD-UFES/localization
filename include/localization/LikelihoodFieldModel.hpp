@@ -15,12 +15,6 @@ class LikelihoodFieldModel : public MeasurementModel {
 
         double z_random_max, sigma_hit2, prob, sigma_hit_den;
 
-        // our internal LaserScan representation
-        Scan ls_scan;
-
-        // Our internal GridMap representation
-        GridMap grid;
-
     public:
         // basic constructor
         LikelihoodFieldModel(ros::NodeHandle&, Laser*, Map*);
