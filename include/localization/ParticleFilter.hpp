@@ -57,8 +57,11 @@ class ParticleFilter {
         // The MCL object
         MonteCarloLocalization *mcl;
 
+        // parameter
+        bool spread_samples;
 
     public:
+
         // base constructor
         ParticleFilter();
         ~ParticleFilter();

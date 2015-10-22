@@ -2,7 +2,7 @@
 	<!--Iniciar Mapa-->
 	
 	<node name="ms" pkg="map_server" type="map_server" args="$(find localization)/maps/map.yaml"/> 
-	<node name="static_tf" pkg="tf"	type="static_transform_publisher" args="0 0 0 0 0 0 /map /odom 100" />
+<!-- 	<node name="static_tf" pkg="tf"	type="static_transform_publisher" args="0 0 0 0 0 0 /map /odom 100" /> -->
 	<!--  <arg name="map_file" default="$(find p3dx_description)/mapjosias.yaml"/>-->
 
   <!-- Run the map server -->
@@ -23,7 +23,6 @@
 
 
 	<!--Iniciar AMCL-->
-	
 	
 
 	<!--Iniciar MCL

@@ -53,7 +53,7 @@ ParticleFilter::ParticleFilter() :
 
     // The MCL object normal - injection - augmented
     std::string mcl_version;
-    private_nh.param<std::string>("monte_carlo_version", mcl_version, "normal");
+    private_nh.param<std::string>("monte_carlo_version", mcl_version, "augmented");
 
     if (0 == mcl_version.compare("normal")) {
         mcl = new MonteCarloLocalization(private_nh, motion, measurement);
@@ -99,6 +99,9 @@ ParticleFilter::ParticleFilter() :
 
     // set the pose_array_pub, the correct topic and messages
     pose_array_pub = nh.advertise<geometry_msgs::PoseArray>(pose_array_topic, 10);
+
+    //spread the samples across the map?
+    private_nh.param<bool>("spread_samples", spread_samples, true);
 
 }
 
@@ -161,7 +164,11 @@ void ParticleFilter::readMap(const nav_msgs::OccupancyGrid &msg) {
     if(map.updateMap(msg)) {
         // spread the particles
         // passing by the MCL and we get a free lock =)
-        mcl->spreadSamples(map);
+        if (spread_samples) {
+            // see the map.spreadedSamples()
+            mcl->spreadSamples(map);
+        }
+            
     }
 }
 

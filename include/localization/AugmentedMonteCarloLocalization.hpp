@@ -15,9 +15,6 @@ class AugmentedMonteCarloLocalization : public MonteCarloLocalization {
         double alpha_slow;
         double alpha_fast;
 
-        // the resample counter
-        int resample_counter;
-
         // the run method is private
         // it can be called only inside the AugmentedMonteCarloLocalization::start() method
         // override the run method
