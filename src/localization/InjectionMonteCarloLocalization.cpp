@@ -5,7 +5,7 @@ InjectionMonteCarloLocalization::InjectionMonteCarloLocalization(
         ros::NodeHandle &private_nh,
         SampleMotionModel *motion,
         MeasurementModel *measurement
-        ) : MonteCarloLocalization(private_nh, motion, measurement), random_pose(), sample_counter(0){
+        ) : MonteCarloLocalization(private_nh, motion, measurement), sample_counter(0){
 
     // get the recovery alpha parameters
     private_nh.param("number_random_particles", number_injections, 0.20);
@@ -25,75 +25,72 @@ void InjectionMonteCarloLocalization::run() {
     sync = measurement->update();
 
     // get the available commands
-   bool moved = motion->update(sync);
+    bool moved = motion->update(sync);
 
-   if(moved){
-    // reset the total weight
-    Xt.total_weight = 0.0;
+    if(moved){
+        // reset the total weight
+        Xt.total_weight = 0.0;
 
-    if (cont > injection_times - 1) {
+        if (sample_counter > injection_times - 1) {
 
-        // Injection SAMPLING
-        // iterate over the samples and updates everything
-        for (int i = 0; i < limit; i++) {
+            // Injection SAMPLING
+            // iterate over the samples and updates everything
+            for (int i = 0; i < limit; i++) {
 
-            // the motion model - passing sample pose by reference
-            motion->samplePose2D(&samples[i].pose);
+                // the motion model - passing sample pose by reference
+                motion->samplePose2D(&samples[i].pose);
 
-            // the measurement model - passing the Sample2D by pointer
-            // the weight is assigned to the sample inside the method
-            // it returns the pose weight
-            Xt.total_weight  += measurement->getWeight(&samples[i]);
+                // the measurement model - passing the Sample2D by pointer
+                // the weight is assigned to the sample inside the method
+                // it returns the pose weight
+                Xt.total_weight  += measurement->getWeight(&samples[i]);
+
+            }
+            for (int i = limit; i < Xt.size; i++) {
+
+                // the motion model - passing sample pose by reference
+                samples[i].pose = measurement->getMap()->randomPose2D();
+
+                // the measurement model - passing the Sample2D by pointer
+                // the weight is assigned to the sample inside the method
+                // it returns the pose weight
+                samples[i].weight = 1.0;
+                Xt.total_weight  += 1.0;
+
+            }
+            sample_counter=0;
 
         }
-        for (int i = limit; i < Xt.size; i++) {
+        else{
 
-            // the motion model - passing sample pose by reference
-            samples[i].pose = measurement->getMap()->randomPose2D();
+            sample_counter++;
 
-            // the measurement model - passing the Sample2D by pointer
-            // the weight is assigned to the sample inside the method
-            // it returns the pose weight
-            samples[i].weight = 1.0;
-            Xt.total_weight  += 1.0;
+            // SIMPLE SAMPLING
+            // iterate over the samples and updates everything
+            for (int i = 0; i < Xt.size; i++) {
+
+                // the motion model - passing sample pose by reference
+                motion->samplePose2D(&samples[i].pose);
+
+                // the measurement model - passing the Sample2D by pointer
+                // the weight is assigned to the sample inside the method
+                // it returns the pose weight
+                Xt.total_weight  += measurement->getWeight(&samples[i]);
+
+            }
 
         }
-        sample_counter=0;
 
+        // normalize
+        // normalize
+        Xt.normalizeWeights();
+
+        // RESAMPLING
+        if(resample_rate<resample_counter){
+            resample();
+            resample_counter = 0;
+        }
     }
-    else{
-<<<<<<< HEAD
-        sample_counter++;
-=======
-
-        cont++;
-
->>>>>>> 0cc3e1c55fb542894caeb82cf393c017f56d7ecf
-        // SIMPLE SAMPLING
-        // iterate over the samples and updates everything
-        for (int i = 0; i < Xt.size; i++) {
-
-            // the motion model - passing sample pose by reference
-            motion->samplePose2D(&samples[i].pose);
-
-            // the measurement model - passing the Sample2D by pointer
-            // the weight is assigned to the sample inside the method
-            // it returns the pose weight
-            Xt.total_weight  += measurement->getWeight(&samples[i]);
-
-        }
-
-    }
-
-    // normalize
-    // normalize
-    Xt.normalizeWeights();
-
-    // RESAMPLING
-    if(resample_rate<resample_counter){
-        resample();
-        resample_counter = 0;
-   }
 
     // usually the MCL returns the Xt sample set
     // what should we do here?
