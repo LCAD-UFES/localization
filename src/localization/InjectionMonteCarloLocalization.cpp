@@ -5,7 +5,7 @@ InjectionMonteCarloLocalization::InjectionMonteCarloLocalization(
         ros::NodeHandle &private_nh,
         SampleMotionModel *motion,
         MeasurementModel *measurement
-        ) : MonteCarloLocalization(private_nh, motion, measurement), random_pose(){
+        ) : MonteCarloLocalization(private_nh, motion, measurement), random_pose(), sample_counter(0){
 
     // get the recovery alpha parameters
     private_nh.param("number_random_particles", number_injections, 0.20);
@@ -20,14 +20,14 @@ void InjectionMonteCarloLocalization::run() {
     Sample2D *samples = Xt.samples;
     int size = Xt.size;
     int limit = size-(size*number_injections);
-    int cont = 0;
 
     // update the LaserScan and the GridMap if necessary and returns the laser TimeStamp
     sync = measurement->update();
 
     // get the available commands
-    motion->update(sync);
+   bool moved = motion->update(sync);
 
+   if(moved){
     // reset the total weight
     Xt.total_weight = 0.0;
     if(cont > injection_times-1){
@@ -48,7 +48,7 @@ void InjectionMonteCarloLocalization::run() {
         for (int i = limit; i < Xt.size; i++) {
 
             // the motion model - passing sample pose by reference
-            samples[i].pose = random_pose.randomPose2D();
+            samples[i].pose = measurement->getMap()->randomPose2D();
 
             // the measurement model - passing the Sample2D by pointer
             // the weight is assigned to the sample inside the method
@@ -57,11 +57,11 @@ void InjectionMonteCarloLocalization::run() {
             Xt.total_weight  += samples[i].weight;
 
         }
-        cont=0;
+        sample_counter=0;
 
     }
     else{
-        cont++;
+        sample_counter++;
         // SIMPLE SAMPLING
         // iterate over the samples and updates everything
         for (int i = 0; i < Xt.size; i++) {
@@ -82,9 +82,10 @@ void InjectionMonteCarloLocalization::run() {
     Xt.normalizeWeights();
 
     // RESAMPLING
-    if (motion->moved) {
+    if(resample_rate<resample_counter){
         resample();
-    }
+        resample_counter = 0;
+   }
 
     // usually the MCL returns the Xt sample set
     // what should we do here?

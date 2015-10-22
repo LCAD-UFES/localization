@@ -12,7 +12,9 @@ class InjectionMonteCarloLocalization : public MonteCarloLocalization {
         double number_injections;
         //each "times" samples run injection
         int injection_times;
-        Map random_pose;
+
+        // the resample counter
+        int sample_counter;
 
         // the run method is private
         // it can be called only inside the AugmentedMonteCarloLocalization::start() method
