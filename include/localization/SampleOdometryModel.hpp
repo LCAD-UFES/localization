@@ -33,7 +33,7 @@ class SampleOdometryModel : public SampleMotionModel {
         virtual void samplePose2D(Pose2D*);
 
         // updates the commands
-        virtual void update(const ros::Time&);
+        virtual bool update(const ros::Time&);
 
         double angleDiff(double a, double b);
 

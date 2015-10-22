@@ -75,13 +75,16 @@ void SampleOdometryModel::samplePose2D(Pose2D *p) {
 }
 
 // updates the commands
-void SampleOdometryModel::update(const ros::Time &end) {
+bool SampleOdometryModel::update(const ros::Time &end) {
 
     //get the commands (ut<xt-1, xt>)
     std::vector<Pose2D> commands = cmds->getCommandOdom(end, moved);
     //more easy to read
     old_odom = commands[0];
     odom = commands[1];
+
+    return old_odom.v[0] != odom.v[0] || old_odom.v[1] != odom.v[1] || old_odom.v[2] != odom.v[2];
+
 }
 //Reduce call to function anglDistance, return diference between two angles
 double SampleOdometryModel::angleDiff(double a, double b){

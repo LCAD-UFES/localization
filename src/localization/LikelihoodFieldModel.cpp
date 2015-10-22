@@ -4,16 +4,16 @@
 LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *ls, Map *m) : MeasurementModel(ls, m) {
 
     // get the z_hit parameter
-    private_nh.param("likelihood_z_hit", z_hit, 0.5);
+    private_nh.param("likelihood_z_hit", z_hit, 0.9);
     // get the z_max parameter
     private_nh.param("likelihood_z_max", z_max, 0.05);
     // get the z_rand parameter
-    private_nh.param("likelihood_z_rand", z_rand, 0.45);
+    private_nh.param("likelihood_z_rand", z_rand, 0.05);
     // get the sigma_hit parameter
     private_nh.param("likelihood_sigma_hit", sigma_hit, 0.2);
 
     // get the max_beams parameter, see MeasurementModel base class
-    private_nh.param("laser_max_beams", max_beams, 5);
+    private_nh.param("laser_max_beams", max_beams, 60);
 
     // let's do some pre-work
     sigma_hit2 = sigma_hit*sigma_hit;
@@ -30,7 +30,8 @@ LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *l
 double LikelihoodFieldModel::getWeight(Sample2D *sample) {
 
     // auxiliar variables
-    double p = 1.0;
+    double p = 0.0;
+    double q = 1.0;
     double dist;
     double obs_range;
     double obs_bearing;
@@ -44,8 +45,13 @@ double LikelihoodFieldModel::getWeight(Sample2D *sample) {
 
     // if the current pose is inside a obstacle...
     if (!grid.validPose(pose[0], pose[1])) {
-        sample->weight = 1/80;
+
+        sample->weight = 1.0/800.0;
+
+        return sample->weight;
+
     }
+
     // iterate over the scans
     // we have 60 
     for (int i = 0; i < ls_scan.range_count; i += step) {
@@ -97,7 +103,11 @@ double LikelihoodFieldModel::getWeight(Sample2D *sample) {
 
     }
     // ???
-    sample->weight += p;
+    sample->weight = p;
+    if (p != p) {
+        std::cout << "NAN" << std::endl;
+    }
+
     // save the weight
     return sample->weight;
 

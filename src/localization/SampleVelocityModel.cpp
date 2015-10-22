@@ -14,8 +14,8 @@ SampleVelocityModel::SampleVelocityModel(
     // the alphas
     private_nh.param("sample_velocity_model_alpha_1", a1, 0.1);
     private_nh.param("sample_velocity_model_alpha_2", a2, 0.1);
-    private_nh.param("sample_velocity_model_alpha_3", a3, 0.1);
-    private_nh.param("sample_velocity_model_alpha_4", a4, 0.1);
+    private_nh.param("sample_velocity_model_alpha_3", a3, 0.05);
+    private_nh.param("sample_velocity_model_alpha_4", a4, 0.05);
     private_nh.param("sample_velocity_model_alpha_5", a5, 0.05);
     private_nh.param("sample_velocity_model_alpha_6", a6, 0.05);
 
@@ -54,7 +54,7 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
         v = commands[j].linear*1.2 + gaussianPDF(a1*v2 + a2*w2);
 
         // get the angular velocity
-        w = commands[j].angular*1.48 + gaussianPDF(a3*v2 + a4*w2);
+        w = commands[j].angular*1.50 + gaussianPDF(a3*v2 + a4*w2);
 
         // get the final angle extra noisy angular velocity
         y = gaussianPDF(a5*v2 + a6*w2);
@@ -108,7 +108,7 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
 }
 
 // update the commands
-void SampleVelocityModel::update(const ros::Time &end) {
+bool SampleVelocityModel::update(const ros::Time &end) {
 
     if (!commands.empty()) {
         commands.clear();
@@ -116,5 +116,16 @@ void SampleVelocityModel::update(const ros::Time &end) {
     //get the correct commands
     commands = cmds->getAll(end);
 
+    if (commands.size() == 2 && 0.0 == commands[0].linear && 0.0 == commands[0].angular) {
+
+        // verify if the commands are different
+        return commands[0].linear != commands[1].linear && commands[0].angular != commands[1].angular;
+
+    } else {
+
+        // in this case, return true, the commands.size() is greater than 2 or the commands are diferents
+        return true;
+
+    }
 
 }

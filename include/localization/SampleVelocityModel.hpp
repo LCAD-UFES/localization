@@ -34,7 +34,7 @@ class SampleVelocityModel : public SampleMotionModel {
         virtual void samplePose2D(Pose2D*);
 
         // update the commands
-        virtual void update(const ros::Time&);
+        virtual bool update(const ros::Time&);
 
 };
 
