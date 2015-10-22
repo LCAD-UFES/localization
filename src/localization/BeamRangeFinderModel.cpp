@@ -6,9 +6,9 @@
 BeamRangeFinderModel::BeamRangeFinderModel(ros::NodeHandle &private_nh, Laser *ls, Map *m) : MeasurementModel(ls, m), laser_update(), map_update() {
 
     // get the z_hit parameter
-    private_nh.param("likelihood_z_hit", z_hit, 0.9);
+    private_nh.param("likelihood_z_hit", z_hit, 0.7);
     // get the z_short parameter
-    private_nh.param("likelihood_z_short", z_short, 0.9);
+    private_nh.param("likelihood_z_short", z_short, 0.2);//
     // get the z_max parameter
     private_nh.param("likelihood_z_max", z_max, 0.05);
     // get the z_rand parameter
@@ -33,7 +33,7 @@ BeamRangeFinderModel::BeamRangeFinderModel(ros::NodeHandle &private_nh, Laser *l
 double BeamRangeFinderModel::getWeight(Sample2D *sample) {
 
     //verificar o numero de beam!!!
-    int numRanges = 360;
+    int numRanges = laser_update.ranges.size();
     //double z;
     double q = 1;
     double p;
@@ -113,7 +113,7 @@ ros::Time BeamRangeFinderModel::update() {
     // copy the map
     map->getMap(&map_update);
 
-    return ls_scan.time;
+    return laser_update.header.stamp;
 }
 
 const geometry_msgs::Pose BeamRangeFinderModel::convertToPose(Sample2D *p){

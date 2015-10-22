@@ -27,7 +27,7 @@ SampleOdometryModel::~SampleOdometryModel() {
 void SampleOdometryModel::samplePose2D(Pose2D *p) {
 
     // auxiliar variables
-    double rot1, trans, rot2, rot1_hat, trans_hat, rot2_hat, x_, y_, theta_, *sample_pose;
+    double rot1, trans, rot2, rot1_hat, trans_hat, rot2_hat, *sample_pose;
 
     //pose para atualizar
     sample_pose = p->v;

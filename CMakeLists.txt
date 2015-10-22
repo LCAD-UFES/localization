@@ -141,6 +141,7 @@ set(LOCALIZATION_LIB_SOURCES
     src/localization/SampleSet.cpp
     src/localization/MonteCarloLocalization.cpp
     src/localization/AugmentedMonteCarloLocalization.cpp
+    src/localization/InjectionMonteCarloLocalization.cpp
     src/localization/ParticleFilter.cpp
 )
 
