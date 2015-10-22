@@ -39,12 +39,18 @@ std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end, bool &move
 
     // build the iterators
     // the reverse one
-
+    geometry_msgs::PoseStamped ps;
     if (poses.empty()) {
         commands.push_back(old_pose);
+         move = false;
     } else {
-
-        geometry_msgs::PoseStamped ps = poses.back();
+        for(int i = 0; i<poses.size(); i++){
+            ps = poses.at(i);
+            if (ps.header.stamp > end) {
+                ps = poses.at(i-1);
+                break;
+            }
+        }
 
         poses.clear();
         // copy the command

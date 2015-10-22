@@ -53,7 +53,7 @@ ParticleFilter::ParticleFilter() :
 
     // The MCL object
     std::string mcl_version;
-    private_nh.param<std::string>("monte_carlo_version", mcl_version, "augmented");
+    private_nh.param<std::string>("monte_carlo_version", mcl_version, "normal");
 
     if (0 == mcl_version.compare("normal")) {
         mcl = new MonteCarloLocalization(private_nh, motion, measurement);

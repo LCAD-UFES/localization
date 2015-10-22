@@ -33,7 +33,7 @@ BeamRangeFinderModel::BeamRangeFinderModel(ros::NodeHandle &private_nh, Laser *l
 double BeamRangeFinderModel::getWeight(Sample2D *sample) {
 
     //verificar o numero de beam!!!
-    int numRanges = 360;
+    int numRanges = laser_update.ranges.size();
     //double z;
     double q = 1;
     double p;
@@ -113,7 +113,7 @@ ros::Time BeamRangeFinderModel::update() {
     // copy the map
     map->getMap(&map_update);
 
-    return ls_scan.time;
+    return laser_update.header.stamp;
 }
 
 const geometry_msgs::Pose BeamRangeFinderModel::convertToPose(Sample2D *p){
