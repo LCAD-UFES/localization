@@ -72,19 +72,20 @@ void MonteCarloLocalization::run() {
         // normalize
         Xt.normalizeWeights();
 
-    // RESAMPLING
-    if (resample_rate < resample_counter) {
+        // RESAMPLING
+        if (resample_rate < resample_counter) {
 
-        // resampling
-        resample();
+            // resampling
+            resample();
 
-        // reset the resample_counter
-        resample_counter = 0;
+            // reset the resample_counter
+            resample_counter = 0;
 
-    } else {
+        } else {
 
-        // increments the resample_counter
-        resample_counter++;
+            // increments the resample_counter
+            resample_counter++;
+        }
     }
 
     // usually the MCL returns the Xt sample set
