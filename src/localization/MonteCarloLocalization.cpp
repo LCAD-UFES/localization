@@ -74,8 +74,17 @@ void MonteCarloLocalization::run() {
 
     // RESAMPLING
     if (resample_rate < resample_counter) {
+
         // resampling
         resample();
+
+        // reset the resample_counter
+        resample_counter = 0;
+
+    } else {
+
+        // increments the resample_counter
+        resample_counter++;
     }
 
     // usually the MCL returns the Xt sample set
