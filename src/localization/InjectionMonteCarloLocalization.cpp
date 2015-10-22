@@ -30,9 +30,10 @@ void InjectionMonteCarloLocalization::run() {
 
     // reset the total weight
     Xt.total_weight = 0.0;
-    if(cont > injection_times-1){
-        // Injection SAMPLING
 
+    if (cont > injection_times - 1) {
+
+        // Injection SAMPLING
         // iterate over the samples and updates everything
         for (int i = 0; i < limit; i++) {
 
@@ -53,15 +54,17 @@ void InjectionMonteCarloLocalization::run() {
             // the measurement model - passing the Sample2D by pointer
             // the weight is assigned to the sample inside the method
             // it returns the pose weight
-            samples[i].weight =1.0;
-            Xt.total_weight  += samples[i].weight;
+            samples[i].weight = 1.0;
+            Xt.total_weight  += 1.0;
 
         }
         cont=0;
 
     }
     else{
+
         cont++;
+
         // SIMPLE SAMPLING
         // iterate over the samples and updates everything
         for (int i = 0; i < Xt.size; i++) {
@@ -75,6 +78,7 @@ void InjectionMonteCarloLocalization::run() {
             Xt.total_weight  += measurement->getWeight(&samples[i]);
 
         }
+
     }
 
     // normalize

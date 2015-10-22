@@ -6,7 +6,7 @@ SampleSet::SampleSet(const ros::NodeHandle &private_nh) : spreaded(false), sampl
 
     // get the size parameter
     // if not found, it'll be 800'
-    private_nh.param( (std::string) "sample_set_size", size, 6400);
+    private_nh.param( (std::string) "sample_set_size", size, 800);
 
     // get the min and max samples
     private_nh.param("min_sample_set_size", min, 80);

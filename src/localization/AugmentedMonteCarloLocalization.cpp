@@ -5,7 +5,7 @@ AugmentedMonteCarloLocalization::AugmentedMonteCarloLocalization(
                         ros::NodeHandle &private_nh,
                         SampleMotionModel *motion,
                         MeasurementModel *measurement
-                     ) : MonteCarloLocalization(private_nh, motion, measurement), w_slow(0), w_fast(0), resample_counter(0) {
+                     ) : MonteCarloLocalization(private_nh, motion, measurement), w_slow(0), w_fast(0) {
 
     // get the recovery alpha parameters
     private_nh.param("recovery_alpha_slow", alpha_slow, 0.001);
@@ -66,7 +66,7 @@ void AugmentedMonteCarloLocalization::run() {
             w_fast += alpha_fast*(w_avg - w_fast);
         }
 
-        if (5 < resample_counter){
+        if (resample_rate < resample_counter){
 
             // resample the entire SampleSet with random variables option
             resample();

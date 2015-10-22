@@ -38,6 +38,12 @@ class MonteCarloLocalization {
         // set a generator engine
         std::default_random_engine generator;
 
+        // resapling rate
+        int resample_rate;
+
+        // the resample counter
+        int resample_counter;
+
         // the run method is private
         // it can be called only inside the MonteCarloLocalization::start() method
         virtual void run();
