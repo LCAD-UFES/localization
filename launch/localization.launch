@@ -11,7 +11,7 @@
         <param name="motion_model_command_topic" value="cmd_vel"/><!--cmd_vel or odom -->
         <param name="map_server_topic" value="map"/>/
         <param name="pose_array_topic" value="pose_array"/>
-        <param name="sample_set_size" value="6400"/>
+        <param name="sample_set_size" value="12000"/>
 
     </node>
 

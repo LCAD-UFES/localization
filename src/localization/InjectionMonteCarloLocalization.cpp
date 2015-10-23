@@ -89,6 +89,8 @@ void InjectionMonteCarloLocalization::run() {
         if(resample_rate<resample_counter){
             resample();
             resample_counter = 0;
+        } else {
+            resample_counter++;
         }
     }
 

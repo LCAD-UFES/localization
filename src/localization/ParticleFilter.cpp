@@ -66,7 +66,7 @@ ParticleFilter::ParticleFilter() :
     }
 
     if (nullptr == mcl) {
-        throw std::bad_alloc();
+        throw std::bad_alloc(); 
     }
 
     // now, with all objects initialized we can start to the subscribe the topics

@@ -10,7 +10,7 @@ MonteCarloLocalization::MonteCarloLocalization(
         ) : Xt(private_nh), motion(motionModel), measurement(measurementModel), generator(std::random_device {} ()), resample_counter(0) {
 
     // private n
-    private_nh.param("resample_rate", resample_rate, 5);
+    private_nh.param("resample_rate", resample_rate, 7);
 
 }
 
