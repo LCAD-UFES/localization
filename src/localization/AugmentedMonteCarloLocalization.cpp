@@ -11,12 +11,25 @@ AugmentedMonteCarloLocalization::AugmentedMonteCarloLocalization(
     private_nh.param("recovery_alpha_slow", alpha_slow, 0.001);
     private_nh.param("recovery_alpha_fast", alpha_fast, 0.25);
 
+    // our thread pool
+    private_nh.param("mcl_thread_pool_size", thread_pool_size, 5);
+    private_nh.param("mcl_thread_pool_size_limit", thread_pool_size_limit, 10);
+
+    // verify the limits
+    if (thread_pool_size_limit < thread_pool_size) {
+
+        // update the thread pool size
+        thread_pool_size = thread_pool_size_limit;
+
+    }
+
 }
 
 
 // the overrided run method
 void AugmentedMonteCarloLocalization::run() {
 
+    // the mcl sample process
     // auxiliar variables
     Sample2D *samples = Xt.samples;
     double w_avg = 0.0;
@@ -53,7 +66,6 @@ void AugmentedMonteCarloLocalization::run() {
         Xt.normalizeWeights();
 
         // updates the w_slow and w_fast parameters
-        // updates the w_slow and w_fast parameters
         if(0.0 == w_slow) {
             w_slow = w_avg;
         } else {
@@ -82,10 +94,11 @@ void AugmentedMonteCarloLocalization::run() {
         }
 
     }
+
     // usually the MCL returns the Xt sample set
     // what should we do here?
     // let's publish in a convenient topic
-    
+
     // unlock the mutex
     mcl_mutex.unlock();
 
@@ -134,8 +147,8 @@ void AugmentedMonteCarloLocalization::resample() {
             // get a random pose
             set[m-1].pose = map->randomPose2D();
 
-            // set the weight to 1.0/Xt.size
-            set[m-1].weight = M;
+            // set the weight to 1.0
+            set[m-1].weight = 1.0;
 
         } else {
 

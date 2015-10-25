@@ -66,10 +66,13 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
 
             // here we can use the given algorithm directly
             vw = v/w;
+
             // get the x distance
             pose[0] += - vw*sin(pose[2]) + vw*sin(pose[2] + w*dt);
+
             // get the y distance
             pose[1] += (vw*cos(pose[2]) - vw*cos(pose[2] + w*dt));
+
             // get the new angle
             pose[2] += w*dt + y*dt;
 
@@ -81,8 +84,10 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
 
             // get the x distance
             pose[0] += v*cos(pose[2])*dt;
+
             // get the y distance
             pose[1] += v*sin(pose[2])*dt;
+
             // get the new angle, just adding some noise
             pose[2] += y*dt;
 
@@ -95,12 +100,17 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
             moved = false;
 
         }
+
         // angular velocity
         // maintain the orientation between -PI and PI
         if (-M_PI > pose[2]) {
+
             pose[2] += PI2;
+
         } else if (M_PI < pose[2]) {
+
             pose[2] -= PI2;
+
         }
 
     }

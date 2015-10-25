@@ -3,18 +3,54 @@
     <node pkg="localization" type="localization_node" name="localization_node" output="screen">
 
         <!-- Publish scans from best pose at a max of 10 Hz -->
-        <param name="sample_motion_model" value="vel"/> <!-- odom or vel-->
-        <param name="measurement_model" value="likelihood"/> <!-- likelihood or beam-->
+        <!-- sample motion model definition -->
+        <!-- odom or vel -->
+        <param name="sample_motion_model" value="vel"/>
+
+        <!-- THE SAMPLE VELOCITY MODEL PARAMETERS -->
+        <param name="sample_velocity_model_alpha_1" value="0.01"/>
+        <param name="sample_velocity_model_alpha_2" value="0.01"/>
+        <param name="sample_velocity_model_alpha_3" value="0.025"/>
+        <param name="sample_velocity_model_alpha_4" value="0.025"/>
+        <param name="sample_velocity_model_alpha_5" value="0.01"/>
+        <param name="sample_velocity_model_alpha_6" value="0.01"/>
+
+        <!-- sample measurement model definition-->
+        <!-- likelihood or beam-->
+        <param name="measurement_model" value="likelihood"/>
+
+        <!-- likelihood params-->
         <param name="map_max_occ_distance" value="2.0" />
-        <param name="monte_carlo_version" value="augmented"/><!--augmented or normal -->
-        <param name="laser_scan_topic" value="scan"/> <!-- the laser topic-->
-        <param name="motion_model_command_topic" value="cmd_vel"/><!--cmd_vel or odom -->
+
+        <!--the MCL version definition-->
+        <!--augmented or normal -->
+        <param name="monte_carlo_version" value="augmented"/>
+        <param name="resample_rate" value="2"/>
+
+        <!-- the sample_set_size -->
+        <param name="sample_set_size" value="5000"/>
+
+        <!--the laser topic-->
+        <param name="laser_scan_topic" value="scan"/>
+
+        <!-- the laser motion model command topic -->
+        <!-- cmd_vel or odom -->
+        <param name="motion_model_command_topic" value="cmd_vel"/>
+
+        <!-- the laser motion model command topic -->
         <param name="map_server_topic" value="map"/>/
+
+        <!-- the pose array topic -->
         <param name="pose_array_topic" value="pose_array"/>
-        <param name="sample_set_size" value="12000"/>
+
+        <!-- the alpfa slow parameter to AMCL -->
+        <param name="recovery_alpha_slow" value="0.001"/>
+
+        <!-- the alpfa fast parameter to AMCL -->
+        <param name="recovery_alpha_fast" value="0.25"/>
 
     </node>
 
-    <node name="amcl" pkg="amcl" type="amcl"/>
+<!--     <node name="amcl" pkg="amcl" type="amcl"/> -->
 
 </launch>
