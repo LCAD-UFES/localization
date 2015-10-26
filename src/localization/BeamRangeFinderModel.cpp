@@ -1,6 +1,6 @@
 #include "BeamRangeFinderModel.hpp"
 #include <math.h>
-
+#include <time.h>
 
 // basic constructor
 BeamRangeFinderModel::BeamRangeFinderModel(ros::NodeHandle &private_nh, Laser *ls, Map *m) : MeasurementModel(ls, m), laser_update(), map_update() {
@@ -43,9 +43,13 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
     sensor_msgs::LaserScan::Ptr ray_casting;
       //w = 1;
       p = 0;
-
+//  time_t begin,end;
+//   time(&begin);
     //ray_casting com os parametros do laser
     ray_casting = occupancy_grid_utils::simulateRangeScan(map_update, convertToPose(sample), laser_update, false);
+//    time(&end);
+//    double time = difftime (end,begin);
+//    std::cout<<time<<std::endl;
 
 
     //calculo da probabilidade de cada beam
@@ -53,6 +57,7 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
         double pHit, pShort, pMax, pRand = 0;
         double ztk = laser_update.ranges[zt];
         double ztk_star = ray_casting->ranges[zt];
+        //double ztk_star = laser_update.ranges[zt];
 
         //pHit = (1/(sqrt(2 * M_PI * pow(sHit,2)))) * exp(-0.5*((pow((zkt-zkt_star),2))/pow(sHit,2)));
         //if?
@@ -97,6 +102,7 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
 
 }
 
+
 // update the LaserScan
 ros::Time BeamRangeFinderModel::update() {
 
@@ -117,6 +123,8 @@ ros::Time BeamRangeFinderModel::update() {
 }
 
 const geometry_msgs::Pose BeamRangeFinderModel::convertToPose(Sample2D *p){
+    //lock mutex
+   // beam_mutex.lock();
 
     geometry_msgs::Pose new_pose;
 
@@ -128,7 +136,8 @@ const geometry_msgs::Pose BeamRangeFinderModel::convertToPose(Sample2D *p){
                     );
 
     const geometry_msgs::Pose &od = new_pose;
-
+    //unlock mutex
+    //beam_mutex.unlock();
     return od;
 
 }

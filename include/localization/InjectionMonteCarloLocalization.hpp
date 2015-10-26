@@ -2,7 +2,9 @@
 #define INJECTION_MONTE_CARLO_LOCALIZATION_H
 
 #include "MonteCarloLocalization.hpp"
-
+#include <thread>
+#include <iostream>
+#include <mutex>
 //Monte Carlo Localization with injection of random particle
 class InjectionMonteCarloLocalization : public MonteCarloLocalization {
 
@@ -20,8 +22,11 @@ class InjectionMonteCarloLocalization : public MonteCarloLocalization {
         // it can be called only inside the AugmentedMonteCarloLocalization::start() method
         // override the run method
         virtual void run();
+        void threadPeso(int inicio, int fim);
+        std::mutex inject_mutex;
 
     public:
+
 
         // Basic constructor
         InjectionMonteCarloLocalization(ros::NodeHandle &, SampleMotionModel*, MeasurementModel*);

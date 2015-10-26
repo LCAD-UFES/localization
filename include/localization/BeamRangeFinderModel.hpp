@@ -24,6 +24,8 @@ class BeamRangeFinderModel : public MeasurementModel {
 
         // our internal copy
         sensor_msgs::LaserScan laser_update;
+        //mutex
+        std::mutex beam_mutex;
 
     public:
         // the beam model
