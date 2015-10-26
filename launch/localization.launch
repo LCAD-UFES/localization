@@ -3,15 +3,27 @@
     <node pkg="localization" type="localization_node" name="localization_node" output="screen">
 
         <!-- Publish scans from best pose at a max of 10 Hz -->
+
         <param name="sample_motion_model" value="odom"/> <!-- odom or vel-->
+        <!--Odometry Model alphas-->
+
         <param name="measurement_model" value="beam"/> <!-- likelihood or beam-->
+	<!--Beam parameters-->
+	<param name="beam_z_hit" value="0.8"/>
+	<param name="beam_z_short" value="0.08"/>
+	<param name="beam_z_max" value="0.06"/>            
+	<param name="beam_z_rand" value="0.06"/>
+	<param name="beam_sigma_hit" value="0.2"/>
+	<param name="beam_lambda_short" value="0.2"/>
+
+
         <param name="map_max_occ_distance" value="2.0" />
-        <param name="monte_carlo_version" value="normal"/><!--augmented or normal -->
+        <param name="monte_carlo_version" value="injection"/><!--augmented or normal -->
         <param name="laser_scan_topic" value="scan"/> <!-- the laser topic-->
         <param name="motion_model_command_topic" value="odom"/><!--cmd_vel or odom -->
         <param name="map_server_topic" value="map"/>
         <param name="pose_array_topic" value="pose_array"/>
-        <param name="sample_set_size" value="2000"/>
+        <param name="sample_set_size" value="800"/>
 	<param name="spread_samples" value="false"/>
 	<param name="resample_rate" value="5"/>
 	<param name="number_random_particles" value="0.1"/>
