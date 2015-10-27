@@ -25,10 +25,10 @@
         <!--the MCL version definition-->
         <!--augmented or normal -->
         <param name="monte_carlo_version" value="augmented"/>
-        <param name="resample_rate" value="2"/>
+        <param name="resample_rate" value="30"/>
 
         <!-- the sample_set_size -->
-        <param name="sample_set_size" value="5000"/>
+        <param name="sample_set_size" value="8000"/>
 
         <!--the laser topic-->
         <param name="laser_scan_topic" value="scan"/>
@@ -49,8 +49,10 @@
         <!-- the alpfa fast parameter to AMCL -->
         <param name="recovery_alpha_fast" value="0.25"/>
 
+        <!-- spread or not the particles over the entire map -->
+        <param name="spread_samples" value="true"/>
+
     </node>
 
-<!--     <node name="amcl" pkg="amcl" type="amcl"/> -->
 
 </launch>

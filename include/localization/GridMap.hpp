@@ -43,8 +43,7 @@ class GridMap {
 
         // update the grid map with a new ros OccupancyGrid msg
         void updateGridMap(const nav_msgs::OccupancyGrid&);
-
-        // 
+        //
         void enqueue(
             unsigned int,
             unsigned int,

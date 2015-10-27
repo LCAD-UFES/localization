@@ -11,18 +11,6 @@ AugmentedMonteCarloLocalization::AugmentedMonteCarloLocalization(
     private_nh.param("recovery_alpha_slow", alpha_slow, 0.001);
     private_nh.param("recovery_alpha_fast", alpha_fast, 0.25);
 
-    // our thread pool
-    private_nh.param("mcl_thread_pool_size", thread_pool_size, 5);
-    private_nh.param("mcl_thread_pool_size_limit", thread_pool_size_limit, 10);
-
-    // verify the limits
-    if (thread_pool_size_limit < thread_pool_size) {
-
-        // update the thread pool size
-        thread_pool_size = thread_pool_size_limit;
-
-    }
-
 }
 
 
@@ -112,13 +100,16 @@ void AugmentedMonteCarloLocalization::resample() {
     int i = 0;
     double U;
 
-    // shortcut
+    // shortcuts
     Sample2D *samples = Xt.samples;
+    Sample2D *set = Xt.old_set;
 
     double w_diff = 1.0 - w_fast/w_slow;
 
     if (0.0 > w_diff) {
+
         w_diff = 0.0;
+
     }
 
     // a uniform distribution
@@ -133,9 +124,6 @@ void AugmentedMonteCarloLocalization::resample() {
 
     // reset total weight
     Xt.total_weight = 0.0;
-
-    // create a new Sample2D array
-    Sample2D *set = new Sample2D[Xt.size];
 
     Map *map = measurement->getMap();
 
@@ -176,16 +164,19 @@ void AugmentedMonteCarloLocalization::resample() {
 
     }
 
-    // now we have to delete the old array
-    delete Xt.samples;
+    // swap the sets
+    Sample2D *temp = Xt.samples;
 
-    // assign the new array to this object pointer
-    Xt.samples = set;
+    Xt.samples = Xt.old_set;
+
+    Xt.old_set = temp;
 
     // just to be sure...
-    set = samples = nullptr;
+    temp = nullptr;
+    samples = nullptr;
 
     if (w_diff > 0.0) {
+
         // reset the w_slow and w_fast parameters
         // it avoids the complete randomness
         w_slow = w_fast = 0.0;

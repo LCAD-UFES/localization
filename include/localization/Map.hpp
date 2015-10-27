@@ -9,6 +9,7 @@
 #include "GridMap.hpp"
 
 class Map {
+
     private:
 
         // our internal GridMap/OccupancyGrid representation
@@ -31,7 +32,7 @@ class Map {
         // update the availableCells
         void updateAvailableCells();
 
-        // random 
+        // random
         // set another uniform distribution from -PI to PI
         std::uniform_real_distribution<double> angle_dist;
 

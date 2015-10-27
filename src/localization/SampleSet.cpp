@@ -2,7 +2,7 @@
 #include <cmath>
 
 // basic constructor
-SampleSet::SampleSet(const ros::NodeHandle &private_nh) : spreaded(false), samples(nullptr) {
+SampleSet::SampleSet(const ros::NodeHandle &private_nh) : spreaded(false), samples(nullptr), old_set(nullptr) {
 
     // get the size parameter
     // if not found, it'll be 800'
@@ -10,7 +10,7 @@ SampleSet::SampleSet(const ros::NodeHandle &private_nh) : spreaded(false), sampl
 
     // get the min and max samples
     private_nh.param("min_sample_set_size", min, 80);
-    private_nh.param( (std::string) "max_sample_set_size", max, 200000);
+    private_nh.param( (std::string) "max_sample_set_size", max, 20000);
 
     // allocate the array of 2D samples
     newSamples();
@@ -28,14 +28,18 @@ void SampleSet::normalizeWeights() {
     // normalize the weights
     double normalizer;
     if (0 < total_weight) {
+
         normalizer = 1.0/( (double) total_weight);
+
         for (int i = 0; i < size; i++) {
 
             // normalize
             samples[i].weight *= normalizer;
 
         }
+
     } else {
+
         normalizer = 1.0/size;
 
         for (int i = 0; i < size; i++) {
@@ -44,8 +48,8 @@ void SampleSet::normalizeWeights() {
             samples[i].weight = normalizer;
 
         }
-    }
 
+    }
 
 }
 
@@ -61,10 +65,28 @@ void SampleSet::newSamples() {
     // the sample set size limits
     if (min <= size && size <= max && nullptr == samples) {
 
-        // allocate the memmory
-        samples = new Sample2D[size]();
-        if (nullptr == samples) {
-            throw std::bad_alloc();
+        // exception handling
+        try {
+
+            // allocate the memmory
+            samples = new Sample2D[size]();
+
+        } catch (std::bad_alloc& ba) {
+
+            std::cerr << ba.what() << std::endl;
+
+        }
+
+        // exception handling
+        try {
+
+            // allocate the memmory
+            old_set = new Sample2D[size]();
+
+        } catch (std::bad_alloc& ba) {
+
+            std::cerr << ba.what() << std::endl;
+
         }
 
         // reset the samples

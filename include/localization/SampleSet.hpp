@@ -25,8 +25,11 @@ class SampleSet {
         // actual number of samples/particles
         int size;
 
-        // the set of the pose samples
+        // the new set of the pose samples
         Sample2D *samples;
+
+        // the temporary set of samples
+        Sample2D *old_set;
 
         // the total weight
         double total_weight;
