@@ -9,7 +9,7 @@ AugmentedMonteCarloLocalization::AugmentedMonteCarloLocalization(
 
     // get the recovery alpha parameters
     private_nh.param("recovery_alpha_slow", alpha_slow, 0.001);
-    private_nh.param("recovery_alpha_fast", alpha_fast, 0.025);
+    private_nh.param("recovery_alpha_fast", alpha_fast, 0.25);
 
 }
 
@@ -17,6 +17,7 @@ AugmentedMonteCarloLocalization::AugmentedMonteCarloLocalization(
 // the overrided run method
 void AugmentedMonteCarloLocalization::run() {
 
+    // the mcl sample process
     // auxiliar variables
     Sample2D *samples = Xt.samples;
     double w_avg = 0.0;
@@ -53,7 +54,6 @@ void AugmentedMonteCarloLocalization::run() {
         Xt.normalizeWeights();
 
         // updates the w_slow and w_fast parameters
-        // updates the w_slow and w_fast parameters
         if(0.0 == w_slow) {
             w_slow = w_avg;
         } else {
@@ -82,10 +82,11 @@ void AugmentedMonteCarloLocalization::run() {
         }
 
     }
+
     // usually the MCL returns the Xt sample set
     // what should we do here?
     // let's publish in a convenient topic
-    
+
     // unlock the mutex
     mcl_mutex.unlock();
 
@@ -99,13 +100,16 @@ void AugmentedMonteCarloLocalization::resample() {
     int i = 0;
     double U;
 
-    // shortcut
+    // shortcuts
     Sample2D *samples = Xt.samples;
+    Sample2D *set = Xt.old_set;
 
     double w_diff = 1.0 - w_fast/w_slow;
 
     if (0.0 > w_diff) {
+
         w_diff = 0.0;
+
     }
 
     // a uniform distribution
@@ -121,9 +125,6 @@ void AugmentedMonteCarloLocalization::resample() {
     // reset total weight
     Xt.total_weight = 0.0;
 
-    // create a new Sample2D array
-    Sample2D *set = new Sample2D[Xt.size];
-
     Map *map = measurement->getMap();
 
     // iterate over the entire SampleSet
@@ -134,8 +135,8 @@ void AugmentedMonteCarloLocalization::resample() {
             // get a random pose
             set[m-1].pose = map->randomPose2D();
 
-            // set the weight to 1.0/Xt.size
-            set[m-1].weight = M;
+            // set the weight to 1.0
+            set[m-1].weight = 1.0;
 
         } else {
 
@@ -163,16 +164,19 @@ void AugmentedMonteCarloLocalization::resample() {
 
     }
 
-    // now we have to delete the old array
-    delete Xt.samples;
+    // swap the sets
+    Sample2D *temp = Xt.samples;
 
-    // assign the new array to this object pointer
-    Xt.samples = set;
+    Xt.samples = Xt.old_set;
+
+    Xt.old_set = temp;
 
     // just to be sure...
-    set = samples = nullptr;
+    temp = nullptr;
+    samples = nullptr;
 
     if (w_diff > 0.0) {
+
         // reset the w_slow and w_fast parameters
         // it avoids the complete randomness
         w_slow = w_fast = 0.0;

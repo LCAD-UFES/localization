@@ -1,4 +1,4 @@
-#include <opencv2/core/core.hpp>  
+#include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include "GridMap.hpp"
 
@@ -7,7 +7,7 @@
 GridMap::GridMap() : scale(1), max_occ_dist(0.5), cells(nullptr), stamp(0) {}
 
 // Copy Constructor
-GridMap::GridMap(const GridMap &g) : 
+GridMap::GridMap(const GridMap &g) :
                                     origin_x(g.origin_x),
                                     origin_y(g.origin_y),
                                     scale(g.scale),
@@ -159,7 +159,7 @@ void GridMap::enqueue(
     unsigned int i,
     unsigned int j,
     unsigned int src_i,
-    unsigned int src_j, 
+    unsigned int src_j,
     std::priority_queue<CellData> &Q,
     double **distances,
     int cell_radius,
@@ -215,7 +215,7 @@ void GridMap::enqueue(
     marked[MAP_INDEX(i, j)] = 1;
 
 }
- 
+
 // pre-computing the nearest neighbor
 void GridMap::nearestNeighbor() {
 
@@ -331,11 +331,11 @@ void GridMap::nearestNeighbor() {
     delete marked;
 
 //     cv::Mat image(4000, 4000, CV_8U);
-// 
+//
 //     // first. raw pointer access.
 //     for (int j = image.rows - 1; j >= 0; j--) {
 //         for(int i = 0; i < image.cols; i++) {
-// 
+//
 //             double occ = cells[MAP_INDEX(j, i)].occ_dist;
 //             if (occ == max_occ_dist) {
 //                 image.at<uchar>(j,i) = 255;
@@ -344,10 +344,10 @@ void GridMap::nearestNeighbor() {
 //             }
 //         }
 //     }
-// 
+//
 //     cv::namedWindow("Display", cv::WINDOW_AUTOSIZE);
 //     cv::imshow("Display", image);
-// 
+//
 //     cv::waitKey(0);
 }
 

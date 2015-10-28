@@ -1,9 +1,9 @@
 #include "ParticleFilter.hpp"
 
 // Constructor
-ParticleFilter::ParticleFilter() : 
-                                    nh(), 
-                                    private_nh("~"), 
+ParticleFilter::ParticleFilter() :
+                                    nh(),
+                                    private_nh("~"),
                                     cmd_vel(),
                                     cmd_odom(),
                                     laser(),
@@ -140,7 +140,7 @@ void ParticleFilter::laserReceived(const sensor_msgs::LaserScan &msg) {
     }
 }
 
-// the velocity motion command 
+// the velocity motion command
 void ParticleFilter::commandVelReceived(const geometry_msgs::Twist &msg) {
 
     // push the new command to the command vector
@@ -168,7 +168,7 @@ void ParticleFilter::readMap(const nav_msgs::OccupancyGrid &msg) {
             // see the map.spreadedSamples()
             mcl->spreadSamples(map);
         }
-            
+
     }
 }
 
@@ -191,6 +191,7 @@ void ParticleFilter::start() {
     // start spinning
     spinner.start();
 
+    // wait for Control + C
     while(ros::ok()) {
 
         // publish the pose array
@@ -200,7 +201,5 @@ void ParticleFilter::start() {
         loop_rate.sleep();
 
     }
-//     // wait for Control + C
-//     ros::waitForShutdown();
 
 }

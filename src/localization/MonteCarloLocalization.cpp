@@ -10,7 +10,7 @@ MonteCarloLocalization::MonteCarloLocalization(
         ) : Xt(private_nh), motion(motionModel), measurement(measurementModel), generator(std::random_device {} ()), resample_counter(0) {
 
     // private n
-    private_nh.param("resample_rate", resample_rate, 5);
+    private_nh.param("resample_rate", resample_rate, 15);
 
 }
 
@@ -141,10 +141,12 @@ geometry_msgs::PoseArray MonteCarloLocalization::getPoseArray() {
                                 tf::Vector3(samples[i].pose.v[0], samples[i].pose.v[1], 0)),
                             msg.poses[i]
                        );
-        }
+    }
 
     // unlock the mcl
     mcl_mutex.unlock();
+
+    samples = nullptr;
 
     return msg;
 
@@ -159,8 +161,9 @@ void MonteCarloLocalization::resample() {
     int i = 0;
     double U;
 
-    // shortcut
+    // shortcuts
     Sample2D *samples = Xt.samples;
+    Sample2D *set = Xt.old_set;
 
     // a uniform distribution
     // from zero to size - 1, our SampleSet size
@@ -174,9 +177,6 @@ void MonteCarloLocalization::resample() {
 
     // reset total weight
     Xt.total_weight = 0.0;
-
-    // create a new Sample2D array
-    Sample2D *set = new Sample2D[Xt.size];
 
     // iterate over the entire SampleSet
     for (int m = 1; m <= Xt.size; m++) {
@@ -207,14 +207,13 @@ void MonteCarloLocalization::resample() {
 
     }
 
-    // now we have to delete the old array
-    delete Xt.samples;
-
-    // assign the new array to this object pointer
-    Xt.samples = set;
+    // swap the old_set and the samples set
+    Sample2D *temp = Xt.samples;
+    Xt.samples = Xt.old_set;
+    Xt.old_set = temp;
 
     // just to be sure...
-    set = samples = nullptr;
+    temp = nullptr;
 
     Xt.normalizeWeights();
 

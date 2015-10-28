@@ -15,19 +15,24 @@ class AugmentedMonteCarloLocalization : public MonteCarloLocalization {
         double alpha_slow;
         double alpha_fast;
 
+        // the number of threads inside our pool
+        int thread_pool_size;
+
+        // the thread pool size limit
+        int thread_pool_size_limit;
+
         // the run method is private
         // it can be called only inside the AugmentedMonteCarloLocalization::start() method
         // override the run method
         virtual void run();
 
+        // override the resample method
+        virtual void resample();
+
     public:
 
         // Basic constructor
         AugmentedMonteCarloLocalization(ros::NodeHandle &, SampleMotionModel*, MeasurementModel*);
-
-        // override the resample method
-        virtual void resample();
-
 
 };
 

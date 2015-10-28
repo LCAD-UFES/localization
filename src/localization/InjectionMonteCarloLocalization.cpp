@@ -8,8 +8,8 @@ InjectionMonteCarloLocalization::InjectionMonteCarloLocalization(
         ) : MonteCarloLocalization(private_nh, motion, measurement), sample_counter(0){
 
     // get the recovery alpha parameters
-    private_nh.param("number_random_particles", number_injections, 0.20);
-    private_nh.param("injection_times", injection_times, 10);
+    private_nh.param("number_random_particles", number_injections, 0.05);
+    private_nh.param("injection_times", injection_times, 50);
 
 }
 
@@ -119,6 +119,8 @@ void InjectionMonteCarloLocalization::run() {
         if(resample_rate<resample_counter){
             resample();
             resample_counter = 0;
+        } else {
+            resample_counter++;
         }
         else{
             resample_counter++;

@@ -48,8 +48,10 @@ class MonteCarloLocalization {
         // it can be called only inside the MonteCarloLocalization::start() method
         virtual void run();
 
-    public:
+        // resample the entire SampleSet
+        virtual void resample();
 
+    public:
 
         // basic constructor, it receives private_nh, motion, measurement
         MonteCarloLocalization(ros::NodeHandle &, SampleMotionModel*, MeasurementModel*);
@@ -64,9 +66,6 @@ class MonteCarloLocalization {
         // spread all particles
         // avoiding to spread particles at the same time run() method
         virtual void spreadSamples(Map &);
-
-        // resample the entire SampleSet
-        virtual void resample();
 
         // return a copy of the Sample2D
         virtual geometry_msgs::PoseArray getPoseArray();

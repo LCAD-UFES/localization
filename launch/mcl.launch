@@ -1,4 +1,5 @@
 <launch>
+<<<<<<< HEAD
 	<!--Iniciar Mapa-->
 	
 	<node name="map_node" pkg="map_server" type="map_server" args="$(find localization)/maps/wgmap.yaml" respawn="false" > 
@@ -6,9 +7,19 @@
 	</node>
 				
 	<!---Iniciar Gazebo-->
+=======
 
-	<include file="$(find p3dx_gazebo)/launch/gazebo.launch" />
+    <!-- start the MAP SERVER -->
+    <node name="map_server" pkg="map_server" type="map_server" args="/home/josias/ROS/bagfiles/wgmap.yaml"/>
+    <node name="static_tf" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 /map /odom 100" />
 
+    <!---Iniciar Gazebo-->
+    <include file="$(find p3dx_gazebo)/launch/gazebo.launch" />
+>>>>>>> 1fcc48ca38b6d6c400bfe0a2fa7b7e2761587037
+
+<!--     <node name="amcl" pkg="amcl" type="amcl"/> -->
+
+<<<<<<< HEAD
 	<!--=======Iniciar RVIZ=============-->
 	<include file="$(find p3dx_description)/launch/rviz.launch" />
 
@@ -19,5 +30,10 @@
 		Futuramente-->
 
 	
+=======
+    <!--Iniciar Mapa-->
+    <!--  <arg name="map_file" default="$(find p3dx_description)/mapjosias.yaml"/>-->    <!-- Run the map server -->
+    <!-- <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />-->
+>>>>>>> 1fcc48ca38b6d6c400bfe0a2fa7b7e2761587037
 
 </launch>
