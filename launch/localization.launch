@@ -9,10 +9,10 @@
 
         <param name="measurement_model" value="beam"/> <!-- likelihood or beam-->
 	<!--Beam parameters-->
-	<param name="beam_z_hit" value="0.8"/>
-	<param name="beam_z_short" value="0.08"/>
-	<param name="beam_z_max" value="0.06"/>            
-	<param name="beam_z_rand" value="0.06"/>
+	<param name="beam_z_hit" value="0.7"/>
+	<param name="beam_z_short" value="0.2"/>
+	<param name="beam_z_max" value="0.05"/>            
+	<param name="beam_z_rand" value="0.05"/>
 	<param name="beam_sigma_hit" value="0.2"/>
 	<param name="beam_lambda_short" value="0.2"/>
 
@@ -23,8 +23,8 @@
         <param name="motion_model_command_topic" value="odom"/><!--cmd_vel or odom -->
         <param name="map_server_topic" value="map"/>
         <param name="pose_array_topic" value="pose_array"/>
-        <param name="sample_set_size" value="800"/>
-	<param name="spread_samples" value="false"/>
+        <param name="sample_set_size" value="2000"/>
+	<param name="spread_samples" value="true"/>
 	<param name="resample_rate" value="5"/>
 	<param name="number_random_particles" value="0.1"/>
 

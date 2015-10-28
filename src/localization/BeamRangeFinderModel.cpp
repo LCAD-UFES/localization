@@ -3,7 +3,8 @@
 #include <time.h>
 
 // basic constructor
-BeamRangeFinderModel::BeamRangeFinderModel(ros::NodeHandle &private_nh, Laser *ls, Map *m) : MeasurementModel(ls, m), laser_update(), map_update() {
+BeamRangeFinderModel::BeamRangeFinderModel(ros::NodeHandle &private_nh, Laser *ls, Map *m) :
+    MeasurementModel(ls, m), laser_update(), map_update() {
 
     // get the z_hit parameter
     private_nh.param("beam_z_hit", z_hit, 0.7);

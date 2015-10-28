@@ -46,8 +46,11 @@ void InjectionMonteCarloLocalization::run() {
 
     //auxiliar variables
     Sample2D *samples = Xt.samples;
-    int size = Xt.size;
-    int limit = size-(size*number_injections);
+    int limit = Xt.size-(Xt.size*number_injections);
+    //Threads to calculate the weight of particles
+    static const int num_threads = 5;
+    int fim;
+    std::thread t[num_threads];
 
     // update the LaserScan and the GridMap if necessary and returns the laser TimeStamp
     sync = measurement->update();
@@ -60,15 +63,11 @@ void InjectionMonteCarloLocalization::run() {
         Xt.total_weight = 0.0;
 
         if (sample_counter > injection_times - 1) {
+            //define the parts to each thread
+            fim = limit/num_threads;
 
-            //Threads to calculate the weight of particles
-            static const int num_threads = 5;
-            int fim = limit/num_threads;
-            std::thread t[num_threads];
-//            //the first
-            t[0] = std::thread(&InjectionMonteCarloLocalization::threadPeso, this, 0, fim);
             //Launch a group of threads
-            for (int i = 1; i < num_threads-1; ++i) {
+            for (int i = 0; i < num_threads-1; ++i) {
                 t[i] = std::thread(&InjectionMonteCarloLocalization::threadPeso,this, fim*i,fim*(i+1));
             }
             t[num_threads-1] = std::thread(&InjectionMonteCarloLocalization::threadPeso,this, fim*(num_threads-1), limit);
@@ -95,25 +94,24 @@ void InjectionMonteCarloLocalization::run() {
         }
         else{
 
+            //Sampleamento com distrivuição aleatória
             sample_counter++;
 
-            // SIMPLE SAMPLING
-            // iterate over the samples and updates everything
-            for (int i = 0; i < Xt.size; i++) {
+            //define the parts to each thread
+            fim = Xt.size/num_threads;
 
-                // the motion model - passing sample pose by reference
-                motion->samplePose2D(&samples[i].pose);
+            for (int i = 0; i < num_threads-1; ++i) {
+                t[i] = std::thread(&InjectionMonteCarloLocalization::threadPeso,this, fim*i,fim*(i+1));
+            }
+            t[num_threads-1] = std::thread(&InjectionMonteCarloLocalization::threadPeso,this, fim*(num_threads-1), Xt.size);
 
-                // the measurement model - passing the Sample2D by pointer
-                // the weight is assigned to the sample inside the method
-                // it returns the pose weight
-                Xt.total_weight  += measurement->getWeight(&samples[i]);
-
+            //Join the threads with the main thread
+            for (int i = 0; i < num_threads; i++) {
+                t[i].join();
             }
 
         }
 
-        // normalize
         // normalize
         Xt.normalizeWeights();
 
