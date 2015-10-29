@@ -19,9 +19,6 @@ class BeamRangeFinderModel : public MeasurementModel {
         //aux
         double ztk, ztk_star, delta_ztk, part_gaussian, z_random_max, sigma_hit2;
 
-        // occupancy grid
-        nav_msgs::OccupancyGrid map_update;
-
         // our internal copy
         sensor_msgs::LaserScan laser_update;
         //mutex
@@ -40,6 +37,11 @@ class BeamRangeFinderModel : public MeasurementModel {
         //
         const geometry_msgs::Pose convertToPose(Sample2D *p);
 
+        // occupancy grid
+        nav_msgs::OccupancyGrid map_update;
+
 };
+// i is the collum and j is the row :-/
+#define MAP_INDEX2(i, j) ((i) + (j) * (map_update.info.width/2))
 
 #endif

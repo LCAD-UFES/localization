@@ -56,7 +56,9 @@ void MonteCarloLocalization::run() {
 
         // SIMPLE SAMPLING
         // iterate over the samples and updates everything
-        for (int i = 0; i < Xt.size; i++) {
+        int i = 0;
+        #pragma omp parallel for private(i) shared(samples)
+        for (i = 0; i < Xt.size; i++) {
 
             // the motion model - passing sample pose by reference
             motion->samplePose2D(&samples[i].pose);
@@ -64,6 +66,7 @@ void MonteCarloLocalization::run() {
             // the measurement model - passing the Sample2D by pointer
             // the weight is assigned to the sample inside the method
             // it returns the pose weight
+            #pragma omp critical(dataupdate)
             Xt.total_weight  += measurement->getWeight(&samples[i]);
 
         }

@@ -18,26 +18,29 @@ void InjectionMonteCarloLocalization::threadPeso(int inicio, int fim){
     //SampleMotionModel moti = motion;
     //MeasurementModel meas = measurement;
     double total_weight=0;
-
+    //cmake por -fopenmp
+//#pragma omp parallel for default(none) private(i, total_weight) shared(samples)
     for(int i=inicio; i<fim; i++){
         // Injection SAMPLING
         // iterate over the samples and updates everything
-            // the motion model - passing sample pose by reference
+        // the motion model - passing sample pose by reference
         //inject_mutex.lock();
-            motion->samplePose2D(&samples[i].pose);
+        motion->samplePose2D(&samples[i].pose);
         //inject_mutex.unlock();
 
-            // the measurement model - passing the Sample2D by pointer
-            // the weight is assigned to the sample inside the method
-            // it returns the pose weight
+        // the measurement model - passing the Sample2D by pointer
+        // the weight is assigned to the sample inside the method
+        // it returns the pose weight
 
         total_weight = measurement->getWeight(&samples[i]);
-
+//#pragma omp critical
+        {
         inject_mutex.lock();
         Xt.total_weight  += total_weight;
         inject_mutex.unlock();
+        }
     }
-     //mcl_mutex.unlock();
+    //mcl_mutex.unlock();
     //return total_weight;
 }
 
@@ -65,6 +68,8 @@ void InjectionMonteCarloLocalization::run() {
         if (sample_counter > injection_times - 1) {
             //define the parts to each thread
             fim = limit/num_threads;
+            //peso para as particulas aleatorias
+            double pesoInject = 0.5;
 
             //Launch a group of threads
             for (int i = 0; i < num_threads-1; ++i) {
@@ -85,8 +90,8 @@ void InjectionMonteCarloLocalization::run() {
                 // the measurement model - passing the Sample2D by pointer
                 // the weight is assigned to the sample inside the method
                 // it returns the pose weight
-                samples[i].weight = 1.0;
-                Xt.total_weight  += 1.0;
+                samples[i].weight = pesoInject;
+                Xt.total_weight  += pesoInject;
 
             }
             sample_counter=0;
@@ -119,10 +124,7 @@ void InjectionMonteCarloLocalization::run() {
         if(resample_rate<resample_counter){
             resample();
             resample_counter = 0;
-        } else {
-            resample_counter++;
-        }
-        else{
+        }else{
             resample_counter++;
         }
     }

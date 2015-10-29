@@ -1,6 +1,8 @@
 #include "BeamRangeFinderModel.hpp"
+#include <cmath>
 #include <math.h>
 #include <time.h>
+
 
 // basic constructor
 BeamRangeFinderModel::BeamRangeFinderModel(ros::NodeHandle &private_nh, Laser *ls, Map *m) :
@@ -38,6 +40,19 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
     //double z;
     double q = 1;
     double p;
+   //get the origin in map
+//    float origin_x = map_update.info.origin.position.x + (map_update.info.width/2)*map_update.info.resolution;
+//    float origin_y = map_update.info.origin.position.y + (map_update.info.height/2)*map_update.info.resolution;
+//    // convert to our grid index
+//    int x_map = std::floor((sample->pose.v[0] - origin_x)/map_update.info.resolution + 0.5) + map_update.info.width/2;
+//    int y_map = std::floor((sample->pose.v[1] - origin_y)/map_update.info.resolution + 0.5) + map_update.info.height/2;
+//    int8_t cell = map_update.data.at(MAP_INDEX2(x_map, y_map));
+//    if (cell>0.65) {
+
+//        sample->weight = 1.0/2000;
+
+//        return sample->weight;
+//    }
 
     //double phit;
     //double *pose = sample->pose.v;

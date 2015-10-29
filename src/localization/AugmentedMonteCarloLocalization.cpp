@@ -2,10 +2,10 @@
 
 // Basic constructor
 AugmentedMonteCarloLocalization::AugmentedMonteCarloLocalization(
-                        ros::NodeHandle &private_nh,
-                        SampleMotionModel *motion,
-                        MeasurementModel *measurement
-                     ) : MonteCarloLocalization(private_nh, motion, measurement), w_slow(0), w_fast(0) {
+        ros::NodeHandle &private_nh,
+        SampleMotionModel *motion,
+        MeasurementModel *measurement
+        ) : MonteCarloLocalization(private_nh, motion, measurement), w_slow(0), w_fast(0) {
 
     // get the recovery alpha parameters
     private_nh.param("recovery_alpha_slow", alpha_slow, 0.001);
@@ -32,10 +32,13 @@ void AugmentedMonteCarloLocalization::run() {
         // if the robot moves
         // reset the total weight
         Xt.total_weight = 0.0;
+        double total_weight = 0.0;
 
         // SIMPLE SAMPLING
         // iterate over the samples and updates everything
-        for (int i = 0; i < Xt.size; i++) {
+        int i=0;
+#pragma omp parallel for default(none) private(i, total_weight) shared(samples)
+        for (i = 0; i < Xt.size; i++) {
 
             // the motion model - passing sample pose by reference
             motion->samplePose2D(&samples[i].pose);
@@ -43,7 +46,11 @@ void AugmentedMonteCarloLocalization::run() {
             // the measurement model - passing the Sample2D by pointer
             // the weight is assigned to the sample inside the method
             // it returns the pose weight
-            Xt.total_weight  += measurement->getWeight(&samples[i]);
+            total_weight += measurement->getWeight(&samples[i]);
+#pragma omp critical
+            {
+                Xt.total_weight+=total_weight;
+            }
 
         }
 

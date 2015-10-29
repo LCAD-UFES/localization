@@ -3,86 +3,31 @@
     <node pkg="localization" type="localization_node" name="localization_node" output="screen">
 
         <!-- Publish scans from best pose at a max of 10 Hz -->
-<<<<<<< HEAD
 
         <param name="sample_motion_model" value="odom"/> <!-- odom or vel-->
         <!--Odometry Model alphas-->
 
         <param name="measurement_model" value="beam"/> <!-- likelihood or beam-->
 	<!--Beam parameters-->
-	<param name="beam_z_hit" value="0.7"/>
-	<param name="beam_z_short" value="0.2"/>
-	<param name="beam_z_max" value="0.05"/>            
-	<param name="beam_z_rand" value="0.05"/>
+	<param name="beam_z_hit" value="0.8"/>
+	<param name="beam_z_short" value="0.09"/>
+	<param name="beam_z_max" value="0.06"/>            
+	<param name="beam_z_rand" value="0.06"/>
 	<param name="beam_sigma_hit" value="0.2"/>
 	<param name="beam_lambda_short" value="0.2"/>
 
 
         <param name="map_max_occ_distance" value="2.0" />
-        <param name="monte_carlo_version" value="injection"/><!--augmented or normal -->
+        <param name="monte_carlo_version" value="injection"/><!--normal, injection or augmented -->
         <param name="laser_scan_topic" value="scan"/> <!-- the laser topic-->
         <param name="motion_model_command_topic" value="odom"/><!--cmd_vel or odom -->
         <param name="map_server_topic" value="map"/>
         <param name="pose_array_topic" value="pose_array"/>
-        <param name="sample_set_size" value="2000"/>
+        <param name="sample_set_size" value="1000"/>
 	<param name="spread_samples" value="true"/>
-	<param name="resample_rate" value="5"/>
+	<param name="resample_rate" value="10"/>
 	<param name="number_random_particles" value="0.1"/>
 
     </node>
 
-=======
-        <!-- sample motion model definition -->
-        <!-- odom or vel -->
-        <param name="sample_motion_model" value="vel"/>
-
-        <!-- THE SAMPLE VELOCITY MODEL PARAMETERS -->
-        <param name="sample_velocity_model_alpha_1" value="0.01"/>
-        <param name="sample_velocity_model_alpha_2" value="0.01"/>
-        <param name="sample_velocity_model_alpha_3" value="0.025"/>
-        <param name="sample_velocity_model_alpha_4" value="0.025"/>
-        <param name="sample_velocity_model_alpha_5" value="0.01"/>
-        <param name="sample_velocity_model_alpha_6" value="0.01"/>
-
-        <!-- sample measurement model definition-->
-        <!-- likelihood or beam-->
-        <param name="measurement_model" value="likelihood"/>
-
-        <!-- likelihood params-->
-        <param name="map_max_occ_distance" value="2.0" />
-
-        <!--the MCL version definition-->
-        <!--augmented or normal -->
-        <param name="monte_carlo_version" value="augmented"/>
-        <param name="resample_rate" value="30"/>
-
-        <!-- the sample_set_size -->
-        <param name="sample_set_size" value="8000"/>
-
-        <!--the laser topic-->
-        <param name="laser_scan_topic" value="scan"/>
-
-        <!-- the laser motion model command topic -->
-        <!-- cmd_vel or odom -->
-        <param name="motion_model_command_topic" value="cmd_vel"/>
-
-        <!-- the laser motion model command topic -->
-        <param name="map_server_topic" value="map"/>/
-
-        <!-- the pose array topic -->
-        <param name="pose_array_topic" value="pose_array"/>
-
-        <!-- the alpfa slow parameter to AMCL -->
-        <param name="recovery_alpha_slow" value="0.001"/>
-
-        <!-- the alpfa fast parameter to AMCL -->
-        <param name="recovery_alpha_fast" value="0.25"/>
-
-        <!-- spread or not the particles over the entire map -->
-        <param name="spread_samples" value="true"/>
-
-    </node>
-
-
->>>>>>> 1fcc48ca38b6d6c400bfe0a2fa7b7e2761587037
 </launch>
