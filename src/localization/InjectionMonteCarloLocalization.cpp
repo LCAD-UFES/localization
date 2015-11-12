@@ -9,7 +9,7 @@ InjectionMonteCarloLocalization::InjectionMonteCarloLocalization(
 
     // get the recovery alpha parameters
     private_nh.param("number_random_particles", number_injections, 0.05);
-    private_nh.param("injection_times", injection_times, 50);
+    private_nh.param("injection_times", injection_times, 10); //50
 
 }
 
@@ -17,7 +17,7 @@ void InjectionMonteCarloLocalization::threadPeso(int inicio, int fim){
     Sample2D *samples = Xt.samples;
     //SampleMotionModel moti = motion;
     //MeasurementModel meas = measurement;
-    double total_weight=0;
+    double t_weight=0;
     //cmake por -fopenmp
 //#pragma omp parallel for default(none) private(i, total_weight) shared(samples)
     for(int i=inicio; i<fim; i++){
@@ -32,11 +32,11 @@ void InjectionMonteCarloLocalization::threadPeso(int inicio, int fim){
         // the weight is assigned to the sample inside the method
         // it returns the pose weight
 
-        total_weight = measurement->getWeight(&samples[i]);
+        t_weight = measurement->getWeight(&samples[i]);
 //#pragma omp critical
         {
         inject_mutex.lock();
-        Xt.total_weight  += total_weight;
+        Xt.total_weight  += t_weight;
         inject_mutex.unlock();
         }
     }
@@ -69,7 +69,7 @@ void InjectionMonteCarloLocalization::run() {
             //define the parts to each thread
             fim = limit/num_threads;
             //peso para as particulas aleatorias
-            double pesoInject = 0.5;
+            double pesoInject = 0.00000000005;
 
             //Launch a group of threads
             for (int i = 0; i < num_threads-1; ++i) {

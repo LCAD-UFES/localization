@@ -1,5 +1,6 @@
 #include "SampleSet.hpp"
 #include <cmath>
+#include <iostream>
 
 // basic constructor
 SampleSet::SampleSet(const ros::NodeHandle &private_nh) : spreaded(false), samples(nullptr), old_set(nullptr) {
@@ -9,7 +10,7 @@ SampleSet::SampleSet(const ros::NodeHandle &private_nh) : spreaded(false), sampl
     private_nh.param( (std::string) "sample_set_size", size, 800);
 
     // get the min and max samples
-    private_nh.param("min_sample_set_size", min, 80);
+    private_nh.param("min_sample_set_size", min, 800);
     private_nh.param( (std::string) "max_sample_set_size", max, 20000);
 
     // allocate the array of 2D samples
@@ -32,9 +33,19 @@ void SampleSet::normalizeWeights() {
         normalizer = 1.0/( (double) total_weight);
 
         for (int i = 0; i < size; i++) {
+//            //verificar os pesos
+//            std::cout << "Particula: " << i << std::endl;
+//            std::cout << "x: " << samples[i].pose.v[0] << std::endl;
+//            std::cout << "y: " << samples[i].pose.v[1] << std::endl;
+//            std::cout << "theta: " << samples[i].pose.v[2]<< std::endl;
+//            std::cout << "Peso: " << samples[i].weight<< std::endl;
+
 
             // normalize
             samples[i].weight *= normalizer;
+//            std::cout << "Peso Norm: " << samples[i].weight<< std::endl;
+//            std::cout << "-----------------------------" << std::endl;
+
 
         }
 
