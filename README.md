@@ -5,7 +5,7 @@ Caso queira utilizar a simulação, instale o pacote PioneerModel https://github
 
 Para Utilizar o Mapa do CT7 baixe o modelo para gazebo https://github.com/LCAD-UFES/CT7
 
-Os mapas do CT7 e do willowgarage https://www.dropbox.com/sh/5ycjupyi7cocoun/AADOkQ_OSmEpy1V_GV4jqLNua?dl=0
+link para baixar os mapas do CT7 e do willowgarage https://www.dropbox.com/sh/5ycjupyi7cocoun/AADOkQ_OSmEpy1V_GV4jqLNua?dl=0
 
 Para copiar o pojeto, faça o clone do respositório dentro da pasta $catkin_ws/src/
 
