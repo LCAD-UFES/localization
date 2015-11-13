@@ -11,7 +11,7 @@ class AugmentedMonteCarloLocalization : public MonteCarloLocalization {
         double w_slow;
         double w_fast;
 
-        //
+        // the alpha parameters
         double alpha_slow;
         double alpha_fast;
 
