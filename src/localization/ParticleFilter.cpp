@@ -150,10 +150,8 @@ void ParticleFilter::commandVelReceived(const geometry_msgs::Twist &msg) {
 // the odometry motion command
 void ParticleFilter::commandOdomReceived(const nav_msgs::Odometry &msg) {
 
-    /* TODO */
     //edit the new_pose received
     cmd_odom.setNew_pose(msg);
-
 
 }
 
