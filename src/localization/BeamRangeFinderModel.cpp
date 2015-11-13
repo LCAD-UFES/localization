@@ -41,9 +41,10 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
     double q = 1;
     double p;
 
-
+    //double phit;
+    //double *pose = sample->pose.v;
     sensor_msgs::LaserScan::Ptr ray_casting;
-
+    
     p = 0;
 
     // what is happening here?
@@ -55,6 +56,7 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
         double ztk = laser_update.ranges[zt];
         double ztk_star = ray_casting->ranges[zt];
 
+
         //zhit
         pHit = exp(-0.5*((pow((ztk-ztk_star),2))/sigma_hit2));
 
@@ -65,6 +67,7 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
 
         }
 
+        //zmax
         if(ztk == 30.0){
             pMax=z_max*1.0;
         }else{
@@ -83,11 +86,11 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
         //if?
         q = q* p;
     }
-    sample->weight = q;
+
     // save the weight
+    sample->weight = q;
 
     return sample->weight;
-    // ROS_INFO("peso: %f\n", q);
 
 }
 
@@ -113,7 +116,7 @@ ros::Time BeamRangeFinderModel::update() {
 
 const geometry_msgs::Pose BeamRangeFinderModel::convertToPose(Sample2D *p){
 
-   //lock mutex
+    //lock mutex
    // beam_mutex.lock();
 
     geometry_msgs::Pose new_pose;
