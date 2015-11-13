@@ -40,55 +40,29 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
     //double z;
     double q = 1;
     double p;
-   //get the origin in map
-//    float origin_x = map_update.info.origin.position.x + (map_update.info.width/2)*map_update.info.resolution;
-//    float origin_y = map_update.info.origin.position.y + (map_update.info.height/2)*map_update.info.resolution;
-//    // convert to our grid index
-//    int x_map = std::floor((sample->pose.v[0] - origin_x)/map_update.info.resolution + 0.5) + map_update.info.width/2;
-//    int y_map = std::floor((sample->pose.v[1] - origin_y)/map_update.info.resolution + 0.5) + map_update.info.height/2;
-//    int8_t cell = map_update.data.at(MAP_INDEX2(x_map, y_map));
-//    if (cell>0.65) {
-
-//        sample->weight = 1.0/2000;
-
-//        return sample->weight;
-//    }
 
     //double phit;
     //double *pose = sample->pose.v;
     sensor_msgs::LaserScan::Ptr ray_casting;
-      //w = 1;
-      p = 0;
-//  time_t begin,end;
-//   time(&begin);
-    //ray_casting com os parametros do laser
+    
+    
+    p = 0;
     ray_casting = occupancy_grid_utils::simulateRangeScan(map_update, convertToPose(sample), laser_update, false);
-//    time(&end);
-//    double time = difftime (end,begin);
-//    std::cout<<time<<std::endl;
-
 
     //calculo da probabilidade de cada beam
     for(int zt = 0; zt<numRanges; zt+=step){
         double pHit, pShort, pMax, pRand = 0;
         double ztk = laser_update.ranges[zt];
         double ztk_star = ray_casting->ranges[zt];
-        //double ztk_star = laser_update.ranges[zt];
 
-        //pHit = (1/(sqrt(2 * M_PI * pow(sHit,2)))) * exp(-0.5*((pow((zkt-zkt_star),2))/pow(sHit,2)));
-        //if?
-
-        //zhit
         pHit = exp(-0.5*((pow((ztk-ztk_star),2))/sigma_hit2));
-        // ROS_INFO("hit: %f", pHit);
-        //        z = laseri.ranges[zt] - ray_casting->ranges[zt];
-        //        p += zhit*(pre_calculo_hit*(exp(-(z * z) / (2 * sigma_hit * sigma_hit))));
 
         //zshort
         if ((0 <= ztk) && (ztk <= ztk_star)){
             //p+= zshort * (1/(1-exp(-lambda_short*ztk_star))) * (lambda_short*exp(-lambda_short*ztk));
             pShort = (1.0 / (1.0 - (exp(-lambda_short * ztk_star)))) * lambda_short * exp(-lambda_short * ztk);
         }
+
         // ROS_INFO("short: %f", pShort);
         //zmax
         if(ztk == 30.0){
@@ -96,8 +70,7 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
         }else{
             pMax = 0;
         }
-        //   ROS_INFO("max: %f", pMax);
-        //  ROS_INFO("ZTK: %f", ztk);
+
         //zrand
         if((0<=ztk) && (ztk<=30)){
             pRand=1.0/30;
@@ -110,11 +83,11 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
         //if?
         q = q* p;
     }
-    sample->weight = q;
+
     // save the weight
+    sample->weight = q;
 
     return sample->weight;
-    // ROS_INFO("peso: %f\n", q);
 
 }
 
@@ -139,6 +112,7 @@ ros::Time BeamRangeFinderModel::update() {
 }
 
 const geometry_msgs::Pose BeamRangeFinderModel::convertToPose(Sample2D *p){
+
     //lock mutex
    // beam_mutex.lock();
 
