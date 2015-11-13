@@ -36,7 +36,7 @@ void SampleOdometryModel::samplePose2D(Pose2D *p) {
         trans = sqrt(pow(odom.v[0] - old_odom.v[0],2) + pow(odom.v[1] - old_odom.v[1],2));
 
         //calc rot1
-        rot1 = mrpt::math::angDistance(atan2(odom.v[1] - old_odom.v[1], odom.v[0] - old_odom.v[0]) - old_odom.v[2]);
+        rot1 = mrpt::math::wrapToPi(atan2(odom.v[1] - old_odom.v[1], odom.v[0] - old_odom.v[0]) - old_odom.v[2]);
 
 
         if(trans < 0.0001){
@@ -44,24 +44,24 @@ void SampleOdometryModel::samplePose2D(Pose2D *p) {
         }
 
         //calc rot2
-        rot2 = angleDiff(angleDiff(odom.v[2], old_odom.v[2]), rot1);
+        rot2 = mrpt::math::angDistance(mrpt::math::angDistance(odom.v[2], old_odom.v[2]), rot1);
 
         //Noise
         // change
-        rot1_hat = mrpt::math::angDistance(rot1 + gaussianPDF(alpha1 * fabs(rot1) + alpha2 * fabs(trans)));
+        rot1_hat = mrpt::math::wrapToPi(rot1 + gaussianPDF(alpha1 * fabs(rot1) + alpha2 * fabs(trans)));
 
         //anglediff
-        trans_hat = trans + gaussianPDF(alpha3*fabs(trans)+ alpha4 * fabs(angleDiff(rot1, rot2)));
+        trans_hat = trans + gaussianPDF(alpha3*fabs(trans)+ alpha4 * fabs(mrpt::math::angDistance(rot1, rot2)));
 
         // change
-        rot2_hat = mrpt::math::angDistance(rot2+ gaussianPDF(alpha1*fabs(rot2) + alpha2 * fabs(trans)) );
+        rot2_hat = mrpt::math::wrapToPi(rot2+ gaussianPDF(alpha1*fabs(rot2) + alpha2 * fabs(trans)) );
 
 
 
         //update the command odom
-        sample_pose[0] +=  trans_hat * cos(mrpt::math::angDistancesample_pose[2]+rot1_hat));
-        sample_pose[1] +=  trans_hat * sin(mrpt::math::angDistancesample_pose[2]+rot1_hat));
-        sample_pose[2] = mrpt::math::angDistance(sample_pose[2]+ angleDiff(rot1_hat, rot2_hat));
+        sample_pose[0] +=  trans_hat * cos(mrpt::math::wrapToPi(sample_pose[2]+rot1_hat));
+        sample_pose[1] +=  trans_hat * sin(mrpt::math::wrapToPi(sample_pose[2]+rot1_hat));
+        sample_pose[2] = mrpt::math::wrapToPi(sample_pose[2]+ mrpt::math::angDistance(rot1_hat, rot2_hat));
 
     }
     else {}
@@ -88,6 +88,6 @@ double SampleOdometryModel::angleDiff(double a, double b){
 
 // Reduce call to function wrapToPi, return the angle [-pi, pi]
 // you don't need this function
-double SampleOdometryModel::mrpt::math::normalize(a){
+double SampleOdometryModel::normalize(double a){
     return mrpt::math::wrapToPi(a);
 }
