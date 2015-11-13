@@ -152,6 +152,7 @@ void ParticleFilter::commandOdomReceived(const nav_msgs::Odometry &msg) {
 
     //edit the new_pose received
     cmd_odom.setNew_pose(msg);
+
 }
 
 // the occupancy grid

@@ -10,7 +10,7 @@ MonteCarloLocalization::MonteCarloLocalization(
         ) : Xt(private_nh), motion(motionModel), measurement(measurementModel), generator(std::random_device {} ()), resample_counter(0) {
 
     // private n
-    private_nh.param("resample_rate", resample_rate, 15);
+    private_nh.param("resample_rate", resample_rate, 30);
 
 }
 
@@ -56,9 +56,7 @@ void MonteCarloLocalization::run() {
 
         // SIMPLE SAMPLING
         // iterate over the samples and updates everything
-        int i = 0;
-        #pragma omp parallel for private(i) shared(samples)
-        for (i = 0; i < Xt.size; i++) {
+        for (int i = 0; i < Xt.size; i++) {
 
             // the motion model - passing sample pose by reference
             motion->samplePose2D(&samples[i].pose);
@@ -66,7 +64,6 @@ void MonteCarloLocalization::run() {
             // the measurement model - passing the Sample2D by pointer
             // the weight is assigned to the sample inside the method
             // it returns the pose weight
-            #pragma omp critical(dataupdate)
             Xt.total_weight  += measurement->getWeight(&samples[i]);
 
         }
@@ -182,9 +179,9 @@ void MonteCarloLocalization::resample() {
     Xt.total_weight = 0.0;
 
     // iterate over the entire SampleSet
-    for (int m = 1; m <= Xt.size; m++) {
+    for (int m = 0; m < Xt.size; m++) {
 
-        U = r + (m-1)*M;
+        U = r + (m)*M;
 
         while (U > c) {
 
@@ -194,16 +191,16 @@ void MonteCarloLocalization::resample() {
         }
 
         // copy the x coordinate
-        set[m-1].pose.v[0] = samples[i].pose.v[0];
+        set[m].pose.v[0] = samples[i].pose.v[0];
 
         // copy the y coordinate
-        set[m-1].pose.v[1] = samples[i].pose.v[1];
+        set[m].pose.v[1] = samples[i].pose.v[1];
 
         // copy the yaw orientation
-        set[m-1].pose.v[2] = samples[i].pose.v[2];
+        set[m].pose.v[2] = samples[i].pose.v[2];
 
         // copy the sample weight
-        set[m-1].weight = samples[i].weight;
+        set[m].weight = samples[i].weight;
 
         // updates the new total_weight
         Xt.total_weight += samples[i].weight;
