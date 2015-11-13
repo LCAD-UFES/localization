@@ -37,15 +37,16 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
 
     //verificar o numero de beam!!!
     int numRanges = laser_update.ranges.size();
-    //double z;
+
     double q = 1;
     double p;
-   //get the origin in map
+
 
     sensor_msgs::LaserScan::Ptr ray_casting;
-      //w = 1;
-      p = 0;
 
+    p = 0;
+
+    // what is happening here?
     ray_casting = occupancy_grid_utils::simulateRangeScan(map_update, convertToPose(sample), laser_update, false);
 
     //calculo da probabilidade de cada beam
