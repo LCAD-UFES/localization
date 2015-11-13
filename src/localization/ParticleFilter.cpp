@@ -11,7 +11,7 @@ ParticleFilter::ParticleFilter() :
 
     // Motion model
     std::string motionModel;
-    private_nh.param<std::string>("sample_motion_model", motionModel, "odom");
+    private_nh.param<std::string>("sample_motion_model", motionModel, "vel");
     if (0 == motionModel.compare("odom")) {
         // the default constructor
         motion = new SampleOdometryModel(private_nh, &cmd_odom);
@@ -28,7 +28,7 @@ ParticleFilter::ParticleFilter() :
 
     // Measurement Model
     std::string measurementModel;
-    private_nh.param<std::string>("measurement_model", measurementModel, "beam");
+    private_nh.param<std::string>("measurement_model", measurementModel, "likelihood");
     if (0 == measurementModel.compare("beam")) {
 
         // default constructor
@@ -53,7 +53,7 @@ ParticleFilter::ParticleFilter() :
 
     // The MCL object normal - injection - augmented
     std::string mcl_version;
-    private_nh.param<std::string>("monte_carlo_version", mcl_version, "injection");
+    private_nh.param<std::string>("monte_carlo_version", mcl_version, "augmented");
 
     if (0 == mcl_version.compare("normal")) {
         mcl = new MonteCarloLocalization(private_nh, motion, measurement);
@@ -78,7 +78,7 @@ ParticleFilter::ParticleFilter() :
 
     // get the command topic name
     std::string cmd_topic;
-    private_nh.param<std::string>("motion_model_command_topic", cmd_topic, "odom");
+    private_nh.param<std::string>("motion_model_command_topic", cmd_topic, "cmd_vel");
 
     // subscribe to the command topic
     if (0 == cmd_topic.compare("odom")) {
@@ -150,11 +150,8 @@ void ParticleFilter::commandVelReceived(const geometry_msgs::Twist &msg) {
 // the odometry motion command
 void ParticleFilter::commandOdomReceived(const nav_msgs::Odometry &msg) {
 
-    /* TODO */
     //edit the new_pose received
     cmd_odom.setNew_pose(msg);
-
-
 }
 
 // the occupancy grid

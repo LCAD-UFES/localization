@@ -9,17 +9,16 @@ InjectionMonteCarloLocalization::InjectionMonteCarloLocalization(
 
     // get the recovery alpha parameters
     private_nh.param("number_random_particles", number_injections, 0.05);
-    private_nh.param("injection_times", injection_times, 10); //50
+    private_nh.param("injection_times", injection_times, 10);
 
 }
 
 void InjectionMonteCarloLocalization::threadPeso(int inicio, int fim){
+
     Sample2D *samples = Xt.samples;
-    //SampleMotionModel moti = motion;
-    //MeasurementModel meas = measurement;
     double t_weight=0;
-    //cmake por -fopenmp
-//#pragma omp parallel for default(none) private(i, total_weight) shared(samples)
+
+    //#pragma omp parallel for default(none) private(i, total_weight) shared(samples)
     for(int i=inicio; i<fim; i++){
         // Injection SAMPLING
         // iterate over the samples and updates everything
@@ -33,15 +32,15 @@ void InjectionMonteCarloLocalization::threadPeso(int inicio, int fim){
         // it returns the pose weight
 
         t_weight = measurement->getWeight(&samples[i]);
-//#pragma omp critical
+
+        //#pragma omp critical
         {
-        inject_mutex.lock();
-        Xt.total_weight  += t_weight;
-        inject_mutex.unlock();
+            inject_mutex.lock();
+            Xt.total_weight  += t_weight;
+            inject_mutex.unlock();
         }
     }
-    //mcl_mutex.unlock();
-    //return total_weight;
+
 }
 
 // the overrided run method
@@ -128,10 +127,6 @@ void InjectionMonteCarloLocalization::run() {
             resample_counter++;
         }
     }
-
-    // usually the MCL returns the Xt sample set
-    // what should we do here?
-    // let's publish in a convenient topic
 
     // unlock the mutex
     mcl_mutex.unlock();
