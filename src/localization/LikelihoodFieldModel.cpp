@@ -4,13 +4,13 @@
 LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *ls, Map *m) : MeasurementModel(ls, m) {
 
     // get the z_hit parameter
-    private_nh.param("likelihood_z_hit", z_hit, 0.9);
+    private_nh.param("likelihood_z_hit", z_hit, 0.8);
     // get the z_max parameter
     private_nh.param("likelihood_z_max", z_max, 0.05);
     // get the z_rand parameter
     private_nh.param("likelihood_z_rand", z_rand, 0.05);
     // get the sigma_hit parameter
-    private_nh.param("likelihood_sigma_hit", sigma_hit, 0.2);
+    private_nh.param("likelihood_sigma_hit", sigma_hit, 0.1);
 
     // get the max_beams parameter, see MeasurementModel base class
     private_nh.param("laser_max_beams", max_beams, 60);
