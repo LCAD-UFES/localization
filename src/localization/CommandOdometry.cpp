@@ -44,12 +44,14 @@ std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end, bool &move
         commands.push_back(old_pose);
          move = false;
     } else {
+      int prev=0;
         for(int i = 0; i<poses.size(); i++){
             ps = poses.at(i);
             if (ps.header.stamp > end) {
-                ps = poses.at(i-1);
-                break;
+		ps = poses.at(prev);
+		 break;
             }
+            prev=i;
         }
 
         poses.clear();
@@ -72,7 +74,6 @@ std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end, bool &move
     }
 
     // erase the unnecessary commmands
-
     // unlock the mutex
     cmds_mutex.unlock();
 
