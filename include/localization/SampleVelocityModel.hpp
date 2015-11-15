@@ -9,6 +9,8 @@
 
 #include "Pose2D.hpp"
 
+#include "wrap2pi.h"
+
 class SampleVelocityModel : public SampleMotionModel {
 
     // Sample Velocity Model parameters 

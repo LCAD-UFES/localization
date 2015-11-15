@@ -11,7 +11,7 @@ ParticleFilter::ParticleFilter() :
 
     // Motion model
     std::string motionModel;
-    private_nh.param<std::string>("sample_motion_model", motionModel, "odom");
+    private_nh.param<std::string>("sample_motion_model", motionModel, "vel");
     if (0 == motionModel.compare("odom")) {
         // the default constructor
         motion = new SampleOdometryModel(private_nh, &cmd_odom);
@@ -38,7 +38,7 @@ ParticleFilter::ParticleFilter() :
 
         // get the max_occ_dist
         double max_occ_dist;
-        private_nh.param("map_max_occ_distance", max_occ_dist, 3.0);
+        private_nh.param("map_max_occ_distance", max_occ_dist, 2.0);
         // update map max_occ_dist
         map.updateMaxOccDist(max_occ_dist);
 
@@ -78,7 +78,7 @@ ParticleFilter::ParticleFilter() :
 
     // get the command topic name
     std::string cmd_topic;
-    private_nh.param<std::string>("motion_model_command_topic", cmd_topic, "odom");
+    private_nh.param<std::string>("motion_model_command_topic", cmd_topic, "cmd_vel");
 
     // subscribe to the command topic
     if (0 == cmd_topic.compare("odom")) {
