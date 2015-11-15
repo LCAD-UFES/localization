@@ -26,7 +26,7 @@ void CommandOdom::setNew_pose(const nav_msgs::Odometry &msg){
 
 }
 // standard vector just to transport the poses
-std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end, bool &move){
+std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end, bool &moved){
 
     // just a container
     std::vector<Pose2D> commands;
@@ -40,17 +40,29 @@ std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end, bool &move
     // build the iterators
     // the reverse one
     geometry_msgs::PoseStamped ps;
+
+    // 
     if (poses.empty()) {
+
         commands.push_back(old_pose);
-         move = false;
+        moved = false;
+
     } else {
-      int prev=0;
+
+        int prev=0;
+
         for(int i = 0; i<poses.size(); i++){
+
             ps = poses.at(i);
+
             if (ps.header.stamp > end) {
-		ps = poses.at(prev);
-		 break;
+
+                ps = poses.at(prev);
+
+                break;
+
             }
+
             prev=i;
         }
 
@@ -63,12 +75,16 @@ std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end, bool &move
 
         // updates the old_pose
         double x = sqrt(pow(new_pose.v[0] - old_pose.v[0],2) + pow(new_pose.v[1] - old_pose.v[1],2));
-        if(x>0.00001 || fabs(mrpt::math::angDistance(new_pose.v[2], old_pose.v[2]))>0.00001){
+
+        if(x > 0.00001 || fabs(mrpt::math::angDistance(new_pose.v[2], old_pose.v[2])) > 0.00001){
+
             old_pose = new_pose;
-            move = true;
-        }
-        else{
-            move = false;
+            moved = true;
+
+        } else{
+
+            moved = false;
+
         }
 
     }

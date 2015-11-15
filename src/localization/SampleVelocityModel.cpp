@@ -98,20 +98,13 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
 
             // indicates the movement
             moved = false;
+            return;
 
         }
 
         // angular velocity
-        // maintain the orientation between -PI and PI
-        if (-M_PI > pose[2]) {
-
-            pose[2] += PI2;
-
-        } else if (M_PI < pose[2]) {
-
-            pose[2] -= PI2;
-
-        }
+        // maintain the orientation between -PI/2 and PI/2
+        pose[2] = mrpt::math::wrapToPi(pose[2]);
 
     }
 
@@ -123,10 +116,11 @@ bool SampleVelocityModel::update(const ros::Time &end) {
     if (!commands.empty()) {
         commands.clear();
     }
+
     //get the correct commands
     commands = cmds->getAll(end);
 
-    if (commands.size() == 2 && 0.0 == commands[0].linear && 0.0 == commands[0].angular) {
+    if (2 == commands.size() && 0.0 == commands[0].linear && 0.0 == commands[0].angular) {
 
         // verify if the commands are different
         return commands[0].linear != commands[1].linear && commands[0].angular != commands[1].angular;
