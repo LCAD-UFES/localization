@@ -41,7 +41,7 @@ std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end, bool &move
     // the reverse one
     geometry_msgs::PoseStamped ps;
 
-    // 
+    //
     if (poses.empty()) {
 
         commands.push_back(old_pose);
@@ -66,7 +66,9 @@ std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end, bool &move
             prev=i;
         }
 
+        // clear the poses queue
         poses.clear();
+
         // copy the command
         Pose2D new_pose = convertToPose2D(ps);
 
@@ -76,6 +78,7 @@ std::vector<Pose2D> CommandOdom::getCommandOdom(const ros::Time &end, bool &move
         // updates the old_pose
         double x = sqrt(pow(new_pose.v[0] - old_pose.v[0],2) + pow(new_pose.v[1] - old_pose.v[1],2));
 
+        // just to avoid little noises
         if(x > 0.00001 || fabs(mrpt::math::angDistance(new_pose.v[2], old_pose.v[2])) > 0.00001){
 
             old_pose = new_pose;

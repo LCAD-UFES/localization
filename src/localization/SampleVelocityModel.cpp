@@ -19,6 +19,9 @@ SampleVelocityModel::SampleVelocityModel(
     private_nh.param("sample_velocity_model_alpha_5", a5, 0.025);
     private_nh.param("sample_velocity_model_alpha_6", a6, 0.025);
 
+    // is a real world situation (true) or just a gazebo 2.2 sim? (false)
+    private_nh.param("real_world_case", real_world, true);
+
 }
 
 // destructor
@@ -50,11 +53,23 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
         // the first one in the next MCL call (next LaserScan)
         dt = (commands[j+1].stamp - commands[j].stamp).toSec();
 
-        // get the linear velocity
-        v = commands[j].linear + gaussianPDF(a1*v2 + a2*w2);
+        if (real_world) {
 
-        // get the angular velocity
-        w = commands[j].angular + gaussianPDF(a3*v2 + a4*w2);
+            // get the linear velocity
+            v = commands[j].linear + gaussianPDF(a1*v2 + a2*w2);
+
+            // get the angular velocity
+            w = commands[j].angular + gaussianPDF(a3*v2 + a4*w2);
+
+        } else {
+
+            // get the linear velocity
+            v = commands[j].linear*1.2 + gaussianPDF(a1*v2 + a2*w2);
+
+            // get the angular velocity
+            w = commands[j].angular*1.5 + gaussianPDF(a3*v2 + a4*w2);
+
+        }
 
         // get the final angle extra noisy angular velocity
         y = gaussianPDF(a5*v2 + a6*w2);
@@ -77,9 +92,6 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
             pose[2] += w*dt + y*dt;
 
 
-            // indicates the movement
-            moved = true;
-
         } else if (0.0 != commands[j].linear) {
 
             // get the x distance
@@ -91,13 +103,10 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
             // get the new angle, just adding some noise
             pose[2] += y*dt;
 
-            // indicates the movement
-            moved = true;
 
         } else {
 
-            // indicates the movement
-            moved = false;
+            // just return
             return;
 
         }
@@ -120,16 +129,15 @@ bool SampleVelocityModel::update(const ros::Time &end) {
     //get the correct commands
     commands = cmds->getAll(end);
 
+    // instead of using a flag, I choose to make the movement tests here
     if (2 == commands.size() && 0.0 == commands[0].linear && 0.0 == commands[0].angular) {
 
         // verify if the commands are different
         return commands[0].linear != commands[1].linear && commands[0].angular != commands[1].angular;
 
-    } else {
-
-        // in this case, return true, the commands.size() is greater than 2 or the commands are diferents
-        return true;
-
     }
+
+    // in this case, return true, the commands.size() is greater than 2 or the commands are differents
+    return true;
 
 }

@@ -22,6 +22,9 @@ class SampleOdometryModel : public SampleMotionModel {
     //the command xt
     Pose2D odom;
 
+    // a flag to indicate if the robot has moved
+    bool moved;
+
     public:
         // constructor
         SampleOdometryModel(const ros::NodeHandle&, CommandOdom *);

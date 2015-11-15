@@ -2,7 +2,7 @@
 
 // constructor
 // the generator is initialized with a random seed
-SampleMotionModel::SampleMotionModel() : generator(std::random_device{}()), moved(false) {}
+SampleMotionModel::SampleMotionModel() : generator(std::random_device{}()) {}
 
 double SampleMotionModel::gaussianPDF(double b2) {
 

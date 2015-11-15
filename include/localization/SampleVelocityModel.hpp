@@ -25,6 +25,8 @@ class SampleVelocityModel : public SampleMotionModel {
     // a pi value
     double PI2;
 
+    bool real_world;
+
     public:
         // default constructor
         SampleVelocityModel(ros::NodeHandle&, CommandVel *);
