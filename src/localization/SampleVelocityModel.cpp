@@ -12,12 +12,12 @@ SampleVelocityModel::SampleVelocityModel(
 
     // get the sample velocity model parameters parameters
     // the alphas
-    private_nh.param("sample_velocity_model_alpha_1", a1, 0.1);
-    private_nh.param("sample_velocity_model_alpha_2", a2, 0.1);
+    private_nh.param("sample_velocity_model_alpha_1", a1, 0.05);
+    private_nh.param("sample_velocity_model_alpha_2", a2, 0.05);
     private_nh.param("sample_velocity_model_alpha_3", a3, 0.05);
     private_nh.param("sample_velocity_model_alpha_4", a4, 0.05);
-    private_nh.param("sample_velocity_model_alpha_5", a5, 0.05);
-    private_nh.param("sample_velocity_model_alpha_6", a6, 0.05);
+    private_nh.param("sample_velocity_model_alpha_5", a5, 0.025);
+    private_nh.param("sample_velocity_model_alpha_6", a6, 0.025);
 
 }
 
@@ -51,10 +51,10 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
         dt = (commands[j+1].stamp - commands[j].stamp).toSec();
 
         // get the linear velocity
-        v = commands[j].linear*1.2 + gaussianPDF(a1*v2 + a2*w2);
+        v = commands[j].linear + gaussianPDF(a1*v2 + a2*w2);
 
         // get the angular velocity
-        w = commands[j].angular*1.50 + gaussianPDF(a3*v2 + a4*w2);
+        w = commands[j].angular + gaussianPDF(a3*v2 + a4*w2);
 
         // get the final angle extra noisy angular velocity
         y = gaussianPDF(a5*v2 + a6*w2);
