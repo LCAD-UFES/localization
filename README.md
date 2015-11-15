@@ -1,17 +1,30 @@
-# localization
+# Localization
 Monte Carlo Localization - Based on Particle Filters
 
-Para copiar o pojeto, faça o clone do respositório dentro da pasta $catkin_ws/src/
+### Instalação
 
-    git clone https://github.com/LCAD-UFES/localization.git
+1. Faça o clone do pacote *ocuppacy_grid_utils* do respositório do LCAD dentro da pasta $catkin_ws/src/
 
-Falta ainda publicar o mapa por conta própria e estabelecer as relações de tf para o mapa. Para testar a implementação, desde já, siga os passos:
+    $ git clone https://github.com/LCAD-UFES/occupancy_grid_utils
 
-Volte até a pasta do catkin $catkin_ws/ e compile o projeto:
+2. Agora, Faça o clone do nosso pacote *localization* dentro da pasta $catkin_ws/src/
 
-    catkin_make localization
+    $ git clone https://github.com/LCAD-UFES/localization.git
 
-Abra 7 terminais e em faça em sequẽncia, um comando por terminal(Sugiro usar o Terminator):
+3. Volte até a pasta do catkin $catkin_ws/ e compile o projeto:
+
+    $ catkin_make
+
+### Testar com o log
+
+Para testar o programa com log feito no CT-7:
+
+    $ roslaunch log_play_${beam or likelihood}.launch
+
+
+### Testar o localization com o controle
+
+Abra 6 terminais e em faça em sequência, um comando por terminal(Sugiro usar o Terminator):
 
     $ roscore
 
@@ -21,21 +34,19 @@ Abra 7 terminais e em faça em sequẽncia, um comando por terminal(Sugiro usar 
 
 Espere o gazebo ser lançado e:
 
-    $ rosrun amcl amcl
-
     $ roslaunch p3dx_description rviz.launch
 
 Pode ser que ocorra algum problema do rviz ou do gazebo no caminho, sem stress, encerre o processo pelo terminal adequado com o comando CTRL+C e tente novamente.
 
-Vá até a janela do RVIZ e adicione um mapa que ouça o tópico /map. Bom, estou precisando do amcl (comando acima) somente para visualizar o mapa corretamente. Logo mais estará resolvido.
+Execute o launch com o localization:
+
+    $ roslaunch localization_${beam or likelihood}.launch
+
+Vá até a janela do RVIZ e adicione um mapa que ouça o tópico /map.
 
 Ainda no RVIZ, mude o frame global de base_link para /map
 
-Adicione um PoseArray, também no RVIZ. O RVIZ vai automaticamente procurar o tópico padrão do amcl do ROS (/particle_cloud) e vai exibir um conjunto de partículas ao redor do Pioneer, vamos então rodar o nosso nó para visualizar as partículas que serão geradas por ele e não pelo amcl:
-
-    $ rosrun localization localization_node
-
-Volte até o PoseArray, dentro do RVIZ, e altere o tópico de /particle_cloud para /pose_array. Estamos publicando nesse tópico.
+Adicione um PoseArray, também no RVIZ. escolha o tópico /pose_array. 
 
 Imediatamente você verá as párticulas espalhadas pelo mapa de forma uniforme e randômica. O algoritmo somente faz o sampling e resampling quando ocorre movimentos, então prossigamos para o último terminal (perdeu a conta?):
 

@@ -1,0 +1,16 @@
+<launch>
+
+	<param name="/use_sim_time" value="true"/>
+	<!--Iniciar Mapa-->	
+	<node name="map_node" pkg="map_server" type="map_server" args="$(find localization)/maps/map_log_real.yaml" respawn="false"/>
+	<!--Iniciar o Log-->
+	<node pkg="rosbag" type="play" name="player" output="screen" args="--clock --delay=0 --rate=0.8 $(find localization)/bags/log_real.bag"/>
+	<!--Iniciar o Rviz-->
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find localization)/rviz.rviz"/>
+	<!--Inicia Localization-->
+	
+
+	<include file="$(find localization)/launch/localization_beam.launch" /><!-- localization_beam or localization_likelihood-->
+
+</launch>
+
