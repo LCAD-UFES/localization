@@ -12,12 +12,12 @@ SampleVelocityModel::SampleVelocityModel(
 
     // get the sample velocity model parameters parameters
     // the alphas
-    private_nh.param("sample_velocity_model_alpha_1", a1, 0.1);
-    private_nh.param("sample_velocity_model_alpha_2", a2, 0.1);
+    private_nh.param("sample_velocity_model_alpha_1", a1, 0.05);
+    private_nh.param("sample_velocity_model_alpha_2", a2, 0.05);
     private_nh.param("sample_velocity_model_alpha_3", a3, 0.05);
     private_nh.param("sample_velocity_model_alpha_4", a4, 0.05);
-    private_nh.param("sample_velocity_model_alpha_5", a5, 0.05);
-    private_nh.param("sample_velocity_model_alpha_6", a6, 0.05);
+    private_nh.param("sample_velocity_model_alpha_5", a5, 0.025);
+    private_nh.param("sample_velocity_model_alpha_6", a6, 0.025);
 
 }
 
