@@ -4,7 +4,6 @@
 *.pdf
 test.cpp
 src/t
-t
 .directory
 *.md~
 *.txt~
@@ -14,10 +13,11 @@ CMakeLists.txt.user
 *.*.autosave
 *.cpp~
 *.hpp~
-maps/
 *.*~
 *.*.save
-*.rviz
 .kdev4/
 *.kdev4
 *.kdev_include_paths
+*.bag
+*.pgm
+
