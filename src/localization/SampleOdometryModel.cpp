@@ -64,7 +64,6 @@ void SampleOdometryModel::samplePose2D(Pose2D *p) {
         sample_pose[2] = mrpt::math::wrapToPi(sample_pose[2]+ mrpt::math::angDistance(rot1_hat, rot2_hat));
 
     }
-    else {}
 
 }
 
