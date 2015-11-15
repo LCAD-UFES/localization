@@ -9,7 +9,7 @@ AugmentedMonteCarloLocalization::AugmentedMonteCarloLocalization(
 
     // get the recovery alpha parameters
     private_nh.param("recovery_alpha_slow", alpha_slow, 0.001);
-    private_nh.param("recovery_alpha_fast", alpha_fast, 0.1);
+    private_nh.param("recovery_alpha_fast", alpha_fast, 0.25);
 
 }
 

@@ -1,4 +1,6 @@
 <launch>
+	<!--Iniciar a TF-->
+    <node name="static_tf" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 /map /odom 100" />
 
     <node pkg="localization" type="localization_node" name="localization_node" output="screen">
 
@@ -30,9 +32,9 @@
         <!-- Monte carlo localization type-->
         <param name="monte_carlo_version" value="injection"/><!--normal, injection or augmented -->
 	<param name="resample_rate" value="5"/> <!--How many loops until resample-->
-        <param name="sample_set_size" value="2000"/> <!--Quantity Particles-->
+        <param name="sample_set_size" value="800"/> <!--Quantity Particles-->
 	<param name="spread_samples" value="true"/> <!--Start spread or on robot-->
-        <!-- injection parameters-->
+        	<!-- injection parameters-->
 		<param name="injection_times" value="10"/> <!--How many loops to inject random particles-->
 		<param name="number_random_particles" value="0.2"/> <!--percentage of random particles injection-->
 	
