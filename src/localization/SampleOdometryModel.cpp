@@ -76,7 +76,7 @@ bool SampleOdometryModel::update(const ros::Time &end) {
     old_odom = commands[0];
     odom = commands[1];
 
-    return old_odom.v[0] != odom.v[0] || old_odom.v[1] != odom.v[1] || old_odom.v[2] != odom.v[2];
+    return moved;
 
 }
 
