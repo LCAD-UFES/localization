@@ -15,6 +15,10 @@ Monte Carlo Localization - Based on Particle Filters
 
     $ catkin_make
 
+4. Baixe os maps e os logs do link abaixo para executar o localization:
+
+    https://www.dropbox.com/sh/n70dto0qn0ab364/AACDTmBnz4Sz0EgIfhsDeDh_a?dl=0
+
 ### Testar com o log
 
 Para testar o programa com log feito no CT-7:
