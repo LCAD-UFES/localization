@@ -51,7 +51,7 @@ void SampleVelocityModel::samplePose2D(Pose2D *p) {
         dt = (commands[j+1].stamp - commands[j].stamp).toSec();
 
         // get the linear velocity
-        v = commands[j].linear* + gaussianPDF(a1*v2 + a2*w2);
+        v = commands[j].linear + gaussianPDF(a1*v2 + a2*w2);
 
         // get the angular velocity
         w = commands[j].angular + gaussianPDF(a3*v2 + a4*w2);
