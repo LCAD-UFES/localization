@@ -1,5 +1,3 @@
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
 #include "GridMap.hpp"
 
 // basic constructor
@@ -154,6 +152,24 @@ double GridMap::getMinDistance(int i, int j) {
     return max_occ_dist;
 
 }
+
+// verify if the pose is valid - not inside a wall...
+bool GridMap::validPose(double x, double y) {
+
+    // convert to our grid index
+    int x_map = std::floor((x - origin_x)/scale + 0.5) + width/2;
+    int y_map = std::floor((y - origin_y)/scale + 0.5) + height/2;
+
+    return cells[MAP_INDEX(x_map, y_map)].occ_dist > 0;
+
+}
+
+/*
+ * The methods below were adapted from the ros AMCL package
+ * These 2 methods calculates the occlusion distance of a given cell
+ * The original code is free software and our license remains compatible (GNU)
+ * https://github.com/ros-planning/navigation/tree/indigo-devel/amcl
+*/
 
 void GridMap::enqueue(
     unsigned int i,
@@ -330,35 +346,6 @@ void GridMap::nearestNeighbor() {
     // remove the marked vector
     delete marked;
 
-//     cv::Mat image(4000, 4000, CV_8U);
-//
-//     // first. raw pointer access.
-//     for (int j = image.rows - 1; j >= 0; j--) {
-//         for(int i = 0; i < image.cols; i++) {
-//
-//             double occ = cells[MAP_INDEX(j, i)].occ_dist;
-//             if (occ == max_occ_dist) {
-//                 image.at<uchar>(j,i) = 255;
-//             } else {
-//                 image.at<uchar>(j,i) = occ*1000;
-//             }
-//         }
-//     }
-//
-//     cv::namedWindow("Display", cv::WINDOW_AUTOSIZE);
-//     cv::imshow("Display", image);
-//
-//     cv::waitKey(0);
 }
 
-// verify if the pose is valid - not inside a wall...
-bool GridMap::validPose(double x, double y) {
-
-    // convert to our grid index
-    int x_map = std::floor((x - origin_x)/scale + 0.5) + width/2;
-    int y_map = std::floor((y - origin_y)/scale + 0.5) + height/2;
-
-    return cells[MAP_INDEX(x_map, y_map)].occ_dist > 0;
-
-}
 
