@@ -10,15 +10,19 @@ class Scan {
 
         // start angle of the scan
         float angle_min;
+
         // end angle of the scan
         float angle_max;
+
         // angular distance between measurements
         float angle_increment;
+
         // time betwen scans
         float time_increment;
 
         // mininum range value
         float range_min;
+
         // max range value
         float range_max;
 
@@ -26,8 +30,8 @@ class Scan {
         float (*ranges)[2];
 
         // custom parameters
-        // the number of samples
-        int range_count;
+        // the number of beams
+        int size;
 
         // the LaserScan time, just to sync with the commands
         ros::Time time;
@@ -48,4 +52,5 @@ class Scan {
         void copy(const Scan&);
 
 };
+
 #endif

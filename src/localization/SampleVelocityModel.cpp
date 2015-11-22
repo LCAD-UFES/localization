@@ -20,7 +20,7 @@ SampleVelocityModel::SampleVelocityModel(
     private_nh.param("sample_velocity_model_alpha_6", a6, 0.025);
 
     // is a real world situation (true) or just a gazebo 2.2 sim? (false)
-    private_nh.param("real_world_case", real_world, true);
+    private_nh.param("real_world_case", real_world, false);
 
 }
 

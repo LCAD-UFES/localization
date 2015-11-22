@@ -2,7 +2,6 @@
 #define GRID_MAP_H
 
 #include <queue>
-
 #include <nav_msgs/OccupancyGrid.h>
 
 #include "MapCell.hpp"
@@ -36,13 +35,16 @@ class GridMap {
 
         // basic constructor
         GridMap ();
+
         // Copy Constructor
         GridMap (const GridMap&);
+
         // destructor
         ~GridMap();
 
         // update the grid map with a new ros OccupancyGrid msg
         void updateGridMap(const nav_msgs::OccupancyGrid&);
+
         //
         void enqueue(
             unsigned int,
@@ -66,9 +68,10 @@ class GridMap {
 
         // verify if the pose is valid - not inside a wall...
         bool validPose(double x, double y);
+
 };
 
 // i is the collum and j is the row :-/
-#define MAP_INDEX(i, j) ((i) + (j) *width)
+#define MAP_INDEX(i, j) ((i) + (j)*width)
 
 #endif

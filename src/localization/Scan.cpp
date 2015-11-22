@@ -1,7 +1,7 @@
 #include "Scan.hpp"
 
 // basic constructor
-Scan::Scan() : range_count(0), ranges(nullptr) {}
+Scan::Scan() : size(0), ranges(nullptr) {}
 
 // copy constructor
 Scan::Scan(const Scan &ls) :
@@ -11,20 +11,20 @@ Scan::Scan(const Scan &ls) :
                                 time_increment(ls.time_increment),
                                 range_min(ls.range_min),
                                 range_max(ls.range_max),
-                                range_count(ls.range_count),
+                                size(ls.size),
                                 ranges(nullptr),
                                 time(ls.time) {
 
 
     // allocate the ranges
     // the Scan destructor will take care of it
-    ranges = new float[ls.range_count][2];
+    ranges = new float[ls.size][2];
     if(nullptr == ranges) {
         throw std::bad_alloc();
     }
 
     // copy the ranges and angles of the beams
-    for (int i = 0; i < range_count; i++) {
+    for (int i = 0; i < size; i++) {
         // copy the beam range
         ranges[i][0] = ls.ranges[i][0];
         // copy the beam angle
@@ -44,10 +44,10 @@ Scan::~Scan() {
 void Scan::updateScan(const sensor_msgs::LaserScan &msg) {
 
     // get the amount of beams
-    int size = msg.ranges.size();
+    int msg_size = msg.ranges.size();
 
     // same size?
-    if (range_count != size) {
+    if (size != msg_size) {
 
         if (nullptr != ranges) {
             // delete
@@ -55,7 +55,7 @@ void Scan::updateScan(const sensor_msgs::LaserScan &msg) {
         }
 
         // allocate new space
-        ranges = new float[size][2];
+        ranges = new float[msg_size][2];
         if (nullptr == ranges) {
             throw std::bad_alloc();
         }
@@ -63,7 +63,7 @@ void Scan::updateScan(const sensor_msgs::LaserScan &msg) {
     } else if (nullptr == ranges) {
 
         // allocate new space
-        ranges = new float[size][2];
+        ranges = new float[msg_size][2];
         if (nullptr == ranges) {
             throw std::bad_alloc();
         }
@@ -71,7 +71,7 @@ void Scan::updateScan(const sensor_msgs::LaserScan &msg) {
     }
 
     // how many scans
-    range_count = size;
+    size = msg_size;
 
 
     // copy the basic info
@@ -114,7 +114,7 @@ void Scan::copy(const Scan& s) {
 
 
     // same size?
-    if (range_count != s.range_count) {
+    if (size != s.size) {
 
         if (nullptr != ranges) {
             // delete
@@ -122,7 +122,7 @@ void Scan::copy(const Scan& s) {
         }
 
         // allocate new space
-        ranges = new float[s.range_count][2];
+        ranges = new float[s.size][2];
         if (nullptr == ranges) {
             throw std::bad_alloc();
         }
@@ -130,7 +130,7 @@ void Scan::copy(const Scan& s) {
     } else if (nullptr == ranges) {
 
         // allocate new space
-        ranges = new float[s.range_count][2];
+        ranges = new float[s.size][2];
         if (nullptr == ranges) {
             throw std::bad_alloc();
         }
@@ -138,7 +138,7 @@ void Scan::copy(const Scan& s) {
     }
 
     // how many scans
-    range_count = s.range_count;
+    size = s.size;
 
 
     // copy the basic info
@@ -157,7 +157,7 @@ void Scan::copy(const Scan& s) {
     range_max = s.range_max;
 
     // range data
-    for (int i = 0; i < s.range_count; i++) {
+    for (int i = 0; i < s.size; i++) {
 
         // copy the range value
         ranges[i][0] = s.ranges[i][0];

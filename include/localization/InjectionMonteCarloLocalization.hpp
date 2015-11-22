@@ -22,7 +22,9 @@ class InjectionMonteCarloLocalization : public MonteCarloLocalization {
         // it can be called only inside the AugmentedMonteCarloLocalization::start() method
         // override the run method
         virtual void run();
+
         void threadPeso(int inicio, int fim);
+
         std::mutex inject_mutex;
 
     public:

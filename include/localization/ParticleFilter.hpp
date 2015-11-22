@@ -87,6 +87,7 @@ class ParticleFilter {
         // run
         void start();
 
+        // update
 };
 
 #endif

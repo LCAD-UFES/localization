@@ -28,7 +28,7 @@ ParticleFilter::ParticleFilter() :
 
     // Measurement Model
     std::string measurementModel;
-    private_nh.param<std::string>("measurement_model", measurementModel, "likelihood");
+    private_nh.param<std::string>("measurement_model", measurementModel, "beam");
     if (0 == measurementModel.compare("beam")) {
 
         // default constructor

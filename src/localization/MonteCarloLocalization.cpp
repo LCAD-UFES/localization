@@ -26,6 +26,7 @@ void MonteCarloLocalization::start() {
 
     // look at the mutex
     if (mcl_mutex.try_lock()) {
+
         // it is unlocked when the run() method is finished
         // spawns a new thread
         std::thread mcl_thread(&MonteCarloLocalization::run, this);

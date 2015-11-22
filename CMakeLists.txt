@@ -9,7 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
     geometry_msgs
     roscpp
     std_msgs
-    occupancy_grid_utils
+    tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -118,12 +118,7 @@ catkin_package(
 include_directories(include/localization)
 include_directories(${catkin_INCLUDE_DIRS})
 
-set(MY_SRCS
-    include/localization/Sample2D.hpp
-    include/localization/GridMap.hpp
-)
-
-set(LOCALIZATION_LIB_SOURCES 
+set(LOCALIZATION_LIB_SOURCES
     src/localization/Sample2D.cpp
     src/localization/GridMap.cpp
     src/localization/Map.cpp

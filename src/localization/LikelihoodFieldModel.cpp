@@ -30,13 +30,13 @@ LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *l
 double LikelihoodFieldModel::getWeight(Sample2D *sample) {
 
     // auxiliar variables
-    double p = 0.0;
-    double q = 1.0;
+    double p = 1.0;
     double dist;
     double obs_range;
     double obs_bearing;
     // the endpoint of the beam
     double x, y;
+
     // the endpoint in the MapGrid coords
     int x_map, y_map;
 
@@ -46,15 +46,15 @@ double LikelihoodFieldModel::getWeight(Sample2D *sample) {
     // if the current pose is inside a obstacle...
     if (!grid.validPose(pose[0], pose[1])) {
 
-        sample->weight = 1.0/800.0;
+        sample->weight = sample->weight*0.0001;
 
         return sample->weight;
 
     }
 
     // iterate over the scans
-    // we have 60 
-    for (int i = 0; i < ls_scan.range_count; i += step) {
+    // we have 60
+    for (int i = 0; i < ls_scan.size; i += step) {
 
         // copy the range and the angle
         obs_range = ls_scan.ranges[i][0];
@@ -73,8 +73,8 @@ double LikelihoodFieldModel::getWeight(Sample2D *sample) {
             // y = pose[0] + y_s*cos(pose[2]) + x_s*sin(pose[2]) + obs_range * sin(pose[2] + obs_bearing);
 
             // Convert from world coords to map coords
-            x_map = std::floor((x - grid.origin_x)/grid.scale + 0.5) + grid.width/2;
-            y_map = std::floor((y - grid.origin_y)/grid.scale + 0.5) + grid.height/2;
+            x_map = std::floor((x - grid.origin_x)/grid.scale + 0.5) + (grid.width >> 1);
+            y_map = std::floor((y - grid.origin_y)/grid.scale + 0.5) + (grid.height >> 1);
 
             // get the distance
             // verify the bounds
@@ -102,11 +102,9 @@ double LikelihoodFieldModel::getWeight(Sample2D *sample) {
         }
 
     }
+
     // ???
     sample->weight = p;
-    if (p != p) {
-        std::cout << "NAN" << std::endl;
-    }
 
     // save the weight
     return sample->weight;
@@ -120,7 +118,7 @@ ros::Time LikelihoodFieldModel::update() {
     laser->getScan(&ls_scan);
 
     // update the step
-    step = ls_scan.range_count/(max_beams -1);
+    step = ls_scan.size/(max_beams -1);
     // being cautious
     if (1 > step) {
         step = 1;

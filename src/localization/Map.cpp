@@ -70,7 +70,7 @@ void Map::getGridMap(GridMap *g) {
 
 }
 
-//To ray cast 
+//To ray cast
 void Map::getMap(nav_msgs::OccupancyGrid *m) {
 
     // copy, is it really necessary?
@@ -191,11 +191,11 @@ void Map::uniformSpread(SampleSet *Xt) {
             // get the grid y coord - div is defined above as 1/grid.width
             g_j = availableCells[index]*div;
 
-            // now we have the grid index and a we can 
+            // now we have the grid index and a we can
             // convert to world coords and assign to the pose value
             // with a simple gaussian noise
-            pose[0] = (grid.origin_x + (g_i - grid.width/2)*grid.scale) + normal_dist(generator);
-            pose[1] = (grid.origin_y + (g_j - grid.height/2)*grid.scale) + normal_dist(generator);
+            pose[0] = (grid.origin_x + (g_i - (grid.width >> 1))*grid.scale) + normal_dist(generator);
+            pose[1] = (grid.origin_y + (g_j - (grid.height >> 1))*grid.scale) + normal_dist(generator);
 
             // random orientation between 0 and 2*PI radians
             pose[2] = angle_dist(generator);
@@ -234,7 +234,7 @@ Pose2D Map::randomPose2D() {
     // get the grid y coord - div is defined above as 1/grid.width
     int g_j = availableCells[index]/grid.width;
 
-    // now we have the grid index and a we can 
+    // now we have the grid index and a we can
     // convert to world coords and assign to the pose value
     // with a simple gaussian noise
     pose.v[0] = (grid.origin_x + (g_i - grid.width/2)*grid.scale) + normal_dist(generator);
