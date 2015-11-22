@@ -10,7 +10,7 @@ MonteCarloLocalization::MonteCarloLocalization(
         ) : Xt(private_nh), motion(motionModel), measurement(measurementModel), generator(std::random_device {} ()), resample_counter(0) {
 
     // private n
-    private_nh.param("resample_rate", resample_rate, 15);
+    private_nh.param("resample_rate", resample_rate, 30);
 
 }
 
@@ -70,7 +70,6 @@ void MonteCarloLocalization::run() {
         }
 
         // normalize
-        // normalize
         Xt.normalizeWeights();
 
         // RESAMPLING
@@ -111,47 +110,6 @@ void MonteCarloLocalization::spreadSamples(Map &map) {
 
 }
 
-// return a copy of the Sample2D
-geometry_msgs::PoseArray MonteCarloLocalization::getPoseArray() {
-
-    // shortcut
-    Sample2D *samples = Xt.samples;
-
-    // build a copy of the Sample2D array
-    geometry_msgs::PoseArray msg;
-
-    // set the frame_id
-    msg.header.frame_id = "map";
-
-    // lock the mcl
-    mcl_mutex.lock();
-
-    // get the current timestamp
-    msg.header.stamp = ros::Time::now();
-
-    // resize the pose array
-    msg.poses.resize(Xt.size);
-
-    // copy the poses
-    for (int i = 0; i < Xt.size; i++) {
-        // copy the current pose transformed by the appropriate tf
-        // Euler to Quaternion
-        tf::poseTFToMsg(
-                            tf::Pose(
-                                tf::createQuaternionFromYaw(samples[i].pose.v[2]),
-                                tf::Vector3(samples[i].pose.v[0], samples[i].pose.v[1], 0)),
-                            msg.poses[i]
-                       );
-    }
-
-    // unlock the mcl
-    mcl_mutex.unlock();
-
-    samples = nullptr;
-
-    return msg;
-
-}
 
 // resample the entire SampleSet - low-variance
 // resampling all particles based on the weight
@@ -217,5 +175,47 @@ void MonteCarloLocalization::resample() {
     temp = nullptr;
 
     Xt.normalizeWeights();
+
+}
+
+// return a copy of the Sample2D
+geometry_msgs::PoseArray MonteCarloLocalization::getPoseArray() {
+
+    // shortcut
+    Sample2D *samples = Xt.samples;
+
+    // build a copy of the Sample2D array
+    geometry_msgs::PoseArray msg;
+
+    // set the frame_id
+    msg.header.frame_id = "map";
+
+    // lock the mcl
+    mcl_mutex.lock();
+
+    // get the current timestamp
+    msg.header.stamp = ros::Time::now();
+
+    // resize the pose array
+    msg.poses.resize(Xt.size);
+
+    // copy the poses
+    for (int i = 0; i < Xt.size; i++) {
+        // copy the current pose transformed by the appropriate tf
+        // Euler to Quaternion
+        tf::poseTFToMsg(
+                            tf::Pose(
+                                tf::createQuaternionFromYaw(samples[i].pose.v[2]),
+                                tf::Vector3(samples[i].pose.v[0], samples[i].pose.v[1], 0)),
+                            msg.poses[i]
+                       );
+    }
+
+    // unlock the mcl
+    mcl_mutex.unlock();
+
+    samples = nullptr;
+
+    return msg;
 
 }

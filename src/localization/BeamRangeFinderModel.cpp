@@ -44,7 +44,7 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
         // if the current pose is inside a obstacle...
     if (!grid.validPose(sample->pose.v[0], sample->pose.v[1])) {
 
-        sample->weight *= 0.000000001;
+        sample->weight *= 0.001;
 
         return sample->weight;
 

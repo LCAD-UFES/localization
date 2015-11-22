@@ -29,6 +29,7 @@ void AugmentedMonteCarloLocalization::run() {
     bool moved = motion->update(sync);
 
     if (moved) {
+
         // if the robot moves
         // reset the total weight
         Xt.total_weight = 0.0;
@@ -182,8 +183,5 @@ void AugmentedMonteCarloLocalization::resample() {
         w_slow = w_fast = 0.0;
 
     }
-
-    // normalize
-    Xt.normalizeWeights();
 
 }

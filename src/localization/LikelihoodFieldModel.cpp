@@ -46,7 +46,8 @@ double LikelihoodFieldModel::getWeight(Sample2D *sample) {
     // if the current pose is inside a obstacle...
     if (!grid.validPose(pose[0], pose[1])) {
 
-        sample->weight = sample->weight*0.0001;
+        // just reducing the probability
+        sample->weight *= 0.001;
 
         return sample->weight;
 

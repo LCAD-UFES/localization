@@ -10,10 +10,11 @@ class InjectionMonteCarloLocalization : public MonteCarloLocalization {
 
     protected:
 
-        // Parameters
-        double number_injections;
-        //each "times" samples run injection
-        int injection_times;
+        // random amount of particles, it's a percentual
+        double random_amount;
+
+        // raondom particles injection rate
+        int injection_rate;
 
         // the resample counter
         int sample_counter;
@@ -23,8 +24,10 @@ class InjectionMonteCarloLocalization : public MonteCarloLocalization {
         // override the run method
         virtual void run();
 
+        // ??
         void threadPeso(int inicio, int fim);
 
+        // 
         std::mutex inject_mutex;
 
     public:

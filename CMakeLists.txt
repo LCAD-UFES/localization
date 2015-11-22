@@ -209,4 +209,4 @@ target_link_libraries(localization_node localization_libs)
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-set(CMAKE_CXX_FLAGS "-std=c++11 -fopenmp ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")

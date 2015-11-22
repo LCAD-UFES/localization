@@ -12,6 +12,7 @@ ParticleFilter::ParticleFilter() :
     // Motion model
     std::string motionModel;
     private_nh.param<std::string>("sample_motion_model", motionModel, "vel");
+
     if (0 == motionModel.compare("odom")) {
         // the default constructor
         motion = new SampleOdometryModel(private_nh, &cmd_odom);
@@ -29,6 +30,7 @@ ParticleFilter::ParticleFilter() :
     // Measurement Model
     std::string measurementModel;
     private_nh.param<std::string>("measurement_model", measurementModel, "beam");
+
     if (0 == measurementModel.compare("beam")) {
 
         // default constructor
@@ -39,11 +41,13 @@ ParticleFilter::ParticleFilter() :
         // get the max_occ_dist
         double max_occ_dist;
         private_nh.param("map_max_occ_distance", max_occ_dist, 2.0);
+
         // update map max_occ_dist
         map.updateMaxOccDist(max_occ_dist);
 
         // default constructor
         measurement = new LikelihoodFieldModel(private_nh, &laser, &map);
+
     }
 
     // badd allocation?
@@ -53,18 +57,26 @@ ParticleFilter::ParticleFilter() :
 
     // The MCL object normal - injection - augmented
     std::string mcl_version;
-    private_nh.param<std::string>("monte_carlo_version", mcl_version, "augmented");
+    private_nh.param<std::string>("monte_carlo_version", mcl_version, "injection");
 
     if (0 == mcl_version.compare("normal")) {
+
+        // the normal MonteCarloLocalization class
         mcl = new MonteCarloLocalization(private_nh, motion, measurement);
-    }
-    else if(0 == mcl_version.compare("injection")){
+
+    } else if (0 == mcl_version.compare("injection")){
+
+        // the custom injection monte carlor version
         mcl = new InjectionMonteCarloLocalization(private_nh, motion, measurement);
 
     }else {
+
+        // the custom augmented monte carlo version
         mcl = new AugmentedMonteCarloLocalization(private_nh, motion, measurement);
+
     }
 
+    // verify bad_alloc
     if (nullptr == mcl) {
         throw std::bad_alloc();
     }
@@ -73,6 +85,7 @@ ParticleFilter::ParticleFilter() :
     // get the laser topic name
     std::string laser_topic;
     private_nh.param<std::string>("laser_scan_topic", laser_topic, "scan");
+
     // subscribe to the laser scan topic
     laser_sub = nh.subscribe(laser_topic, 1, &ParticleFilter::laserReceived, this);
 
@@ -90,6 +103,7 @@ ParticleFilter::ParticleFilter() :
     // get the map topic name
     std::string map_topic;
     private_nh.param<std::string>("map_server_topic", map_topic, "map");
+
     // subscribe to the map topic
     map_sub = nh.subscribe(map_topic, 1, &ParticleFilter::readMap, this);
 
