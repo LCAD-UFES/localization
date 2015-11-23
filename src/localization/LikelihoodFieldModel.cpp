@@ -4,7 +4,7 @@
 LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *ls, Map *m) : MeasurementModel(ls, m) {
 
     // get the z_hit parameter
-    private_nh.param("likelihood_z_hit", z_hit, 0.8);
+    private_nh.param("likelihood_z_hit", z_hit, 0.9);
     // get the z_max parameter
     private_nh.param("likelihood_z_max", z_max, 0.05);
     // get the z_rand parameter
@@ -30,7 +30,7 @@ LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *l
 double LikelihoodFieldModel::getWeight(Sample2D *sample) {
 
     // auxiliar variables
-    double p = 1.0;
+    double p = 0.0;
     double dist;
     double obs_range;
     double obs_bearing;
@@ -98,7 +98,7 @@ double LikelihoodFieldModel::getWeight(Sample2D *sample) {
             // prob = 1/(sqrt((2*M_PI)*sigma_hit2))
             // and finally z_random_max = z_rand/z_max
             // let's hope no bugs here = )
-            p += z_hit*(exp(dist*dist*sigma_hit_den)) + z_random_max;
+            p += z_hit*(std::exp(dist*dist*sigma_hit_den)) + z_random_max;
 
         }
 

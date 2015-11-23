@@ -9,10 +9,11 @@ AugmentedMonteCarloLocalization::AugmentedMonteCarloLocalization(
 
     // get the recovery alpha parameters
     private_nh.param("recovery_alpha_slow", alpha_slow, 0.001);
-    private_nh.param("recovery_alpha_fast", alpha_fast, 0.25);
+    private_nh.param("recovery_alpha_fast", alpha_fast, 0.8);
 
     // set the limit to Xt.size
     limit = Xt.size;
+
 }
 
 
@@ -71,20 +72,8 @@ void AugmentedMonteCarloLocalization::run() {
             w_fast += alpha_fast*(w_avg - w_fast);
         }
 
-        if (resample_rate < resample_counter){
-
-            // resample the entire SampleSet with random variables option
-            resample();
-
-            // reset the counter
-            resample_counter = 0;
-
-        } else {
-
-            // increments the counter
-            resample_counter++;
-
-        }
+        // resample the entire SampleSet with random variables option
+        resample();
 
     }
 
@@ -166,6 +155,7 @@ void AugmentedMonteCarloLocalization::resample() {
 
         // the x coordinate mean
         ux += set[m].pose.v[0];
+
         // the y coordinate mean
         uy += set[m].pose.v[1];
 

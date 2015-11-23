@@ -115,7 +115,7 @@ ParticleFilter::ParticleFilter() :
     pose_array_pub = nh.advertise<geometry_msgs::PoseArray>(pose_array_topic, 10);
 
     //spread the samples across the map?
-    private_nh.param<bool>("spread_samples", spread_samples, true);
+    private_nh.param<bool>("spread_samples", spread_samples, false);
 
 }
 

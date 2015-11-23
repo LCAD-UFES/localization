@@ -34,6 +34,7 @@ void SampleSet::normalizeWeights() {
 
         // normalize
         samples[i].weight *= normalizer;
+        std::cout << samples[i].weight << std::endl;
 
     }
 

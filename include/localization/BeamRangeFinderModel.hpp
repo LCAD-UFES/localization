@@ -13,9 +13,6 @@ class BeamRangeFinderModel : public MeasurementModel {
         // helpers
         int grid_width_2, grid_height_2;
 
-        //aux
-        float ztk, ztk_star;
-
         // just to avoid a lot of divs
         double inverse;
 
