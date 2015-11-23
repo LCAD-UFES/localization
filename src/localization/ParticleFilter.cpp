@@ -57,7 +57,7 @@ ParticleFilter::ParticleFilter() :
 
     // The MCL object normal - injection - augmented
     std::string mcl_version;
-    private_nh.param<std::string>("monte_carlo_version", mcl_version, "injection");
+    private_nh.param<std::string>("monte_carlo_version", mcl_version, "augmented");
 
     if (0 == mcl_version.compare("normal")) {
 

@@ -8,7 +8,7 @@ InjectionMonteCarloLocalization::InjectionMonteCarloLocalization(
         ) : MonteCarloLocalization(private_nh, motion, measurement), sample_counter(0){
 
     // get the recovery alpha parameters
-    private_nh.param("randon_amount_of_particles", random_amount, 0.05);
+    private_nh.param("random_amount_of_samples", random_amount, 0.05);
     private_nh.param("injection_rate", injection_rate, 10);
 
     // verify the random_amount

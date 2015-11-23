@@ -142,9 +142,6 @@ void AugmentedMonteCarloLocalization::resample() {
             // get a random pose
             set[m].pose = map->randomPose2D();
 
-            // set the weight to 1.0
-            set[m].weight = M;
-
 
         } else {
 

@@ -47,7 +47,7 @@ double LikelihoodFieldModel::getWeight(Sample2D *sample) {
     if (!grid.validPose(pose[0], pose[1])) {
 
         // just reducing the probability
-        sample->weight *= 0.001;
+        sample->weight *= 0.0;
 
         return sample->weight;
 

@@ -7,8 +7,11 @@
 
         <!-- Publish scans from best pose at a max of 10 Hz -->
         <!-- Sample Motion Model-->
-        <param name="sample_motion_model" value="vel"/> <!-- odom or vel-->
-        <param name="motion_model_command_topic" value="cmd_vel"/><!--cmd_vel or odom -->
+        <!-- odom or vel-->
+        <param name="sample_motion_model" value="vel"/>
+
+        <!--cmd_vel or odom -->
+        <param name="motion_model_command_topic" value="cmd_vel"/>
 
         <!--Odometry Model alphas-->
         <param name="sample_odometry_model_alpha_1" value="0.002"/>
@@ -19,7 +22,8 @@
         <!--Velocity Model alphas-->
 
         <!-- Sample Measurement Model-->
-        <param name="measurement_model" value="likelihood"/> <!-- likelihood or beam-->
+        <!-- likelihood or beam-->
+        <param name="measurement_model" value="likelihood"/>
 
         <!--Beam parameters-->
         <param name="beam_z_hit" value="0.8"/>
@@ -33,23 +37,35 @@
         <param name="map_max_occ_distance" value="3.0" />
 
         <!-- Monte carlo localization type-->
-        <param name="monte_carlo_version" value="augmented"/><!--normal, injection or augmented -->
-<<<<<<< HEAD
-        <param name="resample_rate" value="15"/> <!--How many loops until resample-->
-=======
-	<param name="resample_rate" value="5"/> <!--How many loops until resample-->
->>>>>>> 2f8b9fd8242f4aa2cfb9243b125cdbe7e1b1148d
-        <param name="sample_set_size" value="1000"/> <!--Quantity Particles-->
-        <param name="spread_samples" value="true"/> <!--Start spread or on robot-->
+        <!--normal, injection or augmented -->
+        <param name="monte_carlo_version" value="augmented"/>
+
+         <!--How many loops until resample-->
+        <param name="resample_rate" value="15"/>
+
+        <!--Quantity Particles-->
+        <param name="sample_set_size" value="1000"/>
+
+        <!--Start spread or on robot-->
+        <param name="spread_samples" value="true"/>
 
         <!-- injection parameters-->
-        <param name="injection_times" value="10"/> <!--How many loops to inject random particles-->
-        <param name="number_random_particles" value="0.2"/> <!--percentage of random particles injection-->
-    
+
+        <!--How many loops to inject random particles-->
+        <param name="injection_rate" value="10"/>
+
+
+        <!--percentage of random particles injection-->
+        <param name="random_amount_of_samplest" value="0.2"/>
+
         <!-- General Topics-->
-        <param name="laser_scan_topic" value="scan"/> <!-- the laser topic-->
+        <!-- the laser topic-->
+        <param name="laser_scan_topic" value="scan"/>
+
         <param name="map_server_topic" value="map"/> 
-        <param name="pose_array_topic" value="pose_array"/><!--Topic to publish the particles -->
+
+        <!--Topic to publish the particles -->
+        <param name="pose_array_topic" value="pose_array"/>
 
     </node>
 

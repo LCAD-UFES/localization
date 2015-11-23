@@ -134,6 +134,7 @@ void MonteCarloLocalization::sample() {
     // get the sample index
     getSampleIndex(i);
 
+    //
     while(i < limit) {
 
         // the motion model - passing sample pose by reference
