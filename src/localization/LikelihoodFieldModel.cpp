@@ -18,7 +18,7 @@ LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *l
     // let's do some pre-work
     sigma_hit2 = sigma_hit*sigma_hit;
     //
-    sigma_hit_den = -1.0/(2*sigma_hit*sigma_hit);
+    sigma_hit_den = -1.0/(2*sigma_hit2);
     //
     prob = 1.0/(sigma_hit*sqrt(2*M_PI));
     //

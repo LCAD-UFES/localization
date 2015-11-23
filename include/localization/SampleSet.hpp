@@ -13,6 +13,8 @@ class SampleSet {
     public:
         // SampletSet basic constructor
         SampleSet(const ros::NodeHandle&);
+
+        //
         ~SampleSet();
 
         // normalize
@@ -43,6 +45,8 @@ class SampleSet {
         // spreaded?
         bool spreaded;
 
+        // the mean pose
+        Pose2D mean_pose;
 
 };
 

@@ -38,6 +38,15 @@ class MonteCarloLocalization {
         // set a generator engine
         std::default_random_engine generator;
 
+        // the index to acess the SampleSet
+        int sampleIndex;
+
+        // the sample index limit
+        int limit;
+
+        // the mutex to acess the SampleSet
+        std::mutex sample_set_mutex;
+
         // resapling rate
         int resample_rate;
 
@@ -48,8 +57,19 @@ class MonteCarloLocalization {
         // it can be called only inside the MonteCarloLocalization::start() method
         virtual void run();
 
+        // get the sample index
+        virtual void getSampleIndex(int &);
+
+        // sample the entire SampleSet
+        virtual void sample();
+
         // resample the entire SampleSet
         virtual void resample();
+
+
+        // how many threads?
+        int pool_size;
+
 
     public:
 
@@ -68,7 +88,10 @@ class MonteCarloLocalization {
         virtual void spreadSamples(Map &);
 
         // return a copy of the Sample2D
-        virtual geometry_msgs::PoseArray getPoseArray();
+        virtual void getPoseArray(geometry_msgs::PoseArray&);
+
+        // broadcaster
+        virtual void getMeanPose(Pose2D&);
 
 };
 

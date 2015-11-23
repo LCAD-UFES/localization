@@ -9,6 +9,7 @@
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/TwistStamped.h>
 #include <geometry_msgs/PoseArray.h>
+#include <tf/transform_broadcaster.h>
 
 #include "CommandVelocity.hpp"
 #include "CommandOdometry.hpp"
@@ -47,10 +48,13 @@ class ParticleFilter {
 
         // The laser Reader
         Laser laser;
+
         // the Map reader
         Map map;
+
         // The Sample Motion Model
         SampleMotionModel *motion;
+
         // The Measurement Model
         MeasurementModel *measurement;
 
@@ -59,6 +63,9 @@ class ParticleFilter {
 
         // parameter
         bool spread_samples;
+
+        // broadcaster
+        tf::TransformBroadcaster br;
 
     public:
 
@@ -83,6 +90,9 @@ class ParticleFilter {
 
         // publish PoseArray to /pose_array topic
         void publishPoseArray();
+
+        // broadcaster PoseArray to /pose_array topic
+        void broadcastMeanPose();
 
         // run
         void start();

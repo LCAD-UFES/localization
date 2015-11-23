@@ -29,7 +29,7 @@ ParticleFilter::ParticleFilter() :
 
     // Measurement Model
     std::string measurementModel;
-    private_nh.param<std::string>("measurement_model", measurementModel, "beam");
+    private_nh.param<std::string>("measurement_model", measurementModel, "likelihood");
 
     if (0 == measurementModel.compare("beam")) {
 
@@ -191,11 +191,34 @@ void ParticleFilter::readMap(const nav_msgs::OccupancyGrid &msg) {
 // publish the poses - the PoseArray Publisher
 void ParticleFilter::publishPoseArray() {
 
+    // build the message object
+    geometry_msgs::PoseArray msg;
+
     // get the Poses
-    geometry_msgs::PoseArray msg = mcl->getPoseArray();
+    mcl->getPoseArray(msg);
 
     // publish
     pose_array_pub.publish(msg);
+
+}
+
+// broadcast mean pose
+void ParticleFilter::broadcastMeanPose() {
+
+    // build the pose mean
+    Pose2D mean;
+
+    // get the pose mean
+    mcl->getMeanPose(mean);
+
+    tf::Transform transform;
+    transform.setOrigin( tf::Vector3(mean.v[0], mean.v[1], 0.0) );
+    tf::Quaternion q;
+    q.setRPY(0, 0, mean.v[2]);
+    transform.setRotation(q);
+
+    // broadcast
+    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "map", "localizer"));
 }
 
 // run the particle
@@ -212,6 +235,9 @@ void ParticleFilter::start() {
 
         // publish the pose array
         publishPoseArray();
+
+        // broadcast the mean pose
+        broadcastMeanPose();
 
         // sleep
         loop_rate.sleep();

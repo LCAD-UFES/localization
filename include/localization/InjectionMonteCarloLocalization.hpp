@@ -19,19 +19,15 @@ class InjectionMonteCarloLocalization : public MonteCarloLocalization {
         // the resample counter
         int sample_counter;
 
+        // inject random samples
+        void injectRandomSamples(int, int);
+
         // the run method is private
         // it can be called only inside the AugmentedMonteCarloLocalization::start() method
         // override the run method
         virtual void run();
 
-        // ??
-        void threadPeso(int inicio, int fim);
-
-        // 
-        std::mutex inject_mutex;
-
     public:
-
 
         // Basic constructor
         InjectionMonteCarloLocalization(ros::NodeHandle &, SampleMotionModel*, MeasurementModel*);

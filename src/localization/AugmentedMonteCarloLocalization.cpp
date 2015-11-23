@@ -11,15 +11,15 @@ AugmentedMonteCarloLocalization::AugmentedMonteCarloLocalization(
     private_nh.param("recovery_alpha_slow", alpha_slow, 0.001);
     private_nh.param("recovery_alpha_fast", alpha_fast, 0.25);
 
+    // set the limit to Xt.size
+    limit = Xt.size;
 }
 
 
 // the overrided run method
 void AugmentedMonteCarloLocalization::run() {
 
-    // the mcl sample process
-    // auxiliar variables
-    Sample2D *samples = Xt.samples;
+    // the weight average
     double w_avg = 0.0;
 
     // update the LaserScan and the GridMap if necessary and returns the laser TimeStamp
@@ -30,22 +30,26 @@ void AugmentedMonteCarloLocalization::run() {
 
     if (moved) {
 
-        // if the robot moves
         // reset the total weight
         Xt.total_weight = 0.0;
 
-        // SIMPLE SAMPLING
-        // iterate over the samples and updates everything
-        for (int i = 0; i < Xt.size; i++) {
+        // reset the SampleSet index
+        sampleIndex = 0;
 
-            // the motion model - passing sample pose by reference
-            motion->samplePose2D(&samples[i].pose);
+        // starts the new threads
+        std::vector<std::thread> pool(pool_size);
 
-            // the measurement model - passing the Sample2D by pointer
-            // the weight is assigned to the sample inside the method
-            // it returns the pose weight
-            Xt.total_weight  += measurement->getWeight(&samples[i]);
+        // spawn each thread
+        for (int k = 0; k < pool_size; k++) {
 
+            // see MonteCarloLocalization::sample() implementation
+            pool[k] = std::thread(&AugmentedMonteCarloLocalization::sample, this);
+
+        }
+
+        // join each thread
+        for (int k = 0; k < pool_size; k++) {
+            pool[k].join();
         }
 
         // updates the average
@@ -84,10 +88,6 @@ void AugmentedMonteCarloLocalization::run() {
 
     }
 
-    // usually the MCL returns the Xt sample set
-    // what should we do here?
-    // let's publish in a convenient topic
-
     // unlock the mutex
     mcl_mutex.unlock();
 
@@ -100,6 +100,12 @@ void AugmentedMonteCarloLocalization::resample() {
     double M = 1.0/((double) Xt.size);
     int i = 0;
     double U;
+
+    double ux = 0;
+    double uy = 0;
+    double utheta = 0;
+    double x_component = 0;
+    double y_component = 0;
 
     // shortcuts
     Sample2D *samples = Xt.samples;
@@ -137,7 +143,8 @@ void AugmentedMonteCarloLocalization::resample() {
             set[m].pose = map->randomPose2D();
 
             // set the weight to 1.0
-            set[m].weight = 1.0;
+            set[m].weight = M;
+
 
         } else {
 
@@ -160,16 +167,31 @@ void AugmentedMonteCarloLocalization::resample() {
 
         }
 
-        // updates the new total_weight
-        Xt.total_weight += set[m].weight;
+        // the x coordinate mean
+        ux += set[m].pose.v[0];
+        // the y coordinate mean
+        uy += set[m].pose.v[1];
+
+        // the x_component
+        x_component += std::cos(samples[m].pose.v[2]);
+
+        // the y_component
+        y_component += std::sin(samples[m].pose.v[2]);
 
     }
+
+    // store the mean pose
+    // update the coordinates and the orientation
+    Xt.mean_pose.v[0] = ux*M;
+    Xt.mean_pose.v[1] = uy*M;
+    Xt.mean_pose.v[2] = std::atan2(y_component*M, x_component*M);
+
 
     // swap the sets
     Sample2D *temp = Xt.samples;
 
+    // swap the new and old set
     Xt.samples = Xt.old_set;
-
     Xt.old_set = temp;
 
     // just to be sure...

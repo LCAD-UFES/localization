@@ -236,7 +236,6 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
 
 }
 
-
 // update the Scan and the GridMap objects and return a timestamp to sync the commands
 ros::Time BeamRangeFinderModel::update() {
 
