@@ -12,6 +12,9 @@
 
         <!--cmd_vel or odom -->
         <param name="motion_model_command_topic" value="cmd_vel"/>
+	
+	<!--Real world-->
+	<param name="real_world_case" value="false"/>
 
         <!--Odometry Model alphas-->
         <param name="sample_odometry_model_alpha_1" value="0.002"/>
@@ -20,8 +23,15 @@
         <param name="sample_odometry_model_alpha_4" value="0.001"/>
 
         <!--Velocity Model alphas-->
+	<param name="sample_velocity_model_alpha_1" value="0.05"/>
+        <param name="sample_velocity_model_alpha_2" value="0.05"/>
+        <param name="sample_velocity_model_alpha_3" value="0.05"/>
+        <param name="sample_velocity_model_alpha_4" value="0.05"/>
+        <param name="sample_velocity_model_alpha_5" value="0.025"/>
+        <param name="sample_velocity_model_alpha_6" value="0.025"/>
 
         <!-- Sample Measurement Model-->
+
         <!-- likelihood or beam-->
         <param name="measurement_model" value="likelihood"/>
 
@@ -49,17 +59,17 @@
         <!--Start spread or on robot-->
         <param name="spread_samples" value="true"/>
 
-        <!-- injection parameters-->
+        <!-- injection parameters -->
 
         <!--How many loops to inject random particles-->
         <param name="injection_rate" value="10"/>
-
 
         <!--percentage of random particles injection-->
         <param name="random_amount_of_samplest" value="0.2"/>
 
         <!-- General Topics-->
         <!-- the laser topic-->
+	<param name="laser_max_beams" value="180" />
         <param name="laser_scan_topic" value="scan"/>
 
         <param name="map_server_topic" value="map"/> 

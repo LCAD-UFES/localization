@@ -20,4 +20,5 @@ CMakeLists.txt.user
 *.kdev_include_paths
 *.bag
 *.pgm
-
+maps/
+bags/
