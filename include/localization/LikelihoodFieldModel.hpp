@@ -13,7 +13,7 @@ class LikelihoodFieldModel : public MeasurementModel {
         double z_hit, z_max, z_rand, sigma_hit;
         // helpers
 
-        double z_random_max, sigma_hit2, prob, sigma_hit_den;
+        double z_random_max, sigma_hit2, norm, sigma_hit_inverse;
 
     public:
         // basic constructor

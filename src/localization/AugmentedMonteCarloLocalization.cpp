@@ -9,7 +9,7 @@ AugmentedMonteCarloLocalization::AugmentedMonteCarloLocalization(
 
     // get the recovery alpha parameters
     private_nh.param("recovery_alpha_slow", alpha_slow, 0.001);
-    private_nh.param("recovery_alpha_fast", alpha_fast, 0.8);
+    private_nh.param("recovery_alpha_fast", alpha_fast, 0.5);
 
     // set the limit to Xt.size
     limit = Xt.size;
@@ -52,12 +52,12 @@ void AugmentedMonteCarloLocalization::run() {
         for (int k = 0; k < pool_size; k++) {
             pool[k].join();
         }
+        // normalize
+        Xt.normalizeWeights();
 
         // updates the average
         w_avg = Xt.total_weight/Xt.size;
 
-        // normalize
-        Xt.normalizeWeights();
 
         // updates the w_slow and w_fast parameters
         if(0.0 == w_slow) {
@@ -131,7 +131,6 @@ void AugmentedMonteCarloLocalization::resample() {
             // get a random pose
             set[m].pose = map->randomPose2D();
 
-
         } else {
 
             // common low-variance sampler
@@ -148,8 +147,6 @@ void AugmentedMonteCarloLocalization::resample() {
             // copy the y coordinate
             // copy the yaw orientation
             set[m].pose = samples[i].pose;
-
-            set[m].weight = samples[i].weight;
 
         }
 

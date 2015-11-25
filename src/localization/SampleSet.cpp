@@ -30,11 +30,14 @@ void SampleSet::normalizeWeights() {
     // normalize the weights
     double normalizer = 1.0/((double) total_weight);
 
+    total_weight = 0;
+
     for (int i = 0; i < size; i++) {
 
         // normalize
         samples[i].weight *= normalizer;
-        std::cout << samples[i].weight << std::endl;
+
+        total_weight += samples[i].weight;
 
     }
 

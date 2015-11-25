@@ -4,25 +4,27 @@
 LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *ls, Map *m) : MeasurementModel(ls, m) {
 
     // get the z_hit parameter
-    private_nh.param("likelihood_z_hit", z_hit, 0.9);
+    private_nh.param("likelihood_z_hit", z_hit, 0.97);
     // get the z_max parameter
-    private_nh.param("likelihood_z_max", z_max, 0.05);
+    private_nh.param("likelihood_z_max", z_max, 0.02);
     // get the z_rand parameter
-    private_nh.param("likelihood_z_rand", z_rand, 0.05);
-    // get the sigma_hit parameter
-    private_nh.param("likelihood_sigma_hit", sigma_hit, 0.1);
+    private_nh.param("likelihood_z_rand", z_rand, 0.01);
+
+    // get the sigma_hit parameter == standard deviation
+    private_nh.param("likelihood_sigma_hit", sigma_hit, 0.005);
 
     // get the max_beams parameter, see MeasurementModel base class
-    private_nh.param("laser_max_beams", max_beams, 60);
+    private_nh.param("laser_max_beams", max_beams, 180);
 
-    // let's do some pre-work
-    sigma_hit2 = sigma_hit*sigma_hit;
-    //
-    sigma_hit_den = -1.0/(2*sigma_hit2);
-    //
-    prob = 1.0/(sigma_hit*sqrt(2*M_PI));
-    //
-    z_random_max = z_rand/30.0;
+    // verify sigma_hit
+    if (0 >= sigma_hit) {
+        sigma_hit = 0.005;
+    }
+
+    // the inverse standard deviation
+    sigma_hit_inverse = 1.0/sigma_hit;
+
+    norm = 1.0/sqrt(2*M_PI);
 
 }
 
@@ -30,7 +32,7 @@ LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *l
 double LikelihoodFieldModel::getWeight(Sample2D *sample) {
 
     // auxiliar variables
-    double p = 0.0;
+    double p = 1.0;
     double dist;
     double obs_range;
     double obs_bearing;
@@ -90,15 +92,12 @@ double LikelihoodFieldModel::getWeight(Sample2D *sample) {
 
             }
 
-            // we got some pre-computed work, let the probability be
-            // p = p*(z_hit*(1/sqrt(2*PI*sigma_hit*sigma_hit))*exp(-(x*x)/2*sigma_hit*sigma_hit) + z_rand/z_max);
-            // we got the sigma_hit^2 : sigma_hit2 = sigma_hit*sigma_hit;
-            // we pre-computed the sigma_hit_den inside exponential = -1.0/(2*sigma_hit2);
-            // and pre-computing the left side:
-            // prob = 1/(sqrt((2*M_PI)*sigma_hit2))
-            // and finally z_random_max = z_rand/z_max
-            // let's hope no bugs here = )
-            p += z_hit*(std::exp(dist*dist*sigma_hit_den)) + z_random_max;
+            // updates the dist since we are normalizing our gaussian distribution
+            // dist = (dist - mean)/stddev, but mean == 0, so:
+            dist *= sigma_hit_inverse;
+
+            // we got some pre-computed work
+            p += (z_hit*(norm*std::exp(-0.5*dist*dist)) + z_random_max);
 
         }
 
@@ -118,8 +117,12 @@ ros::Time LikelihoodFieldModel::update() {
     // update the laser
     laser->getScan(&ls_scan);
 
+    // update the range z_random_max
+    z_random_max = z_rand/ls_scan.range_max;
+
     // update the step
     step = ls_scan.size/(max_beams -1);
+
     // being cautious
     if (1 > step) {
         step = 1;
