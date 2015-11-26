@@ -52,12 +52,12 @@ void AugmentedMonteCarloLocalization::run() {
         for (int k = 0; k < pool_size; k++) {
             pool[k].join();
         }
-        // normalize
-        Xt.normalizeWeights();
 
         // updates the average
         w_avg = Xt.total_weight/Xt.size;
 
+        // normalize
+        Xt.normalizeWeights();
 
         // updates the w_slow and w_fast parameters
         if(0.0 == w_slow) {

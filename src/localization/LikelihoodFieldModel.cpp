@@ -26,6 +26,11 @@ LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *l
 
     norm = 1.0/sqrt(2*M_PI);
 
+    // get the normalizer parameter
+    private_nh.param("sample_set_size", normalizer, 1200.0);
+
+    normalizer = 1.0/normalizer;
+
 }
 
 // assigns a weight to to all particles/samples
