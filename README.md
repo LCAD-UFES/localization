@@ -40,7 +40,7 @@ Pode ser que ocorra algum problema do rviz ou do gazebo no caminho, sem stress, 
 
 Execute o launch com o localization:
 
-    $ roslaunch localization_${beam or likelihood}.launch
+    $ roslaunch localization localization_${beam or likelihood}.launch
 
 Vá até a janela do RVIZ e adicione um mapa que ouça o tópico /map.
 
