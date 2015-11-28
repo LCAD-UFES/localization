@@ -30,6 +30,7 @@ void AugmentedMonteCarloLocalization::run() {
     bool moved = motion->update(sync);
 
     if (moved) {
+        std::cout << "Moved: " << std::endl;
 
         // reset the total weight
         Xt.total_weight = 0.0;
