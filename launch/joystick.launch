@@ -1,0 +1,9 @@
+<launch>
+
+    <!--Iniciar joy-->
+    <node pkg="joy" name="joy_node" type="joy_node" />
+
+    <!--Iniciar Controles-->
+    <node pkg="localization" name="p3dxJoyTeleop" type="p3dxJoyTeleop.py" />
+	
+</launch>
