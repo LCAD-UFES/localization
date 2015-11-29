@@ -5,8 +5,10 @@ LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *l
 
     // get the z_hit parameter
     private_nh.param("likelihood_z_hit", z_hit, 0.97);
+
     // get the z_max parameter
     private_nh.param("likelihood_z_max", z_max, 0.02);
+
     // get the z_rand parameter
     private_nh.param("likelihood_z_rand", z_rand, 0.01);
 
@@ -37,7 +39,7 @@ LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *l
 double LikelihoodFieldModel::getWeight(Sample2D *sample) {
 
     // auxiliar variables
-    double p = 1.0;
+    double p = 0.0;
     double dist;
     double obs_range;
     double obs_bearing;
@@ -81,8 +83,8 @@ double LikelihoodFieldModel::getWeight(Sample2D *sample) {
             // y = pose[0] + y_s*cos(pose[2]) + x_s*sin(pose[2]) + obs_range * sin(pose[2] + obs_bearing);
 
             // Convert from world coords to map coords
-            x_map = std::floor((x - grid.origin_x)/grid.scale + 0.5) + (grid.width >> 1);
-            y_map = std::floor((y - grid.origin_y)/grid.scale + 0.5) + (grid.height >> 1);
+            x_map = std::floor((x - grid.origin_x)*resolution_inverse + 0.5) + (grid.width >> 1);
+            y_map = std::floor((y - grid.origin_y)*resolution_inverse + 0.5) + (grid.height >> 1);
 
             // get the distance
             // verify the bounds
@@ -135,6 +137,9 @@ ros::Time LikelihoodFieldModel::update() {
 
     // update the GridMap if necessary
     map->getGridMap(&grid);
+
+    // inverse resolution
+    resolution_inverse = 1.0/grid.scale;
 
     // the laser scan time, used to sync everything
     return ls_scan.time;

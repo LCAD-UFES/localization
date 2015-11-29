@@ -230,6 +230,7 @@ void ParticleFilter::start() {
     // start spinning
     spinner.start();
 
+
     // wait for Control + C
     while(ros::ok()) {
 
