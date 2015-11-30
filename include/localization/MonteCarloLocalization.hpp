@@ -44,6 +44,9 @@ class MonteCarloLocalization {
         // the sample index limit
         int limit;
 
+        // the thread slice parameter
+        int thread_slice;
+
         // the mutex to acess the SampleSet
         std::mutex sample_set_mutex;
 
@@ -58,7 +61,7 @@ class MonteCarloLocalization {
         virtual void run();
 
         // get the sample index
-        virtual void getSampleIndex(int &);
+        virtual void getSampleIndex(int&, int&);
 
         // sample the entire SampleSet
         virtual void sample();

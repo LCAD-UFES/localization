@@ -15,6 +15,9 @@ MonteCarloLocalization::MonteCarloLocalization(
     // get the pool size
     private_nh.param("thread_pool_size", pool_size, 5);
 
+    // the thread slice
+    private_nh.param("thread_slice", thread_slice, 50);
+
 }
 
 // Destructor
@@ -24,17 +27,28 @@ MonteCarloLocalization::~MonteCarloLocalization() {
 }
 
 // inline method just to manage the acess to the SampleSet object
-void MonteCarloLocalization::getSampleIndex(int &i) {
+void MonteCarloLocalization::getSampleIndex(int &l, int &r) {
 
     // lock the mutex
     sample_set_mutex.lock();
 
     // get the actual index value
-    i = sampleIndex;
+    l = sampleIndex;
 
+    // the slice
     // increments
-    sampleIndex++;
+    sampleIndex += thread_slice;
 
+    // the current thread limit
+    r = sampleIndex;
+
+    // verify the limits
+    if (l < limit && r > limit) {
+
+        // r is now equals the limit
+        r = limit;
+
+    }
     // unlock the index mutex
     sample_set_mutex.unlock();
 
@@ -129,24 +143,31 @@ void MonteCarloLocalization::sample() {
     Sample2D *samples = Xt.samples;
 
     // the index
-    int i;
+    int i, j;
 
-    // get the sample index
-    getSampleIndex(i);
+    // get the sample indexes
+    getSampleIndex(i, j);
 
-    //
-    while(i < limit) {
+    // the main loop
+    while (i < limit && j <= limit) {
 
-        // the motion model - passing sample pose by reference
-        motion->samplePose2D(&samples[i].pose);
+        // now the thread may run many iterations within a given range
+        while (i < j) {
 
-        // the measurement model - passing the Sample2D by pointer
-        // the weight is assigned to the sample inside the method
-        // it returns the pose weight
-        t_weight  += measurement->getWeight(&samples[i]);
+            // the motion model - passing sample pose by reference
+            motion->samplePose2D(&samples[i].pose);
 
-        // get the sample index
-        getSampleIndex(i);
+            // the measurement model - passing the Sample2D by pointer
+            // the weight is assigned to the sample inside the method
+            // it returns the pose weight
+            t_weight  += measurement->getWeight(&samples[i]);
+
+            // increments
+            i++;
+        }
+
+        // get a new range
+        getSampleIndex(i, j);
 
     }
 
@@ -158,7 +179,6 @@ void MonteCarloLocalization::sample() {
 
     // unlock the sample set
     sample_set_mutex.unlock();
-
 
 }
 
@@ -258,6 +278,7 @@ void MonteCarloLocalization::spreadSamples(Map &map) {
     mcl_mutex.unlock();
 
 }
+
 // return a copy of the Sample2D
 void MonteCarloLocalization::getPoseArray(geometry_msgs::PoseArray &msg) {
 
