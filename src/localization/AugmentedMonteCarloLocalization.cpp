@@ -54,7 +54,7 @@ void AugmentedMonteCarloLocalization::run() {
         }
 
         // updates the average
-        w_avg = Xt.total_weight/Xt.size;
+        w_avg = Xt.total_weight/(double)Xt.size;
 
         // normalize
         Xt.normalizeWeights();

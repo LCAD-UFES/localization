@@ -20,7 +20,7 @@ class InjectionMonteCarloLocalization : public MonteCarloLocalization {
         int sample_counter;
 
         // inject random samples
-        void injectRandomSamples(int, int);
+        void injectRandomSamples(int);
 
         // the run method is private
         // it can be called only inside the AugmentedMonteCarloLocalization::start() method
