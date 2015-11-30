@@ -58,7 +58,7 @@ void InjectionMonteCarloLocalization::run() {
             limit = Xt.size *(1 - random_amount);
 
             // get some random random samples - just 1 thread
-            injectRandomSamples(limit, Xt.size);
+            injectRandomSamples(limit);
 
             // reset the sample_counter
             sample_counter = 0;
@@ -102,7 +102,7 @@ void InjectionMonteCarloLocalization::run() {
 }
 
 // inject some random samples
-void InjectionMonteCarloLocalization::injectRandomSamples(int current, int end) {
+void InjectionMonteCarloLocalization::injectRandomSamples(int index) {
 
     // shortcut
     Sample2D *samples = Xt.samples;
@@ -115,19 +115,19 @@ void InjectionMonteCarloLocalization::injectRandomSamples(int current, int end) 
     double t_weight = 0.0;
 
     // iterates over the last samples and get some random poses
-    while (current < end) {
+    while (index < Xt.size) {
 
         // updates the pose
-        samples[current].pose = m->randomPose2D();
+        samples[index].pose = m->randomPose2D();
 
         // updates the weight
-        samples[current].weight = rw;
+        samples[index].weight = rw;
 
         // updates the partial weight
         t_weight += rw;
 
         // next random sample
-        current++;
+        index++;
 
     }
 
