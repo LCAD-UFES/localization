@@ -18,6 +18,7 @@ class Sample2D {
         /* Atributes */
         // 2D Pose
         Pose2D pose;
+
         // the particle weight
         double weight;
 

@@ -7,6 +7,7 @@
 
 class SampleSet {
     private:
+
         // private function just to allocate the samples
         void newSamples();
 

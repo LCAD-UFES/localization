@@ -22,6 +22,7 @@ SampleSet::SampleSet(const ros::NodeHandle &private_nh) : spreaded(false), sampl
 // destructor
 SampleSet::~SampleSet() {
     delete samples;
+    delete old_set;
 }
 
 // normalize the weights
