@@ -14,7 +14,7 @@ class MeasurementModel {
         Laser *laser;
 
         // our internal LaserScan representation
-        Scan ls_scan;
+        sensor_msgs::LaserScan ls_scan;
 
         // the laser max beams
         int max_beams;

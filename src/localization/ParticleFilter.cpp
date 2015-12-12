@@ -198,6 +198,12 @@ void ParticleFilter::readMap(const nav_msgs::OccupancyGrid &msg) {
 // publish our internal map
 void ParticleFilter::publish_ogm() {
 
+    nav_msgs::OccupancyGrid occupancy;
+
+    map.export_grid_map(occupancy);
+
+    ogm_pub.publish<nav_msgs::OccupancyGrid>(occupancy);
+
 }
 // publish the poses - the PoseArray Publisher
 void ParticleFilter::publishPoseArray() {

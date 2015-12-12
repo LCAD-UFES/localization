@@ -90,13 +90,15 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
 
     bool found;
 
+    int ls_size = ls_scan.ranges.size();
+
     // iterate the beams and calculates the ray casting
     // and then computes the probability of the current pose
-    for (int i = 0; i < ls_scan.size; i += step) {
+    for (int i = 0; i < ls_size; i += step) {
 
         // copy the range and the angle
-        obs_range = ls_scan.ranges[i][0];
-        obs_bearing = ls_scan.ranges[i][1];
+        obs_range = ls_scan.ranges[i];
+        obs_bearing = ls_scan.angle_min + i*ls_scan.angle_increment;
 
         // reset the x1 and y1
         x1 = x0;
@@ -240,10 +242,10 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
 ros::Time BeamRangeFinderModel::update() {
 
     // update the laser
-    laser->getScan(&ls_scan);
+    laser->getLaserScan(ls_scan);
 
     // update the step
-    step = ls_scan.size/(max_beams -1);
+    step = ls_scan.ranges.size()/(max_beams -1);
     // being cautious
     if (1 > step) {
         step = 1;
@@ -256,7 +258,7 @@ ros::Time BeamRangeFinderModel::update() {
     map->getGridMap(&grid);
 
     // the laser scan time, used to sync everything
-    return ls_scan.time;
+    return ls_scan.header.stamp;
 
 }
 

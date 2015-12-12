@@ -64,11 +64,13 @@ double LikelihoodFieldModel::getWeight(Sample2D *sample) {
 
     // iterate over the scans
     // we have 60
-    for (int i = 0; i < ls_scan.size; i += step) {
+    int ls_size = ls_scan.ranges.size();
+
+    for (int i = 0; i < ls_size; i += step) {
 
         // copy the range and the angle
-        obs_range = ls_scan.ranges[i][0];
-        obs_bearing = ls_scan.ranges[i][1];
+        obs_range = ls_scan.ranges[i];
+        obs_bearing = ls_scan.angle_min + i*ls_scan.angle_increment;
 
         // consider only ranges below range_max and check for NaN
         if (obs_range < ls_scan.range_max) {
@@ -83,8 +85,8 @@ double LikelihoodFieldModel::getWeight(Sample2D *sample) {
             // y = pose[0] + y_s*cos(pose[2]) + x_s*sin(pose[2]) + obs_range * sin(pose[2] + obs_bearing);
 
             // Convert from world coords to map coords
-            x_map = std::floor((x - grid.origin_x)*resolution_inverse + 0.5) + (grid.width >> 1);
-            y_map = std::floor((y - grid.origin_y)*resolution_inverse + 0.5) + (grid.height >> 1);
+            x_map = std::floor((x - grid.origin_x)*grid.inverse_resolution + 0.5) + (grid.width >> 1);
+            y_map = std::floor((y - grid.origin_y)*grid.inverse_resolution + 0.5) + (grid.height >> 1);
 
             // get the distance
             // verify the bounds
@@ -122,13 +124,13 @@ double LikelihoodFieldModel::getWeight(Sample2D *sample) {
 ros::Time LikelihoodFieldModel::update() {
 
     // update the laser
-    laser->getScan(&ls_scan);
+    laser->getLaserScan(ls_scan);
 
     // update the range z_random_max
     z_random_max = z_rand/ls_scan.range_max;
 
     // update the step
-    step = ls_scan.size/(max_beams -1);
+    step = ls_scan.ranges.size()/(max_beams -1);
 
     // being cautious
     if (1 > step) {
@@ -138,10 +140,7 @@ ros::Time LikelihoodFieldModel::update() {
     // update the GridMap if necessary
     map->getGridMap(&grid);
 
-    // inverse resolution
-    resolution_inverse = 1.0/grid.resolution;
-
     // the laser scan time, used to sync everything
-    return ls_scan.time;
+    return ls_scan.header.stamp;
 
 }
