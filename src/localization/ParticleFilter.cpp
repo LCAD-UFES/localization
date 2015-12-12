@@ -114,8 +114,18 @@ ParticleFilter::ParticleFilter() :
     // set the pose_array_pub, the correct topic and messages
     pose_array_pub = nh.advertise<geometry_msgs::PoseArray>(pose_array_topic, 10);
 
+    // get the occupancy grid map topic name
+    std::string ogm_topic;
+    private_nh.param<std::string>("ogm_topic", ogm_topic, "map");
+
+    // set the ogm_pub, the correct topic and messages
+    ogm_pub = nh.advertise<nav_msgs::OccupancyGrid>(ogm_topic, 10);
+
     //spread the samples across the map?
     private_nh.param<bool>("spread_samples", spread_samples, false);
+
+    // slam mode?
+    private_nh.param<bool>("slam_mode", slam_mode, true);
 
 }
 
@@ -185,6 +195,10 @@ void ParticleFilter::readMap(const nav_msgs::OccupancyGrid &msg) {
 
 }
 
+// publish our internal map
+void ParticleFilter::publish_ogm() {
+
+}
 // publish the poses - the PoseArray Publisher
 void ParticleFilter::publishPoseArray() {
 
@@ -235,7 +249,15 @@ void ParticleFilter::start() {
         publishPoseArray();
 
         // broadcast the mean pose
-        // broadcastMeanPose();
+        broadcastMeanPose();
+
+        // verify the current mode
+        if (slam_mode) {
+
+            // publish our current map
+            publish_ogm();
+
+        }
 
         // sleep
         loop_rate.sleep();

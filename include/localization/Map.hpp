@@ -47,7 +47,7 @@ class Map {
         Map(const ros::NodeHandle&);
 
         // updates the map
-        bool updateMap(const nav_msgs::OccupancyGrid&);
+        void updateMap(const nav_msgs::OccupancyGrid&);
 
         // update max_occ_dist
         void updateMaxOccDist(double);
@@ -60,6 +60,9 @@ class Map {
 
         // returns an random Pose2D inside the available cells
         Pose2D randomPose2D();
+
+        // export grid map to ros msg
+        void export_grid_map(nav_msgs::OccupancyGrid&);
 
 };
 

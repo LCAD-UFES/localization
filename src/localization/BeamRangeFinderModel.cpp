@@ -62,12 +62,12 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
     double theta = sample->pose.v[2];
 
     // the start point - the robot's pose
-    int x0 = std::floor((px - grid.origin_x)*inverse + 0.5) + grid_width_2;
-    int y0 = std::floor((py - grid.origin_y)*inverse + 0.5) + grid_height_2;
+    int x0 = std::floor((px - grid.origin_x)*grid.inverse_resolution + 0.5) + grid.width2;
+    int y0 = std::floor((py - grid.origin_y)*grid.inverse_resolution + 0.5) + grid.height2;
 
     // the width and height
-    double width_2_scale = grid.resolution*grid_width_2;
-    double height_2_scale = grid.resolution*grid_height_2;
+    double width_2_scale = grid.resolution*grid.width2;
+    double height_2_scale = grid.resolution*grid.height2;
 
     // shortcuts
     double px_displacement = (px + width_2_scale);
@@ -103,8 +103,8 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
         y1 = y0;
 
         // the endpoint - where the laser beam hits in the map
-        x2 = std::floor((px + range_max*std::cos(theta + obs_bearing) - grid.origin_x)*inverse + 0.5) + grid_width_2;
-        y2 = std::floor((py + range_max*std::sin(theta + obs_bearing) - grid.origin_y)*inverse + 0.5) + grid_height_2;
+        x2 = std::floor((px + range_max*std::cos(theta + obs_bearing) - grid.origin_x)*grid.inverse_resolution + 0.5) + grid.width2;
+        y2 = std::floor((py + range_max*std::sin(theta + obs_bearing) - grid.origin_y)*grid.inverse_resolution + 0.5) + grid.height2;
 
         // verify the bounds
         if (0 > x2) {
@@ -188,7 +188,7 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
             }
 
             // verify the current cell, maybe we have an obstacle
-            if (1 == grid.cells[x1 + y1*grid.width].occ_state) {
+            if (10 < grid.cells[x1 + y1*grid.width].occ_state) {
 
                 end_x = (dx == 0) ? ngl_x : tx * fabs(dx);
                 end_y = (dy == 0) ? ngl_y : ty * fabs(dy);
@@ -252,18 +252,8 @@ ros::Time BeamRangeFinderModel::update() {
     // get the p_rand
     p_rand = 1.0/ls_scan.range_max;
 
-
     // update the GridMap if necessary
     map->getGridMap(&grid);
-
-    // get the widht/2
-    grid_width_2 = grid.width >> 1;
-
-    // get the height/2
-    grid_height_2 = grid.height >> 1;
-
-    // just to avoid a lot of divs
-    inverse = 1.0/grid.resolution;
 
     // the laser scan time, used to sync everything
     return ls_scan.time;

@@ -8,8 +8,14 @@ GridMap::GridMap(const ros::NodeHandle &private_nh) : resolution(1), cells(nullp
     // get the width
     private_nh.param("grid_map_width", width, 4000);
 
+    // divide the width by 2
+    width2 = width >> 1;
+
     // get the height
     private_nh.param("grid_map_height", height, 4000);
+
+    // divide the height by 2
+    height2 = height >> 1;
 
     // set the size
     size = width*height;
@@ -23,6 +29,9 @@ GridMap::GridMap(const ros::NodeHandle &private_nh) : resolution(1), cells(nullp
     // get the resolution
     private_nh.param("grid_map_resolution", resolution, 0.05);
 
+    // set the inverse resolution
+    inverse_resolution = 1.0/resolution;
+
     // get the grid map origin_x and origin_y
     private_nh.param("grid_map_origin_y", origin_y, 0.0);
     private_nh.param("grid_map_origin_x", origin_x, 0.0);
@@ -35,7 +44,7 @@ GridMap::GridMap(const ros::NodeHandle &private_nh) : resolution(1), cells(nullp
 
     // set the occupancy state
     for (int i = 0; i < size; i++) {
-        cells[i].occ_state = -1;
+        cells[i].occ_state = 0;
         cells[i].occ_dist = max_occ_dist;
     }
 
@@ -49,8 +58,11 @@ GridMap::GridMap(const GridMap &g) :
                                     origin_x(g.origin_x),
                                     origin_y(g.origin_y),
                                     resolution(g.resolution),
+                                    inverse_resolution(g.inverse_resolution),
                                     width(g.width),
+                                    width2(g.width2),
                                     height(g.height),
+                                    height2(g.height2),
                                     size(g.size),
                                     max_occ_dist(g.max_occ_dist) {
 
@@ -88,7 +100,15 @@ void GridMap::updateGridMap(const nav_msgs::OccupancyGrid &map_msg) {
 
         // update the map infos
         width = map_msg.info.width;
+
+        // divide the width by 2
+        width2 = width >> 1;
+
         height = map_msg.info.height;
+
+        // divide the height by 2
+        height2 = height >> 1;
+
         size = grid_size;
 
         // realocate the cells
@@ -106,9 +126,9 @@ void GridMap::updateGridMap(const nav_msgs::OccupancyGrid &map_msg) {
     // copy the occupancy state
     for (int i = 0; i < grid_size; i++) {
         if (0.65 < map_msg.data[i]) {
-            cells[i].occ_state = 1;
+            cells[i].occ_state = 100;
         } else if (map_msg.data[i] >= 0) {
-            cells[i].occ_state = -1;
+            cells[i].occ_state = -100;
         } else {
             cells[i].occ_state = 0;
         }
@@ -198,10 +218,10 @@ double GridMap::getMinDistance(int i, int j) {
 bool GridMap::validPose(double x, double y) {
 
     // convert to our grid index
-    int x_map = std::floor((x - origin_x)/resolution + 0.5) + width/2;
-    int y_map = std::floor((y - origin_y)/resolution + 0.5) + height/2;
+    int x_map = std::floor((x - origin_x)*inverse_resolution + 0.5) + width/2;
+    int y_map = std::floor((y - origin_y)*inverse_resolution + 0.5) + height/2;
 
-    return cells[MAP_INDEX(x_map, y_map)].occ_dist > 0;
+    return (cells[MAP_INDEX(x_map, y_map)].occ_dist < -10);
 
 }
 
@@ -314,7 +334,7 @@ void GridMap::nearestNeighbor() {
         for (int j = 0; j < height; j++) {
 
             // verify if the current cell is occupied
-            if(1 == cells[MAP_INDEX(i, j)].occ_state) {
+            if(10 < cells[MAP_INDEX(i, j)].occ_state) {
 
                 // update the occlusion to zero
                 cells[MAP_INDEX(i, j)].occ_dist = 0.0;

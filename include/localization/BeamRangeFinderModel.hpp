@@ -10,12 +10,6 @@ class BeamRangeFinderModel : public MeasurementModel {
         //BeamRangeFinderModel parameters and aux
         double z_hit, z_short, z_max, z_rand, sigma_hit, lambda_short, sigma_den, p_rand;
 
-        // helpers
-        int grid_width_2, grid_height_2;
-
-        // just to avoid a lot of divs
-        double inverse;
-
         // computes the probability
         inline double prob(float, float);
 

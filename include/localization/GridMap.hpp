@@ -20,10 +20,10 @@ class GridMap {
         geometry_msgs::Quaternion orientation;
 
         // Map resolution (m/px)
-        double resolution;
+        double resolution, inverse_resolution;
 
         // Map dimensions (number of cells)
-        int width, height, size;
+        int width, width2, height, height2, size;
 
         // The map data, stored as a grid
         MapCell *cells;

@@ -184,3 +184,60 @@ Pose2D Map::randomPose2D() {
     return pose;
 
 }
+
+void Map::export_grid_map(nav_msgs::OccupancyGrid &occupancy) {
+
+    // time stamp
+    occupancy.header.stamp = ros::Time::now();
+
+    // frame_id
+    occupancy.header.frame_id = "map";
+
+    // the meta data
+    occupancy.info.map_load_time = ros::Time::now();
+
+    // resolution
+    occupancy.info.resolution = grid.resolution;
+
+    // width
+    occupancy.info.width = grid.width;
+
+    // height
+    occupancy.info.height = grid.height;
+
+    // origin - position
+    occupancy.info.origin.position.x = grid.origin_x - grid.width2*grid.resolution;
+    occupancy.info.origin.position.y = grid.origin_y - grid.width2*grid.resolution;
+    occupancy.info.origin.position.z = 0.0;
+
+    // origin - orientation
+    occupancy.info.origin.orientation.x = 0.0;
+    occupancy.info.origin.orientation.y = 0.0;
+    occupancy.info.origin.orientation.z = 0.0;
+    occupancy.info.origin.orientation.w = 1.0;
+
+    // resize the occupancy data
+    occupancy.data.resize(grid.size);
+
+    // copy the cells
+    MapCell *cells = grid.cells;
+
+    for (int i = 0; i < grid.size; i++) {
+
+        if (10 < cells[i].occ_state) {
+
+            occupancy.data[i] = 100;
+
+        } else if (-10 > cells[i].occ_state) {
+
+            occupancy.data[i] = 0;
+
+        } else {
+
+            occupancy.data[i] = -1;
+
+        }
+
+    }
+
+}
