@@ -321,9 +321,8 @@ void MonteCarloLocalization::getMeanPose(Pose2D &p) {
     // lock the mcl
     mcl_mutex.lock();
 
-    p.v[0] = Xt.mean_pose.v[0];
-    p.v[1] = Xt.mean_pose.v[1];
-    p.v[2] = Xt.mean_pose.v[2];
+    // copy the mean pose
+    p = Xt.mean_pose;
 
     // unlock the mcl
     mcl_mutex.unlock();
