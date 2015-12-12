@@ -18,6 +18,8 @@ MonteCarloLocalization::MonteCarloLocalization(
     // the thread slice
     private_nh.param("thread_slice", thread_slice, 50);
 
+    // slam mode?
+    private_nh.param<bool>("slam_mode", slam_mode, true);
 }
 
 // Destructor

@@ -72,7 +72,6 @@ class MonteCarloLocalization {
         // how many threads?
         int pool_size;
 
-
     public:
 
         // basic constructor, it receives private_nh, motion, measurement
