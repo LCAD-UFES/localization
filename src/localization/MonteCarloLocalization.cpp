@@ -18,8 +18,6 @@ MonteCarloLocalization::MonteCarloLocalization(
     // the thread slice
     private_nh.param("thread_slice", thread_slice, 50);
 
-    // slam mode?
-    private_nh.param<bool>("slam_mode", slam_mode, true);
 }
 
 // Destructor
@@ -29,7 +27,7 @@ MonteCarloLocalization::~MonteCarloLocalization() {
 }
 
 // inline method just to manage the acess to the SampleSet object
-void MonteCarloLocalization::getSampleIndex(int &l, int &r) {
+void MonteCarloLocalization::get_sample_set_range(int &l, int &r) {
 
     // lock the mutex
     sample_set_mutex.lock();
@@ -148,7 +146,7 @@ void MonteCarloLocalization::sample() {
     int i, j;
 
     // get the sample indexes
-    getSampleIndex(i, j);
+    get_sample_set_range(i, j);
 
     // the main loop
     while (i < limit && j <= limit) {
@@ -169,7 +167,7 @@ void MonteCarloLocalization::sample() {
         }
 
         // get a new range
-        getSampleIndex(i, j);
+        get_sample_set_range(i, j);
 
     }
 
@@ -258,12 +256,13 @@ void MonteCarloLocalization::resample() {
 
 
     // swap the old_set and the samples set
-    Sample2D *temp = Xt.samples;
+    Sample2D *swap = Xt.samples;
     Xt.samples = Xt.old_set;
-    Xt.old_set = temp;
+    Xt.old_set = swap;
 
     // just to be sure...
-    temp = nullptr;
+    swap = nullptr;
+    samples = nullptr;
 
 }
 

@@ -61,7 +61,7 @@ class MonteCarloLocalization {
         virtual void run();
 
         // get the sample index
-        virtual void getSampleIndex(int&, int&);
+        virtual void get_sample_set_range(int&, int&);
 
         // sample the entire SampleSet
         virtual void sample();

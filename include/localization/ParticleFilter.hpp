@@ -32,7 +32,7 @@ class ParticleFilter {
         ros::Subscriber laser_sub, cmd_sub, map_sub;
 
         // advertises
-        ros::Publisher pose_array_pub, ogm_pub;
+        ros::Publisher pose_array_pub;
 
         // the ROS LoopRate
         ros::Rate loop_rate;
@@ -59,7 +59,7 @@ class ParticleFilter {
         MonteCarloLocalization *mcl;
 
         // parameter
-        bool spread_samples, slam_mode;
+        bool spread_samples;
 
         // broadcaster
         tf::TransformBroadcaster br;
@@ -85,9 +85,6 @@ class ParticleFilter {
         // get the map from external publishers topic
         void readMap(const nav_msgs::OccupancyGrid&);
 
-        // publish our internal occupancy grid map
-        void publish_ogm();
-
         // publish PoseArray to /pose_array topic
         void publishPoseArray();
 
@@ -97,7 +94,6 @@ class ParticleFilter {
         // run
         void start();
 
-        // update
 };
 
 #endif
