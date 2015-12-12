@@ -7,7 +7,7 @@ Map::Map(const ros::NodeHandle &private_nh) : grid(private_nh), normal_dist(0.0,
 
     // measurement model
     std::string measurement_model;
-    private_nh.param<std::string>("measurement_model", measurement_model, "beam");
+    private_nh.param<std::string>("measurement_model", measurement_model, "likelihood");
 
     if (0 == measurement_model.compare("beam")) {
         likelihood_flag = false;
@@ -17,10 +17,9 @@ Map::Map(const ros::NodeHandle &private_nh) : grid(private_nh), normal_dist(0.0,
 }
 
 // receives a OccupancyGrid msg and converts to internal representation
-bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
+void Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
 
     // update status
-    bool update_status = false;
 
     // lock the mutex
     map_mutex.lock();
@@ -36,8 +35,6 @@ bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
     }
     // unlock the mutex
     map_mutex.unlock();
-
-    return update_status;
 
 }
 

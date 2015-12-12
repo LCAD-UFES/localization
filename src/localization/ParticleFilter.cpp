@@ -29,7 +29,7 @@ ParticleFilter::ParticleFilter() :
 
     // Measurement Model
     std::string measurementModel;
-    private_nh.param<std::string>("measurement_model", measurementModel, "beam");
+    private_nh.param<std::string>("measurement_model", measurementModel, "likelihood");
 
     if (0 == measurementModel.compare("beam")) {
 
@@ -172,16 +172,14 @@ void ParticleFilter::commandOdomReceived(const nav_msgs::Odometry &msg) {
 void ParticleFilter::readMap(const nav_msgs::OccupancyGrid &msg) {
 
     // copy the OccupancyGrid to the Map
-    if(map.updateMap(msg)) {
+    map.updateMap(msg);
 
-        // spread the particles
-        // passing by the MCL and we get a free lock =)
-        if (spread_samples) {
+    // spread the particles
+    // passing by the MCL and we get a free lock =)
+    if (spread_samples) {
 
-            // see the map.spreadedSamples()
-            mcl->spreadSamples(map);
-
-        }
+        // see the map.spreadedSamples()
+        mcl->spreadSamples(map);
 
     }
 
