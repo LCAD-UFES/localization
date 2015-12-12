@@ -15,6 +15,7 @@ class AugmentedMonteCarloLocalization : public MonteCarloLocalization {
         double alpha_slow;
         double alpha_fast;
 
+
         // the run method is private
         // it can be called only inside the AugmentedMonteCarloLocalization::start() method
         // override the run method
@@ -28,6 +29,8 @@ class AugmentedMonteCarloLocalization : public MonteCarloLocalization {
         // Basic constructor
         AugmentedMonteCarloLocalization(ros::NodeHandle &, SampleMotionModel*, MeasurementModel*);
 
+        // the random pose flag
+        bool random_pose_flag;
 };
 
 

@@ -55,7 +55,7 @@ void AugmentedMonteCarloLocalization::run() {
 
         // updates the average
         w_avg = Xt.total_weight/(double)Xt.size;
-    
+
         // normalize
         Xt.normalizeWeights();
 
@@ -118,10 +118,10 @@ void AugmentedMonteCarloLocalization::resample() {
     // get the first weight
     double c = samples[0].weight;
 
-    // reset total weight
-    Xt.total_weight = 0.0;
-
     Map *map = measurement->getMap();
+
+    // set the random pose flag to false
+    random_pose_flag = false;
 
     // iterate over the entire SampleSet
     for (int m = 0; m < Xt.size; m++) {
@@ -130,6 +130,9 @@ void AugmentedMonteCarloLocalization::resample() {
 
             // get a random pose
             set[m].pose = map->randomPose2D();
+
+            // there's is some random pose
+            random_pose_flag = true;
 
         } else {
 
@@ -168,7 +171,7 @@ void AugmentedMonteCarloLocalization::resample() {
     // update the coordinates and the orientation
     Xt.mean_pose.v[0] = ux*M;
     Xt.mean_pose.v[1] = uy*M;
-    Xt.mean_pose.v[2] = std::atan2(y_component*M, x_component*M);
+    Xt.mean_pose.v[2] = mrpt::math::wrapToPi<double>(std::atan2(y_component*M, x_component*M));
 
 
     // swap the sets

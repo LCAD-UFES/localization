@@ -29,7 +29,7 @@ ParticleFilter::ParticleFilter() :
 
     // Measurement Model
     std::string measurementModel;
-    private_nh.param<std::string>("measurement_model", measurementModel, "likelihood");
+    private_nh.param<std::string>("measurement_model", measurementModel, "beam");
 
     if (0 == measurementModel.compare("beam")) {
 
@@ -115,7 +115,7 @@ ParticleFilter::ParticleFilter() :
     pose_array_pub = nh.advertise<geometry_msgs::PoseArray>(pose_array_topic, 10);
 
     //spread the samples across the map?
-    private_nh.param<bool>("spread_samples", spread_samples, true);
+    private_nh.param<bool>("spread_samples", spread_samples, false);
 
 }
 
@@ -214,7 +214,7 @@ void ParticleFilter::broadcastMeanPose() {
     tf::Transform transform;
     transform.setOrigin( tf::Vector3(mean.v[0], mean.v[1], 0.0) );
     tf::Quaternion q;
-    q.setRPY(0, 0, mean.v[2]);
+    q.setRPY(0.0, 0.0, mean.v[2]);
     transform.setRotation(q);
 
     // broadcast
@@ -235,7 +235,7 @@ void ParticleFilter::start() {
     while(ros::ok()) {
 
         // publish the pose array
-        publishPoseArray();
+        // publishPoseArray();
 
         // broadcast the mean pose
         broadcastMeanPose();
