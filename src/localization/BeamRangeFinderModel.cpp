@@ -5,7 +5,7 @@
 
 
 // basic constructor
-BeamRangeFinderModel::BeamRangeFinderModel(ros::NodeHandle &private_nh, Laser *ls, Map *m) : MeasurementModel(ls, m) {
+BeamRangeFinderModel::BeamRangeFinderModel(ros::NodeHandle &private_nh, Laser *ls, Map *m) : MeasurementModel(private_nh, ls, m) {
 
     // get the z_hit parameter
     private_nh.param("beam_z_hit", z_hit, 0.7);
@@ -66,8 +66,8 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
     int y0 = std::floor((py - grid.origin_y)*inverse + 0.5) + grid_height_2;
 
     // the width and height
-    double width_2_scale = grid.scale*grid_width_2;
-    double height_2_scale = grid.scale*grid_height_2;
+    double width_2_scale = grid.resolution*grid_width_2;
+    double height_2_scale = grid.resolution*grid_height_2;
 
     // shortcuts
     double px_displacement = (px + width_2_scale);
@@ -155,13 +155,13 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
         fabs_dy_ = 1.0/std::fabs(dy);;
 
         // the distance to nearest grid line
-        ngl_x = std::fabs((x0 + fc_x)*grid.scale - px_displacement);
-        ngl_y = std::fabs((y0 + fc_y)*grid.scale - py_displacement);
+        ngl_x = std::fabs((x0 + fc_x)*grid.resolution - px_displacement);
+        ngl_y = std::fabs((y0 + fc_y)*grid.resolution - py_displacement);
 
         // computes the max time to cross any cell
         // the cell may have different sizes in a general case
-        Tx = (dx == 0) ? std::numeric_limits<float>::infinity() : grid.scale*fabs_dx_;
-        Ty = (dy == 0) ? std::numeric_limits<float>::infinity() : grid.scale*fabs_dy_;
+        Tx = (dx == 0) ? std::numeric_limits<float>::infinity() : grid.resolution*fabs_dx_;
+        Ty = (dy == 0) ? std::numeric_limits<float>::infinity() : grid.resolution*fabs_dy_;
 
         // computes the time to arrive at the last evaluated cell
         tx = (dx == 0) ? std::numeric_limits<float>::infinity() : ngl_x*fabs_dx_;
@@ -193,8 +193,8 @@ double BeamRangeFinderModel::getWeight(Sample2D *sample) {
                 end_x = (dx == 0) ? ngl_x : tx * fabs(dx);
                 end_y = (dy == 0) ? ngl_y : ty * fabs(dy);
 
-                px_ = (x1 + fc_x)*grid.scale - (end_x*ix + width_2_scale);
-                py_ = (y1 + fc_y)*grid.scale - (end_y*iy + height_2_scale);
+                px_ = (x1 + fc_x)*grid.resolution - (end_x*ix + width_2_scale);
+                py_ = (y1 + fc_y)*grid.resolution - (end_y*iy + height_2_scale);
 
                 // where the
                 px_ += grid.origin_x    ;
@@ -263,7 +263,7 @@ ros::Time BeamRangeFinderModel::update() {
     grid_height_2 = grid.height >> 1;
 
     // just to avoid a lot of divs
-    inverse = 1.0/grid.scale;
+    inverse = 1.0/grid.resolution;
 
     // the laser scan time, used to sync everything
     return ls_scan.time;

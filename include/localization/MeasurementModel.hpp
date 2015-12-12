@@ -31,7 +31,7 @@ class MeasurementModel {
     public:
 
         // basic constructor
-        MeasurementModel(Laser*, Map *);
+        MeasurementModel(const ros::NodeHandle &, Laser*, Map *);
 
         // the laser must be deleted by the ParticleFilter object
         // not here

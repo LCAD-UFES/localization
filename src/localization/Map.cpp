@@ -3,7 +3,18 @@
 #include "Map.hpp"
 
 // basic constructor
-Map::Map() : grid(), map_received(false), map_copy(false), normal_dist(0.0, 0.05), generator(std::random_device {} ()), angle_dist(-M_PI, M_PI) {}
+Map::Map(const ros::NodeHandle &private_nh) : grid(private_nh), normal_dist(0.0, 0.05), generator(std::random_device {} ()), angle_dist(-M_PI, M_PI) {
+
+    // measurement model
+    std::string measurement_model;
+    private_nh.param<std::string>("measurement_model", measurement_model, "beam");
+
+    if (0 == measurement_model.compare("beam")) {
+        likelihood_flag = false;
+    } else {
+        likelihood_flag = true;
+    }
+}
 
 // receives a OccupancyGrid msg and converts to internal representation
 bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
@@ -11,26 +22,18 @@ bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
     // update status
     bool update_status = false;
 
+    // lock the mutex
     map_mutex.lock();
 
-    if (!map_received) {
+    // save the OccupancyGrid to our object container
+    grid.updateGridMap(map_msg);
 
-        // lock the mutex
+    // update the availableCells
+    updateAvailableCells();
 
-        //Only to Beam Model ray cast
-        map = map_msg;
-
-        // update the availableCells
-        updateAvailableCells();
-
-        // build the gridmap
+    if (likelihood_flag) {
         buildGridMap();
-
-        // avoiding unnecessary copies
-        update_status = map_received = true;
-
     }
-
     // unlock the mutex
     map_mutex.unlock();
 
@@ -40,9 +43,6 @@ bool Map::updateMap(const nav_msgs::OccupancyGrid &map_msg) {
 
 // private method
 void Map::buildGridMap() {
-
-    // update the grid map
-    grid.updateGridMap(map);
 
     // updates the likelihood
     grid.nearestNeighbor();
@@ -56,69 +56,11 @@ void Map::getGridMap(GridMap *g) {
     // lock the mutex
     map_mutex.lock();
 
-    if (!map_copy) {
-
-        // copy the entire grid map
-        g->copy(grid);
-
-        map_copy = true;
-
-    }
+    // copy the entire grid map
+    g->copy(grid);
 
     // lock the mutex
     map_mutex.unlock();
-
-}
-
-//To ray cast
-void Map::getMap(nav_msgs::OccupancyGrid *m) {
-
-    // copy, is it really necessary?
-    // lock the mutex
-    map_mutex.lock();
-
-    if (!map_copy) {
-
-        // copy the entire grid map
-        *m = map;
-
-        map_copy = true;
-
-    }
-
-    // lock the mutex
-    map_mutex.unlock();
-
-}
-
-// force map update
-void Map::forceUpdate() {
-
-    // lock the map
-    map_mutex.lock();
-
-    // set to false
-    map_received = false;
-    map_copy = false;
-
-    // unlock the map
-    map_mutex.unlock();
-
-}
-
-// returns the map flag
-bool Map::mapReceived() {
-
-    // lock the map
-    map_mutex.lock();
-
-    // copy the map_received flag
-    bool flag = map_received;
-
-    // unlock the map
-    map_mutex.unlock();
-
-    return flag;
 
 }
 
@@ -129,12 +71,10 @@ void Map::updateAvailableCells() {
         availableCells.clear();
     }
 
-    double size = map.info.width*map.info.height;
-
     // get all available cells
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < grid.size; i++) {
 
-        if (0 <= map.data[i] && 0.65 > map.data[i]) {
+        if (0 <= grid.cells[i].occ_state && 0.65 > grid.cells[i].occ_state) {
             availableCells.push_back(i);
         }
     }
@@ -161,7 +101,7 @@ void Map::uniformSpread(SampleSet *Xt) {
     map_mutex.lock();
 
     // verify if there's a map and the particles aren't already spreaded
-    if (map_received && !Xt->spreaded) {
+    if (10 < availableCells.size()) {
 
         // set a uniform distribution
         std::uniform_int_distribution<int> uniform_dist(0, availableCells.size() - 1);
@@ -194,16 +134,14 @@ void Map::uniformSpread(SampleSet *Xt) {
             // now we have the grid index and a we can
             // convert to world coords and assign to the pose value
             // with a simple gaussian noise
-            pose[0] = (grid.origin_x + (g_i - (grid.width >> 1))*grid.scale) + normal_dist(generator);
-            pose[1] = (grid.origin_y + (g_j - (grid.height >> 1))*grid.scale) + normal_dist(generator);
+            pose[0] = (grid.origin_x + (g_i - (grid.width >> 1))*grid.resolution) + normal_dist(generator);
+            pose[1] = (grid.origin_y + (g_j - (grid.height >> 1))*grid.resolution) + normal_dist(generator);
 
             // random orientation between 0 and 2*PI radians
             pose[2] = angle_dist(generator);
 
         }
 
-        // spreaded!
-        Xt->spreaded = true;
     }
 
     std::cout << "Spreaded!" << std::endl;
@@ -237,8 +175,8 @@ Pose2D Map::randomPose2D() {
     // now we have the grid index and a we can
     // convert to world coords and assign to the pose value
     // with a simple gaussian noise
-    pose.v[0] = (grid.origin_x + (g_i - grid.width/2)*grid.scale) + normal_dist(generator);
-    pose.v[1] = (grid.origin_y + (g_j - grid.height/2)*grid.scale) + normal_dist(generator);
+    pose.v[0] = (grid.origin_x + (g_i - grid.width/2)*grid.resolution) + normal_dist(generator);
+    pose.v[1] = (grid.origin_y + (g_j - grid.height/2)*grid.resolution) + normal_dist(generator);
 
     // random orientation between 0 and 2*PI radians
     pose.v[2] = angle_dist(generator);

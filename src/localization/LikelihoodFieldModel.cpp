@@ -1,7 +1,7 @@
 #include "LikelihoodFieldModel.hpp"
 
 // Basic constructor
-LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *ls, Map *m) : MeasurementModel(ls, m) {
+LikelihoodFieldModel::LikelihoodFieldModel(ros::NodeHandle &private_nh, Laser *ls, Map *m) : MeasurementModel(private_nh, ls, m) {
 
     // get the z_hit parameter
     private_nh.param("likelihood_z_hit", z_hit, 0.97);
@@ -139,7 +139,7 @@ ros::Time LikelihoodFieldModel::update() {
     map->getGridMap(&grid);
 
     // inverse resolution
-    resolution_inverse = 1.0/grid.scale;
+    resolution_inverse = 1.0/grid.resolution;
 
     // the laser scan time, used to sync everything
     return ls_scan.time;

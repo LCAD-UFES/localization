@@ -7,7 +7,7 @@ ParticleFilter::ParticleFilter() :
                                     cmd_vel(),
                                     cmd_odom(),
                                     laser(),
-                                    map(), loop_rate(10) {
+                                    map(private_nh), loop_rate(10) {
 
     // Motion model
     std::string motionModel;
@@ -148,10 +148,9 @@ void ParticleFilter::laserReceived(const sensor_msgs::LaserScan &msg) {
     // the laser object manages the apropriate mutex
     laser.setLaserScan(msg);
 
-    if(map.mapReceived()) {
-        // starts the MCL
-        mcl->start();
-    }
+    // starts the MCL
+    mcl->start();
+
 }
 
 // the velocity motion command
@@ -235,10 +234,10 @@ void ParticleFilter::start() {
     while(ros::ok()) {
 
         // publish the pose array
-        // publishPoseArray();
+        publishPoseArray();
 
         // broadcast the mean pose
-        broadcastMeanPose();
+        // broadcastMeanPose();
 
         // sleep
         loop_rate.sleep();

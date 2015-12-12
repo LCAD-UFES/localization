@@ -3,6 +3,8 @@
 
 #include <queue>
 #include <nav_msgs/OccupancyGrid.h>
+#include <ros/node_handle.h>
+#include <ros/time.h>
 
 #include "MapCell.hpp"
 #include "CellData.hpp"
@@ -12,13 +14,13 @@ class GridMap {
 
     public:
         // Map origin; the map is a viewport onto a conceptual larger map.
-        float origin_x, origin_y;
+        double origin_x, origin_y;
 
         // the grid orientation
         geometry_msgs::Quaternion orientation;
 
-        // Map scale (m/px)
-        float scale;
+        // Map resolution (m/px)
+        double resolution;
 
         // Map dimensions (number of cells)
         int width, height, size;
@@ -28,13 +30,13 @@ class GridMap {
 
         // Max distance at which we care about obstacles, for constructing
         // likelihood field
-        float max_occ_dist;
+        double max_occ_dist;
 
         // the grid map timestamp
         ros::Time stamp;
 
         // basic constructor
-        GridMap ();
+        GridMap (const ros::NodeHandle&);
 
         // Copy Constructor
         GridMap (const GridMap&);

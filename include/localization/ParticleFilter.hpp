@@ -26,16 +26,13 @@ class ParticleFilter {
     private:
 
         // ros node handles
-        ros::NodeHandle nh;
-        ros::NodeHandle private_nh;
+        ros::NodeHandle nh, private_nh;
 
         // subscribers
-        ros::Subscriber laser_sub;
-        ros::Subscriber cmd_sub;
-        ros::Subscriber map_sub;
+        ros::Subscriber laser_sub, cmd_sub, map_sub;
 
         // advertises
-        ros::Publisher pose_array_pub;
+        ros::Publisher pose_array_pub, mean_pose_pub;
 
         // the ROS LoopRate
         ros::Rate loop_rate;
