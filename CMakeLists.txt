@@ -123,7 +123,6 @@ set(LOCALIZATION_LIB_SOURCES
     src/localization/GridMap.cpp
     src/localization/Map.cpp
     src/localization/CellData.cpp
-    src/localization/Scan.cpp
     src/localization/Laser.cpp
     src/localization/CommandVelocity.cpp
     src/localization/CommandOdometry.cpp

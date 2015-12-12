@@ -69,7 +69,6 @@ class MonteCarloLocalization {
         // resample the entire SampleSet
         virtual void resample();
 
-
         // how many threads?
         int pool_size;
 
